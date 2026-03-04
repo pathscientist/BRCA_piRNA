@@ -91,33 +91,10 @@ dir.create("results/subgroup",          recursive = TRUE, showWarnings = FALSE)
 # ==============================================================================
 cat("\n========== PHASE 1: DATA LOADING ==========\n")
 
-# >>> EDIT THIS: set your working directory and file paths <<<
+# >>> EDIT THIS: set your working directory <<<
 # setwd("C:/HP/PhD/Projects/GEO BRCA/brca_dataset_1101tpm")
 
-# Expression matrices (rows = piRNAs, cols = samples)
-# BRCA1      <- read.table("BRCA1.txt",      header=TRUE, row.names=1, sep="\t")
-# PRJNA294226<- read.table("PRJNA294226.txt", header=TRUE, row.names=1, sep="\t")
-# PRJNA482141<- read.table("PRJNA482141.txt", header=TRUE, row.names=1, sep="\t")
-# PRJNA808405<- read.table("PRJNA808405.txt", header=TRUE, row.names=1, sep="\t")
-# PRJNA934049<- read.table("PRJNA934049.txt", header=TRUE, row.names=1, sep="\t")
-# yyfbatch1  <- read.table("yyfbatch1.txt",   header=TRUE, row.names=1, sep="\t")
-# yyfbatch2  <- read.table("yyfbatch2.txt",   header=TRUE, row.names=1, sep="\t")
-
-# Phenotype files (rows = samples, must have "Group" column)
-# BRCA1_pheno      <- read.table("BRCA1_pheno.txt",      header=TRUE, row.names=1, sep="\t")
-# PRJNA294226_pheno<- read.table("PRJNA294226_pheno.txt", header=TRUE, row.names=1, sep="\t")
-# ...
-
-# --- Reformat helper: genes-as-rows → samples-as-rows, add Group column ---
-reformat_dataset <- function(expr, pheno, group_col = "Group") {
-  common <- intersect(colnames(expr), rownames(pheno))
-  expr  <- expr[, common, drop = FALSE]
-  pheno <- pheno[common, , drop = FALSE]
-  df <- data.frame(Group = pheno[[group_col]], t(expr), check.names = FALSE)
-  rownames(df) <- common
-  df
-}
-
+# --- Helper functions ---
 recode_group <- function(df, group_col = "Group") {
   g <- as.character(df[[group_col]])
   g[g == "Benign"] <- "Normal"
@@ -129,35 +106,43 @@ recode_group <- function(df, group_col = "Group") {
   df
 }
 
-# Build ready-list from your raw objects
-# >>> UNCOMMENT and run after loading your data <<<
-# expr_list <- list(BRCA1=BRCA1, PRJNA294226=PRJNA294226, PRJNA482141=PRJNA482141,
-#                   PRJNA808405=PRJNA808405, PRJNA934049=PRJNA934049,
-#                   yyfbatch1=yyfbatch1, yyfbatch2=yyfbatch2)
-# pheno_list <- list(BRCA1=BRCA1_pheno, PRJNA294226=PRJNA294226_pheno,
-#                    PRJNA482141=PRJNA482141_pheno, PRJNA808405=PRJNA808405_pheno,
-#                    PRJNA934049=PRJNA934049_pheno, yyfbatch1=yyfbatch1_pheno,
-#                    yyfbatch2=yyfbatch2_pheno)
+# --- Load from processed CSV files ---
+# Expected format: _processed.csv files in processed_results/ directory
+#   Row 1 = header (Group, piRNA1, piRNA2, ...)
+#   Column 1 = sample IDs (row names)
+#   Column "Group" = Tumor / Normal / Cancer / Benign
+#   Remaining columns = piRNA expression values (TPM)
 #
-# ready_list <- list()
-# for (nm in names(expr_list)) {
-#   ready_list[[nm]] <- recode_group(reformat_dataset(expr_list[[nm]], pheno_list[[nm]]))
-# }
+# Files:
+#   processed_results/BRCA1_processed.csv
+#   processed_results/PRJNA294226_processed.csv
+#   processed_results/PRJNA482141_processed.csv
+#   processed_results/PRJNA808405_processed.csv
+#   processed_results/PRJNA934049_processed.csv
+#   processed_results/yyfbatch1_processed.csv
+#   processed_results/yyfbatch2_processed.csv
 
-# --- OR load from processed CSV files ---
+dataset_names <- c("BRCA1", "PRJNA294226", "PRJNA482141",
+                    "PRJNA808405", "PRJNA934049",
+                    "yyfbatch1", "yyfbatch2")
+
 if (!exists("ready_list")) {
   if (dir.exists("processed_results")) {
     cat("Loading from processed_results/ directory...\n")
-    files <- list.files("processed_results", pattern = "*.csv", full.names = TRUE)
-    dataset_names <- gsub("processed_results/|_processed.csv", "", files)
-    ready_list <- lapply(files, function(x) {
-      read.csv(x, row.names = 1, stringsAsFactors = FALSE)
-    })
-    names(ready_list) <- dataset_names
-    ready_list <- lapply(ready_list, recode_group)
+    ready_list <- list()
+    for (nm in dataset_names) {
+      fpath <- file.path("processed_results", paste0(nm, "_processed.csv"))
+      if (file.exists(fpath)) {
+        ready_list[[nm]] <- recode_group(
+          read.csv(fpath, row.names = 1, stringsAsFactors = FALSE, check.names = FALSE)
+        )
+        cat(sprintf("  Loaded %s: %d samples\n", nm, nrow(ready_list[[nm]])))
+      } else {
+        cat(sprintf("  WARNING: %s not found, skipping.\n", fpath))
+      }
+    }
   } else {
-    stop("No data found. Please load your data into 'ready_list' first.\n",
-         "See the commented-out code blocks above for instructions.")
+    stop("No data found. Please place *_processed.csv files in processed_results/ directory.")
   }
 }
 
