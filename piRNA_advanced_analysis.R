@@ -123,7 +123,7 @@ if (!exists("combat_df_all"))
   stop("combat_df_all not found. Run piRNA_multicohort_pipeline.R first.")
 
 gene_cols <- setdiff(colnames(combat_df_all),
-                     c("Group", "Batch", "T_Score", "T_Score_binary",
+                     c("Group", "Batch", "T_Score", "T_Score_binary", "T_Score_all",
                        "Age", "Stage", "Subtype", "Age_binary", "Stage_binary",
                        "Age_Group", "Outcome01", "OS_time", "OS_status"))
 

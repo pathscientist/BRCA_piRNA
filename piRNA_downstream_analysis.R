@@ -11,7 +11,7 @@
 #   5. T-Score Boxplots by subgroup (Mann-Whitney U, exact p-values)          #
 #                                                                              #
 #   Requires objects from main pipeline:                                       #
-#     - combat_df_all, model, top_feats, independent_set                       #
+#     - combat_df_all, model, top_feats, independent_sets                      #
 #   OR loads from saved results if run independently                           #
 #                                                                              #
 ################################################################################
