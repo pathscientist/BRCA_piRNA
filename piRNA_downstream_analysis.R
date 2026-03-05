@@ -111,9 +111,9 @@ if (!exists("top_feats")) {
   }
 }
 
-if (!exists("independent_set")) {
-  independent_set <- "yyfbatch1"
-  cat("  Using default independent_set:", independent_set, "\n")
+if (!exists("independent_sets")) {
+  independent_sets <- c("yyfbatch1", "yyfbatch2")
+  cat("  Using default independent_sets:", paste(independent_sets, collapse = ", "), "\n")
 }
 
 cat("piRNA signature:", paste(top_feats, collapse = ", "), "\n")
