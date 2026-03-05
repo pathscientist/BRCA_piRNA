@@ -1,46 +1,26 @@
 # 01_load_qc.R
-# Load multi-cohort piRNA TPM tables, perform global batch correction,
-# define locked validation batch, and optionally rebalance BRCA1 class ratio.
+# Load TPM matrix + labels, perform global batch correction, define locked validation batch,
+# and optionally rebalance BRCA1 class ratio in training data.
 
 source("pipeline/00_config.R")
 
-load_and_tag_one_dataset <- function(path, sample_id_col, label_col, cohort_col, batch_col) {
-  if (!file.exists(path)) stop("Dataset file not found: ", path)
-  df <- data.table::fread(path, data.table = FALSE)
+read_expression_and_labels <- function(matrix_path, labels_path, sample_id_col, label_col) {
+  expr <- data.table::fread(matrix_path, data.table = FALSE)
+  labels <- data.table::fread(labels_path, data.table = FALSE)
 
-  cohort_name <- sub("_processed\\.csv$", "", basename(path))
+  if (!(sample_id_col %in% colnames(labels))) stop("sample_id_col not found in labels")
+  if (!(label_col %in% colnames(labels))) stop("label_col not found in labels")
 
-  if (!(sample_id_col %in% colnames(df))) {
-    # fallback: first column is sample id
-    df[[sample_id_col]] <- df[[1]]
-    df <- df[, c(sample_id_col, setdiff(colnames(df), sample_id_col)), drop = FALSE]
+  if (sample_id_col %in% colnames(expr)) {
+    expr_df <- expr
+  } else {
+    rownames(expr) <- expr[[1]]
+    expr_df <- expr[, -1, drop = FALSE]
+    expr_df[[sample_id_col]] <- rownames(expr)
+    expr_df <- expr_df[, c(sample_id_col, setdiff(colnames(expr_df), sample_id_col)), drop = FALSE]
   }
 
-  if (!(cohort_col %in% colnames(df))) df[[cohort_col]] <- cohort_name
-  if (!(batch_col %in% colnames(df))) df[[batch_col]] <- cohort_name
-  if (!(label_col %in% colnames(df))) {
-    stop("label_col '", label_col, "' missing in ", path, ". Add this column or provide labels_path mapping.")
-  }
-
-  df
-}
-
-read_expression_and_labels <- function(dataset_files, labels_path, sample_id_col, label_col) {
-  ds <- lapply(dataset_files, load_and_tag_one_dataset,
-               sample_id_col = sample_id_col,
-               label_col = label_col,
-               cohort_col = config$input$cohort_col,
-               batch_col = config$input$batch_col)
-  merged <- dplyr::bind_rows(ds)
-
-  # optional external label mapping file
-  if (!is.null(labels_path) && !identical(labels_path, "") && file.exists(labels_path)) {
-    labels <- data.table::fread(labels_path, data.table = FALSE)
-    if (!(sample_id_col %in% colnames(labels))) stop("sample_id_col not found in labels mapping")
-    if (!(label_col %in% colnames(labels))) stop("label_col not found in labels mapping")
-    merged <- merged %>% dplyr::select(-dplyr::any_of(label_col)) %>% dplyr::left_join(labels[, c(sample_id_col, label_col), drop = FALSE], by = sample_id_col)
-  }
-
+  merged <- dplyr::inner_join(labels, expr_df, by = sample_id_col)
   merged[[label_col]] <- factorize_label(merged[[label_col]], config$input$positive_class, config$input$negative_class)
   stopifnot(all(!is.na(merged[[label_col]])))
   merged
@@ -132,10 +112,10 @@ save_split_objects <- function(split_obj) {
 
 if (interactive()) {
   dat <- read_expression_and_labels(
-    dataset_files = config$input$dataset_files,
-    labels_path = config$input$labels_path,
-    sample_id_col = config$input$sample_id_col,
-    label_col = config$input$label_col
+    config$input$matrix_path,
+    config$input$labels_path,
+    config$input$sample_id_col,
+    config$input$label_col
   )
   dat <- remove_batch_effect_all(dat, config$input$sample_id_col, config$input$label_col, config$input$batch_col)
 

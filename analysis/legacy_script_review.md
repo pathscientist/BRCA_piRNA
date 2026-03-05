@@ -50,3 +50,4 @@ This review evaluates the uploaded script for correctness, reproducibility, leak
 ## 6) Fit with your project goal
 
 For your breast-cancer piRNA diagnosis target (best generalization + external validation), this legacy script is a useful visualization-heavy baseline, but in current form it is **not reliable enough** for final model selection due to hard runtime errors and missing locked external-validation mechanics.
+For your breast-cancer miRNA diagnosis target (best generalization + external validation), this legacy script is a useful visualization-heavy baseline, but in current form it is **not reliable enough** for final model selection due to hard runtime errors and missing locked external-validation mechanics.

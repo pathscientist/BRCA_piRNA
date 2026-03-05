@@ -31,7 +31,7 @@ write_summary <- function() {
   val <- data.table::fread(file.path(config$output$report_dir, "validation_metrics.csv"), data.table = FALSE)
 
   lines <- c(
-    "# piRNA Diagnosis Pipeline Summary",
+    "# miRNA Diagnosis Pipeline Summary",
     "",
     paste("Best feature set:", best$feature_set),
     paste("Best model:", best$model),

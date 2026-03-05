@@ -1,23 +1,14 @@
 # 00_config.R
-# Global configuration and helper utilities for piRNA TPM diagnosis pipeline.
+# Global configuration and helper utilities for miRNA TPM diagnosis pipeline.
 
 set.seed(2026)
 
 config <- list(
   input = list(
-    # If each dataset file already contains labels/metadata columns, keep labels_path = NULL.
-    dataset_files = c(
-      "BRCA1_processed.csv",
-      "PRJNA294226_processed.csv",
-      "PRJNA482141_processed.csv",
-      "PRJNA808405_processed.csv",
-      "PRJNA934049_processed.csv",
-      "yyfbatch1_processed.csv",
-      "yyfbatch2_processed.csv"
-    ),
-    labels_path = NULL,
-    sample_id_col = "sample_id",
-    label_col = "label",
+    matrix_path = "<PATH_TO_MATRIX>",
+    labels_path = "<PATH_TO_LABELS>",
+    sample_id_col = "<SAMPLE_ID_COL>",
+    label_col = "<LABEL_COL>",
     positive_class = "Cancer",
     negative_class = "Normal",
     batch_col = "batch",
@@ -40,10 +31,6 @@ config <- list(
     min_selected_methods = 3,
     near_best_delta_auc = 0.01,
     max_features = 9
-  ),
-  selection = list(
-    independent_candidates = c("yyfbatch1", "yyfbatch2"),
-    min_external_auc = 0.80
   ),
   output = list(
     dir = "artifacts",
