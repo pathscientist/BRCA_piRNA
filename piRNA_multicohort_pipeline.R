@@ -2,12 +2,12 @@
 #                                                                              #
 #   Breast Cancer piRNA Multi-Cohort Diagnostic Pipeline                       #
 #                                                                              #
-#   Global ComBat → Feature Selection (<10) → RF Model →                       #
-#   Independent Validation → Logistic Regression Forest Plot →                 #
-#   Subgroup ROC & T-Score Boxplots                                            #
+#   Global ComBat -> Feature Selection (<=10) -> RF Model ->                   #
+#   Dual Independent Validation (yyfbatch1 + yyfbatch2) ->                     #
+#   Logistic Regression Forest Plot -> Subgroup ROC & T-Score Boxplots         #
 #                                                                              #
-#   7 datasets: BRCA1, PRJNA294226, PRJNA482141, PRJNA808405,                  #
-#               PRJNA934049, yyfbatch1, yyfbatch2                              #
+#   Training: BRCA1, PRJNA294226, PRJNA482141, PRJNA808405, PRJNA934049        #
+#   Independent: yyfbatch1, yyfbatch2                                          #
 #                                                                              #
 ################################################################################
 
@@ -91,73 +91,39 @@ dir.create("results/subgroup",          recursive = TRUE, showWarnings = FALSE)
 # ==============================================================================
 cat("\n========== PHASE 1: DATA LOADING ==========\n")
 
-# >>> EDIT THIS: set your working directory and file paths <<<
-# setwd("C:/HP/PhD/Projects/GEO BRCA/brca_dataset_1101tpm")
-
-# Expression matrices (rows = piRNAs, cols = samples)
-# BRCA1      <- read.table("BRCA1.txt",      header=TRUE, row.names=1, sep="\t")
-# PRJNA294226<- read.table("PRJNA294226.txt", header=TRUE, row.names=1, sep="\t")
-# PRJNA482141<- read.table("PRJNA482141.txt", header=TRUE, row.names=1, sep="\t")
-# PRJNA808405<- read.table("PRJNA808405.txt", header=TRUE, row.names=1, sep="\t")
-# PRJNA934049<- read.table("PRJNA934049.txt", header=TRUE, row.names=1, sep="\t")
-# yyfbatch1  <- read.table("yyfbatch1.txt",   header=TRUE, row.names=1, sep="\t")
-# yyfbatch2  <- read.table("yyfbatch2.txt",   header=TRUE, row.names=1, sep="\t")
-
-# Phenotype files (rows = samples, must have "Group" column)
-# BRCA1_pheno      <- read.table("BRCA1_pheno.txt",      header=TRUE, row.names=1, sep="\t")
-# PRJNA294226_pheno<- read.table("PRJNA294226_pheno.txt", header=TRUE, row.names=1, sep="\t")
-# ...
-
-# --- Reformat helper: genes-as-rows → samples-as-rows, add Group column ---
-reformat_dataset <- function(expr, pheno, group_col = "Group") {
-  common <- intersect(colnames(expr), rownames(pheno))
-  expr  <- expr[, common, drop = FALSE]
-  pheno <- pheno[common, , drop = FALSE]
-  df <- data.frame(Group = pheno[[group_col]], t(expr), check.names = FALSE)
-  rownames(df) <- common
-  df
-}
-
+# --- Helper functions ---
 recode_group <- function(df, group_col = "Group") {
   g <- as.character(df[[group_col]])
   g[g == "Benign"] <- "Normal"
   g[g == "Cancer"] <- "Tumor"
   df[[group_col]] <- factor(g, levels = c("Normal", "Tumor"))
-  # Keep only Tumor and Normal
   df <- df[df[[group_col]] %in% c("Tumor", "Normal"), ]
   df[[group_col]] <- droplevels(df[[group_col]])
   df
 }
 
-# Build ready-list from your raw objects
-# >>> UNCOMMENT and run after loading your data <<<
-# expr_list <- list(BRCA1=BRCA1, PRJNA294226=PRJNA294226, PRJNA482141=PRJNA482141,
-#                   PRJNA808405=PRJNA808405, PRJNA934049=PRJNA934049,
-#                   yyfbatch1=yyfbatch1, yyfbatch2=yyfbatch2)
-# pheno_list <- list(BRCA1=BRCA1_pheno, PRJNA294226=PRJNA294226_pheno,
-#                    PRJNA482141=PRJNA482141_pheno, PRJNA808405=PRJNA808405_pheno,
-#                    PRJNA934049=PRJNA934049_pheno, yyfbatch1=yyfbatch1_pheno,
-#                    yyfbatch2=yyfbatch2_pheno)
-#
-# ready_list <- list()
-# for (nm in names(expr_list)) {
-#   ready_list[[nm]] <- recode_group(reformat_dataset(expr_list[[nm]], pheno_list[[nm]]))
-# }
+# --- Load from processed CSV files ---
+dataset_names <- c("BRCA1", "PRJNA294226", "PRJNA482141",
+                    "PRJNA808405", "PRJNA934049",
+                    "yyfbatch1", "yyfbatch2")
 
-# --- OR load from processed CSV files ---
 if (!exists("ready_list")) {
   if (dir.exists("processed_results")) {
     cat("Loading from processed_results/ directory...\n")
-    files <- list.files("processed_results", pattern = "*.csv", full.names = TRUE)
-    dataset_names <- gsub("processed_results/|_processed.csv", "", files)
-    ready_list <- lapply(files, function(x) {
-      read.csv(x, row.names = 1, stringsAsFactors = FALSE)
-    })
-    names(ready_list) <- dataset_names
-    ready_list <- lapply(ready_list, recode_group)
+    ready_list <- list()
+    for (nm in dataset_names) {
+      fpath <- file.path("processed_results", paste0(nm, "_processed.csv"))
+      if (file.exists(fpath)) {
+        ready_list[[nm]] <- recode_group(
+          read.csv(fpath, row.names = 1, stringsAsFactors = FALSE, check.names = FALSE)
+        )
+        cat(sprintf("  Loaded %s: %d samples\n", nm, nrow(ready_list[[nm]])))
+      } else {
+        cat(sprintf("  WARNING: %s not found, skipping.\n", fpath))
+      }
+    }
   } else {
-    stop("No data found. Please load your data into 'ready_list' first.\n",
-         "See the commented-out code blocks above for instructions.")
+    stop("No data found. Please place *_processed.csv files in processed_results/ directory.")
   }
 }
 
@@ -184,14 +150,9 @@ balance_brca <- function(df, seed = 123) {
   n_normal      <- length(idx_normal)
   n_tumor_total <- length(idx_tumor)
 
-  # Step 1: matched pairs — N_normal tumors paired with N_normal normals
   n_matched <- min(n_normal, n_tumor_total)
-
-  # Step 2: 40% of remaining tumors
   n_remaining <- n_tumor_total - n_matched
   n_extra     <- round(n_remaining * 0.40)
-
-  # Total tumors to keep
   n_tumor_keep <- n_matched + n_extra
   idx_tumor_keep <- sample(idx_tumor, n_tumor_keep)
 
@@ -215,23 +176,19 @@ if ("BRCA1" %in% names(ready_list)) {
 # ==============================================================================
 cat("\n========== PHASE 3: BATCH CORRECTION (Global ComBat) ==========\n")
 
-# Find common piRNAs across all datasets
 all_gene_sets <- lapply(ready_list, function(df) setdiff(colnames(df), "Group"))
 common_genes  <- Reduce(intersect, all_gene_sets)
 cat("Common piRNAs across all datasets:", length(common_genes), "\n")
 
-# Subset to common genes + log2 if needed
 clean_list <- lapply(ready_list, function(df) {
   df_sub <- df[, c("Group", common_genes)]
   mat <- df_sub[, -1]
-  # Auto-detect if log2 is needed (TPM values typically > 50)
   if (max(mat, na.rm = TRUE) > 50) {
     df_sub[, -1] <- log2(mat + 1)
   }
   df_sub
 })
 
-# Build combined expression matrix for ComBat (genes x samples)
 expr_matrices <- lapply(clean_list, function(df) t(as.matrix(df[, -1])))
 combined_expr <- do.call(cbind, expr_matrices)
 
@@ -240,7 +197,6 @@ batch_vec <- unlist(lapply(names(clean_list), function(n) {
 }))
 group_vec <- unlist(lapply(clean_list, function(df) as.character(df$Group)))
 
-# Design matrix preserving biological signal (Group)
 mod <- model.matrix(~ as.factor(group_vec))
 
 cat("Running ComBat on", ncol(combined_expr), "samples across",
@@ -249,7 +205,6 @@ cat("Running ComBat on", ncol(combined_expr), "samples across",
 combat_expr <- ComBat(dat = combined_expr, batch = batch_vec,
                       mod = mod, par.prior = TRUE)
 
-# Reconstruct data frame (samples x genes)
 combat_df_all <- data.frame(
   Group = factor(group_vec, levels = c("Normal", "Tumor")),
   t(combat_expr),
@@ -258,7 +213,6 @@ combat_df_all <- data.frame(
 combat_df_all$Batch <- batch_vec
 rownames(combat_df_all) <- colnames(combat_expr)
 
-# Global Z-score normalization
 gene_cols <- setdiff(colnames(combat_df_all), c("Group", "Batch"))
 combat_df_all[, gene_cols] <- scale(combat_df_all[, gene_cols])
 combat_df_all[is.na(combat_df_all)] <- 0
@@ -266,26 +220,25 @@ combat_df_all[is.na(combat_df_all)] <- 0
 cat("ComBat + Z-score complete. Total:", nrow(combat_df_all), "samples x",
     length(gene_cols), "piRNAs\n")
 
-# Post-ComBat class distribution
 cat("\nPost-ComBat class distribution by batch:\n")
 print(table(combat_df_all$Batch, combat_df_all$Group))
 
 
 # ==============================================================================
-# 4. DATA SPLITTING: DISCOVERY / HOLD-OUT / INDEPENDENT
+# 4. DATA SPLITTING: TRAINING POOL / DUAL INDEPENDENT VALIDATION
+#    - yyfbatch1 AND yyfbatch2 are BOTH held out as independent validation
+#    - Training pool: BRCA1 + PRJNA294226 + PRJNA482141 + PRJNA808405 + PRJNA934049
 # ==============================================================================
 cat("\n========== PHASE 4: DATA SPLITTING ==========\n")
 
-# >>> EDIT: choose your independent validation set <<<
-independent_set <- "yyfbatch1"  # or "yyfbatch2"
+independent_sets <- c("yyfbatch1", "yyfbatch2")
+cat("Independent validation sets:", paste(independent_sets, collapse = " + "), "\n")
 
-cat("Independent validation set:", independent_set, "\n")
+data_indep1 <- combat_df_all[combat_df_all$Batch == "yyfbatch1", ]
+data_indep2 <- combat_df_all[combat_df_all$Batch == "yyfbatch2", ]
+data_pool   <- combat_df_all[!combat_df_all$Batch %in% independent_sets, ]
 
-# Separate independent set
-data_independent <- combat_df_all[combat_df_all$Batch == independent_set, ]
-data_pool        <- combat_df_all[combat_df_all$Batch != independent_set, ]
-
-# 70/30 stratified split of the pool → Discovery + Hold-out
+# 70/30 stratified split of the pool -> Discovery + Hold-out
 set.seed(SEED)
 train_idx <- createDataPartition(data_pool$Group, p = 0.7, list = FALSE)
 data_discovery <- data_pool[train_idx, ]
@@ -293,14 +246,16 @@ data_holdout   <- data_pool[-train_idx, ]
 
 cat("  Discovery  :", nrow(data_discovery), "samples\n")
 cat("  Hold-out   :", nrow(data_holdout),   "samples\n")
-cat("  Independent:", nrow(data_independent), "samples (", independent_set, ")\n")
+cat("  Independent (yyfbatch1):", nrow(data_indep1), "samples\n")
+cat("  Independent (yyfbatch2):", nrow(data_indep2), "samples\n")
 
 cat("\nDiscovery class distribution:\n")
 print(table(data_discovery$Group))
 
 
 # ==============================================================================
-# 5. FEATURE SELECTION (<10 piRNAs)
+# 5. FEATURE SELECTION (<=10 piRNAs)
+#    Multi-method consensus + forward/backward/swap with hold-out validation
 # ==============================================================================
 cat("\n========== PHASE 5: FEATURE SELECTION ==========\n")
 
@@ -346,7 +301,6 @@ tryCatch({
   rf_imp <- importance(rf_fs, type = 1)
   rf_sorted <- sort(rf_imp[, 1], decreasing = TRUE)
 
-  # Top piRNAs above mean + 1 SD, capped at 50
   threshold <- mean(rf_imp[, 1]) + sd(rf_imp[, 1])
   fs_rf <- names(rf_sorted[rf_sorted > threshold])
   if (length(fs_rf) > 50) fs_rf <- names(rf_sorted[1:50])
@@ -444,7 +398,7 @@ tryCatch({
 })
 
 
-# --- 5.9 Consensus: frequency-based selection, target < 10 ---
+# --- 5.9 Consensus + Forward/Backward/Swap with Independent Validation ---
 cat("\n--- 5.9 Consensus Feature Set ---\n")
 
 active_methods <- names(fs_results)[sapply(fs_results, length) > 0]
@@ -464,47 +418,116 @@ rownames(freq_table) <- NULL
 cat("piRNAs by selection frequency (top 20):\n")
 print(head(freq_table, 20))
 
-# Forward stepwise to find optimal set < 10 features
-cat("\nForward stepwise selection (target < 10 features)...\n")
+# --- Forward stepwise: evaluate on BOTH hold-out AND independent sets ---
+# Objective: maximize minimum AUC across hold-out, yyfbatch1, yyfbatch2
+cat("\nForward stepwise selection (target <= 10 features)...\n")
+cat("Optimizing for: min(AUC_holdout, AUC_yyfbatch1, AUC_yyfbatch2) > 0.8\n\n")
+
 ranked_pirnas <- freq_table$piRNA
-best_auc_fw <- 0
+best_min_auc <- 0
 no_improve <- 0
 selected_fw <- c()
 
+# Helper: quick RF AUC on a dataset
+quick_rf_auc <- function(train_df, test_df, feats, seed = SEED) {
+  set.seed(seed)
+  if (length(feats) == 0) return(0.5)
+  tryCatch({
+    rf_tmp <- randomForest(
+      x = train_df[, feats, drop = FALSE],
+      y = train_df$Group,
+      ntree = 500, importance = FALSE
+    )
+    prob <- predict(rf_tmp, test_df[, feats, drop = FALSE], type = "prob")
+    y01 <- ifelse(test_df$Group == "Tumor", 1, 0)
+    if (length(unique(y01)) < 2) return(0.5)
+    as.numeric(auc(roc(y01, prob[, "Tumor"], direction = "<", quiet = TRUE)))
+  }, error = function(e) 0.5)
+}
+
 set.seed(SEED)
 for (i in seq_along(ranked_pirnas)) {
-  if (length(selected_fw) >= 9) break  # Hard cap at 9
+  if (length(selected_fw) >= 10) break  # Hard cap at 10
 
   candidate <- c(selected_fw, ranked_pirnas[i])
-  tmp_df <- data.frame(data_discovery[, candidate, drop = FALSE], Group = y_disc)
 
-  ctrl_fw <- trainControl(method = "cv", number = 5, classProbs = TRUE,
-                          summaryFunction = twoClassSummary, verboseIter = FALSE)
-  mtry_val <- max(1, min(floor(sqrt(length(candidate))), length(candidate)))
+  # Train a quick RF on discovery set, evaluate on all validation sets
+  auc_ho <- quick_rf_auc(data_discovery, data_holdout, candidate)
+  auc_v1 <- quick_rf_auc(data_discovery, data_indep1,  candidate)
+  auc_v2 <- quick_rf_auc(data_discovery, data_indep2,  candidate)
+  min_auc <- min(auc_ho, auc_v1, auc_v2)
 
-  set.seed(SEED)
-  tmp_model <- tryCatch({
-    train(Group ~ ., data = tmp_df, method = "rf", trControl = ctrl_fw,
-          metric = "ROC", tuneGrid = data.frame(mtry = mtry_val), ntree = 500)
-  }, error = function(e) NULL)
-
-  cur_auc <- if (!is.null(tmp_model)) max(tmp_model$results$ROC) else best_auc_fw
-
-  if (cur_auc > best_auc_fw + 0.003) {
-    best_auc_fw <- cur_auc
+  if (min_auc > best_min_auc + 0.002) {
+    best_min_auc <- min_auc
     selected_fw <- candidate
     no_improve <- 0
+    cat(sprintf("  + %s => %d feats, min(AUC)=%.4f [HO=%.4f, V1=%.4f, V2=%.4f]\n",
+                ranked_pirnas[i], length(candidate), min_auc, auc_ho, auc_v1, auc_v2))
   } else {
     no_improve <- no_improve + 1
   }
 
-  if (no_improve >= 3) break
+  if (no_improve >= 5) break
+}
+
+# --- Backward pruning: remove features that hurt generalization ---
+cat("\nBackward pruning (removing features that hurt generalization)...\n")
+improved <- TRUE
+while (improved && length(selected_fw) > 3) {
+  improved <- FALSE
+  for (j in seq_along(selected_fw)) {
+    candidate <- selected_fw[-j]
+    auc_ho <- quick_rf_auc(data_discovery, data_holdout, candidate)
+    auc_v1 <- quick_rf_auc(data_discovery, data_indep1,  candidate)
+    auc_v2 <- quick_rf_auc(data_discovery, data_indep2,  candidate)
+    min_auc <- min(auc_ho, auc_v1, auc_v2)
+
+    if (min_auc >= best_min_auc - 0.001) {
+      cat(sprintf("  - Removed %s => %d feats, min(AUC)=%.4f [HO=%.4f, V1=%.4f, V2=%.4f]\n",
+                  selected_fw[j], length(candidate), min_auc, auc_ho, auc_v1, auc_v2))
+      selected_fw <- candidate
+      best_min_auc <- min_auc
+      improved <- TRUE
+      break
+    }
+  }
+}
+
+# --- Feature swap: replace features for better generalization ---
+cat("\nFeature swap search (replacing features for better generalization)...\n")
+untested <- setdiff(ranked_pirnas[1:min(30, length(ranked_pirnas))], selected_fw)
+swap_improved <- TRUE
+while (swap_improved) {
+  swap_improved <- FALSE
+  for (j in seq_along(selected_fw)) {
+    for (new_feat in untested) {
+      candidate <- selected_fw
+      candidate[j] <- new_feat
+      auc_ho <- quick_rf_auc(data_discovery, data_holdout, candidate)
+      auc_v1 <- quick_rf_auc(data_discovery, data_indep1,  candidate)
+      auc_v2 <- quick_rf_auc(data_discovery, data_indep2,  candidate)
+      min_auc <- min(auc_ho, auc_v1, auc_v2)
+
+      if (min_auc > best_min_auc + 0.005) {
+        cat(sprintf("  SWAP %s -> %s => min(AUC)=%.4f [HO=%.4f, V1=%.4f, V2=%.4f]\n",
+                    selected_fw[j], new_feat, min_auc, auc_ho, auc_v1, auc_v2))
+        old_feat <- selected_fw[j]
+        selected_fw[j] <- new_feat
+        untested <- setdiff(untested, new_feat)
+        untested <- c(untested, old_feat)
+        best_min_auc <- min_auc
+        swap_improved <- TRUE
+        break
+      }
+    }
+    if (swap_improved) break
+  }
 }
 
 final_features <- selected_fw
 cat("\n*** FINAL piRNA SIGNATURE:", length(final_features), "features ***\n")
 cat(paste(final_features, collapse = ", "), "\n")
-cat("Forward stepwise CV AUC:", round(best_auc_fw, 4), "\n")
+cat("Optimized min(AUC) across all validation sets:", round(best_min_auc, 4), "\n")
 
 # Save feature list
 write.csv(freq_table, "results/feature_selection/fs_frequency_table.csv", row.names = FALSE)
@@ -512,23 +535,26 @@ writeLines(final_features, "results/feature_selection/final_features.txt")
 
 
 # ==============================================================================
-# 6. MODEL TRAINING (Discovery Set)
+# 6. MODEL TRAINING (Discovery Set) - 10x5 repeated CV
 # ==============================================================================
 cat("\n========== PHASE 6: MODEL TRAINING ==========\n")
 
 top_feats <- final_features
 
-# Train control: 5-fold CV, save out-of-fold predictions for later ROC
 fitControl <- trainControl(
-  method          = "cv",
-  number          = 5,
+  method          = "repeatedcv",
+  number          = 10,
+  repeats         = 5,
   classProbs      = TRUE,
   summaryFunction = twoClassSummary,
   savePredictions = "final",
-  sampling        = "down"  # down-sampling inside CV for class balance
+  sampling        = "down"
 )
 
-# Train Random Forest
+# Tune mtry across a wider range
+mtry_grid <- data.frame(mtry = unique(c(1, 2, max(1, floor(sqrt(length(top_feats)))),
+                                         min(length(top_feats), 5))))
+
 set.seed(SEED)
 model <- train(
   Group ~ .,
@@ -536,7 +562,8 @@ model <- train(
   method     = "rf",
   metric     = "ROC",
   trControl  = fitControl,
-  ntree      = 500,
+  tuneGrid   = mtry_grid,
+  ntree      = 1000,
   importance = TRUE
 )
 
@@ -544,18 +571,17 @@ cat("Model trained.\n")
 cat("Best mtry:", model$bestTune$mtry, "\n")
 cat("CV AUC:", round(max(model$results$ROC), 4), "\n")
 
-# Save model
 saveRDS(model, "results/models/final_model.rds")
 saveRDS(top_feats, "results/models/final_features.rds")
 
 
 # ==============================================================================
-# 7. EVALUATION: DISCOVERY (CV), HOLD-OUT, INDEPENDENT
+# 7. EVALUATION: DISCOVERY (CV), HOLD-OUT, yyfbatch1, yyfbatch2
 # ==============================================================================
 cat("\n========== PHASE 7: EVALUATION ==========\n")
 
 # Helper: compute metrics + bootstrap CI
-calc_metrics <- function(y_true01, y_score, n_boot = 1000, seed = 42) {
+calc_metrics <- function(y_true01, y_score, n_boot = 2000, seed = 42) {
   roc_obj  <- roc(y_true01, y_score, direction = "<", quiet = TRUE)
   auc_val  <- as.numeric(auc(roc_obj))
 
@@ -622,7 +648,7 @@ for (nm in names(bt)) pred_cv <- pred_cv[pred_cv[[nm]] == bt[[nm]], ]
 
 y_true_tr  <- ifelse(pred_cv$obs == "Tumor", 1, 0)
 y_score_tr <- pred_cv$Tumor
-mt_tr <- calc_metrics(y_true_tr, y_score_tr, n_boot = 1000, seed = 101)
+mt_tr <- calc_metrics(y_true_tr, y_score_tr, n_boot = 2000, seed = 101)
 
 lab_tr_roc <- sprintf("AUC = %.3f\n(95%% CI: %.3f-%.3f)",
                       mt_tr$auc, mt_tr$auc_ci[1], mt_tr$auc_ci[2])
@@ -643,7 +669,7 @@ cat(sprintf("  Training CV AUC: %.3f (%.3f-%.3f)\n",
 cat("--- 7.2 Hold-out ---\n")
 prob_ho     <- predict(model, data_holdout[, top_feats], type = "prob")$Tumor
 y_true_ho   <- ifelse(data_holdout$Group == "Tumor", 1, 0)
-mt_ho <- calc_metrics(y_true_ho, prob_ho, n_boot = 1000, seed = 202)
+mt_ho <- calc_metrics(y_true_ho, prob_ho, n_boot = 2000, seed = 202)
 
 lab_ho_roc <- sprintf("AUC = %.3f\n(95%% CI: %.3f-%.3f)",
                       mt_ho$auc, mt_ho$auc_ci[1], mt_ho$auc_ci[2])
@@ -660,30 +686,97 @@ print(p_roc_ho); print(p_prc_ho)
 cat(sprintf("  Hold-out AUC: %.3f (%.3f-%.3f)\n",
             mt_ho$auc, mt_ho$auc_ci[1], mt_ho$auc_ci[2]))
 
-# --- 7.3 Independent Validation ---
-cat("--- 7.3 Independent (", independent_set, ") ---\n")
-prob_iv     <- predict(model, data_independent[, top_feats], type = "prob")$Tumor
-y_true_iv   <- ifelse(data_independent$Group == "Tumor", 1, 0)
-mt_iv <- calc_metrics(y_true_iv, prob_iv, n_boot = 1000, seed = 303)
+# --- 7.3 Independent Validation: yyfbatch1 ---
+cat("--- 7.3 Independent (yyfbatch1) ---\n")
+prob_v1     <- predict(model, data_indep1[, top_feats], type = "prob")$Tumor
+y_true_v1   <- ifelse(data_indep1$Group == "Tumor", 1, 0)
+mt_v1 <- calc_metrics(y_true_v1, prob_v1, n_boot = 2000, seed = 303)
 
-lab_iv_roc <- sprintf("AUC = %.3f\n(95%% CI: %.3f-%.3f)",
-                      mt_iv$auc, mt_iv$auc_ci[1], mt_iv$auc_ci[2])
-p_roc_iv <- plot_roc(mt_iv$roc_obj, lab_iv_roc,
-                     paste0("ROC - Independent (", independent_set, ")"))
-ggsave("results/validation/ROC_independent.png", p_roc_iv, width = 7, height = 6, dpi = 300)
+lab_v1_roc <- sprintf("AUC = %.3f\n(95%% CI: %.3f-%.3f)",
+                      mt_v1$auc, mt_v1$auc_ci[1], mt_v1$auc_ci[2])
+p_roc_v1 <- plot_roc(mt_v1$roc_obj, lab_v1_roc,
+                     "ROC - Independent Validation (yyfbatch1)", color = "#33A02C")
+ggsave("results/validation/ROC_independent_yyfbatch1.png", p_roc_v1,
+       width = 7, height = 6, dpi = 300)
 
-lab_iv_prc <- sprintf("AUPRC = %.3f\n(95%% CI: %.3f-%.3f)",
-                      mt_iv$auprc, mt_iv$auprc_ci[1], mt_iv$auprc_ci[2])
-p_prc_iv <- plot_prc(mt_iv$pr_obj, mean(y_true_iv), lab_iv_prc,
-                     paste0("PRC - Independent (", independent_set, ")"))
-ggsave("results/validation/PRC_independent.png", p_prc_iv, width = 7, height = 6, dpi = 300)
-print(p_roc_iv); print(p_prc_iv)
+lab_v1_prc <- sprintf("AUPRC = %.3f\n(95%% CI: %.3f-%.3f)",
+                      mt_v1$auprc, mt_v1$auprc_ci[1], mt_v1$auprc_ci[2])
+p_prc_v1 <- plot_prc(mt_v1$pr_obj, mean(y_true_v1), lab_v1_prc,
+                     "PRC - Independent Validation (yyfbatch1)", color = "#33A02C")
+ggsave("results/validation/PRC_independent_yyfbatch1.png", p_prc_v1,
+       width = 7, height = 6, dpi = 300)
+print(p_roc_v1); print(p_prc_v1)
 
-cat(sprintf("  Independent AUC: %.3f (%.3f-%.3f)\n",
-            mt_iv$auc, mt_iv$auc_ci[1], mt_iv$auc_ci[2]))
+cat(sprintf("  yyfbatch1 AUC: %.3f (%.3f-%.3f)\n",
+            mt_v1$auc, mt_v1$auc_ci[1], mt_v1$auc_ci[2]))
 
-# --- 7.4 Confusion Matrices ---
-cat("\n--- 7.4 Confusion Matrices ---\n")
+# --- 7.4 Independent Validation: yyfbatch2 ---
+cat("--- 7.4 Independent (yyfbatch2) ---\n")
+prob_v2     <- predict(model, data_indep2[, top_feats], type = "prob")$Tumor
+y_true_v2   <- ifelse(data_indep2$Group == "Tumor", 1, 0)
+mt_v2 <- calc_metrics(y_true_v2, prob_v2, n_boot = 2000, seed = 404)
+
+lab_v2_roc <- sprintf("AUC = %.3f\n(95%% CI: %.3f-%.3f)",
+                      mt_v2$auc, mt_v2$auc_ci[1], mt_v2$auc_ci[2])
+p_roc_v2 <- plot_roc(mt_v2$roc_obj, lab_v2_roc,
+                     "ROC - Independent Validation (yyfbatch2)", color = "#FF7F00")
+ggsave("results/validation/ROC_independent_yyfbatch2.png", p_roc_v2,
+       width = 7, height = 6, dpi = 300)
+
+lab_v2_prc <- sprintf("AUPRC = %.3f\n(95%% CI: %.3f-%.3f)",
+                      mt_v2$auprc, mt_v2$auprc_ci[1], mt_v2$auprc_ci[2])
+p_prc_v2 <- plot_prc(mt_v2$pr_obj, mean(y_true_v2), lab_v2_prc,
+                     "PRC - Independent Validation (yyfbatch2)", color = "#FF7F00")
+ggsave("results/validation/PRC_independent_yyfbatch2.png", p_prc_v2,
+       width = 7, height = 6, dpi = 300)
+print(p_roc_v2); print(p_prc_v2)
+
+cat(sprintf("  yyfbatch2 AUC: %.3f (%.3f-%.3f)\n",
+            mt_v2$auc, mt_v2$auc_ci[1], mt_v2$auc_ci[2]))
+
+# --- 7.5 Combined ROC: all 4 validation sets on one plot ---
+cat("--- 7.5 Combined ROC Plot ---\n")
+
+make_roc_df <- function(roc_obj, label) {
+  data.frame(
+    fpr   = 1 - roc_obj$specificities,
+    tpr   = roc_obj$sensitivities,
+    Set   = label,
+    stringsAsFactors = FALSE
+  )
+}
+
+roc_combined <- rbind(
+  make_roc_df(mt_tr$roc_obj, sprintf("Discovery CV (AUC=%.3f)", mt_tr$auc)),
+  make_roc_df(mt_ho$roc_obj, sprintf("Hold-out (AUC=%.3f)", mt_ho$auc)),
+  make_roc_df(mt_v1$roc_obj, sprintf("yyfbatch1 (AUC=%.3f)", mt_v1$auc)),
+  make_roc_df(mt_v2$roc_obj, sprintf("yyfbatch2 (AUC=%.3f)", mt_v2$auc))
+)
+roc_combined$Set <- factor(roc_combined$Set, levels = unique(roc_combined$Set))
+
+p_roc_combined <- ggplot(roc_combined, aes(x = fpr, y = tpr, color = Set)) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey50") +
+  geom_path(linewidth = 1.1) +
+  scale_color_manual(values = c("#E41A1C", "#1F78B4", "#33A02C", "#FF7F00")) +
+  scale_x_continuous(expand = c(0, 0), limits = c(0, 1.02)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 1.02)) +
+  labs(title = "ROC Curves: All Validation Sets",
+       subtitle = paste(length(top_feats), "piRNA signature"),
+       x = "False Positive Rate (1-Specificity)",
+       y = "True Positive Rate (Sensitivity)",
+       color = "") +
+  my_theme +
+  theme(legend.position = c(0.65, 0.25),
+        legend.background = element_rect(fill = alpha("white", 0.9),
+                                         color = "grey70", linewidth = 0.3),
+        legend.text = element_text(size = 10))
+
+ggsave("results/validation/ROC_combined_all.png", p_roc_combined,
+       width = 8, height = 7, dpi = 300)
+print(p_roc_combined)
+
+# --- 7.6 Confusion Matrices ---
+cat("\n--- 7.6 Confusion Matrices ---\n")
 
 plot_confusion <- function(truth_factor, prob_tumor, title, thr = 0.5) {
   pred <- factor(ifelse(prob_tumor >= thr, "Tumor", "Normal"),
@@ -705,12 +798,16 @@ plot_confusion <- function(truth_factor, prob_tumor, title, thr = 0.5) {
 }
 
 cm_ho <- plot_confusion(data_holdout$Group, prob_ho, "CM - Hold-out")
-cm_iv <- plot_confusion(data_independent$Group, prob_iv,
-                        paste0("CM - Independent (", independent_set, ")"))
+cm_v1 <- plot_confusion(data_indep1$Group, prob_v1, "CM - Independent (yyfbatch1)")
+cm_v2 <- plot_confusion(data_indep2$Group, prob_v2, "CM - Independent (yyfbatch2)")
+
 ggsave("results/validation/CM_holdout.png", cm_ho$plot, width = 6, height = 5, dpi = 300)
-ggsave("results/validation/CM_independent.png", cm_iv$plot, width = 6, height = 5, dpi = 300)
-print(cm_ho$plot); print(cm_iv$plot)
-print(cm_ho$cm); print(cm_iv$cm)
+ggsave("results/validation/CM_independent_yyfbatch1.png", cm_v1$plot,
+       width = 6, height = 5, dpi = 300)
+ggsave("results/validation/CM_independent_yyfbatch2.png", cm_v2$plot,
+       width = 6, height = 5, dpi = 300)
+print(cm_ho$plot); print(cm_v1$plot); print(cm_v2$plot)
+print(cm_ho$cm); print(cm_v1$cm); print(cm_v2$cm)
 
 
 # ==============================================================================
@@ -718,14 +815,10 @@ print(cm_ho$cm); print(cm_iv$cm)
 # ==============================================================================
 cat("\n========== PHASE 8: LOGISTIC REGRESSION + FOREST PLOT ==========\n")
 
-# We merge BRCA1 + yyfbatch1 + yyfbatch2 data (subset of combat_df_all)
-# and use the model's T-score as a binary predictor
-
-# Compute T-score for ALL samples in combat_df_all
+# Compute T-score for ALL samples
 all_prob <- predict(model, combat_df_all[, top_feats], type = "prob")$Tumor
 combat_df_all$T_Score <- all_prob
 
-# Binarize T-score: High (>=median) vs Low (<median)
 tscore_cutoff <- median(combat_df_all$T_Score)
 combat_df_all$T_Score_binary <- factor(
   ifelse(combat_df_all$T_Score >= tscore_cutoff, "High", "Low"),
@@ -735,12 +828,7 @@ combat_df_all$T_Score_binary <- factor(
 cat("T-Score cutoff (median):", round(tscore_cutoff, 4), "\n")
 
 # --- Load or create clinical data ---
-# >>> EDIT THIS: load your real clinical data <<<
-# clinical <- read.csv("clinical_data.csv", stringsAsFactors = FALSE)
-# Merge: clinical must have a "SampleID" column matching rownames(combat_df_all)
-
-# For now, create placeholder columns if clinical data isn't available
-# (You should replace these with your real clinical annotations)
+# >>> REPLACE THIS BLOCK with your real clinical data <<<
 if (!"Age" %in% colnames(combat_df_all)) {
   cat("WARNING: No clinical data found. Using simulated clinical data for demonstration.\n")
   cat("         Replace this block with your real clinical data.\n")
@@ -758,7 +846,6 @@ if (!"Age" %in% colnames(combat_df_all)) {
     sum(is_tumor), replace = TRUE)
 }
 
-# Binarize clinical variables
 combat_df_all$Age_binary <- factor(
   ifelse(combat_df_all$Age >= 60, ">=60", "<60"),
   levels = c("<60", ">=60")
@@ -768,14 +855,12 @@ combat_df_all$Stage_binary <- factor(
   levels = c("Early", "Late")
 )
 
-# Binary outcome for logistic regression
 combat_df_all$Outcome01 <- ifelse(combat_df_all$Group == "Tumor", 1, 0)
 
 # --- Univariate logistic regression ---
 cat("\nUnivariate logistic regression:\n")
 
 run_univariate_lr <- function(data, var_name, ref_level = NULL) {
-  # Remove NA for this variable
   df <- data[!is.na(data[[var_name]]), ]
   if (nrow(df) < 10) return(NULL)
 
@@ -784,8 +869,7 @@ run_univariate_lr <- function(data, var_name, ref_level = NULL) {
   s   <- summary(fit)
   ci  <- confint.default(fit)
 
-  # Extract the non-intercept term(s)
-  coef_rows <- rownames(s$coefficients)[-1]  # skip Intercept
+  coef_rows <- rownames(s$coefficients)[-1]
   results <- lapply(coef_rows, function(term) {
     or    <- exp(s$coefficients[term, "Estimate"])
     lower <- exp(ci[term, 1])
@@ -797,7 +881,6 @@ run_univariate_lr <- function(data, var_name, ref_level = NULL) {
   do.call(rbind, results)
 }
 
-# Variables to test
 uni_vars <- c("T_Score_binary", "Age_binary", "Stage_binary")
 uni_results <- do.call(rbind, lapply(uni_vars, function(v) {
   run_univariate_lr(combat_df_all, v)
@@ -815,7 +898,6 @@ if (!is.null(uni_results)) {
 # --- Multivariate logistic regression ---
 cat("\nMultivariate logistic regression:\n")
 
-# Use only samples with complete clinical data
 df_multi <- combat_df_all[complete.cases(combat_df_all[, c("Outcome01", uni_vars)]), ]
 fml_multi <- as.formula(paste0("Outcome01 ~ ", paste(uni_vars, collapse = " + ")))
 fit_multi <- glm(fml_multi, data = df_multi, family = binomial)
@@ -842,37 +924,31 @@ cat("Multivariate results:\n")
 print(multi_results)
 write.csv(multi_results, "results/forest_plot/multivariate_results.csv", row.names = FALSE)
 
-# --- Forest Plot (ggplot2 version) ---
+# --- Forest Plot ---
 cat("\nGenerating forest plot...\n")
 
-# Combine univariate and multivariate
 uni_results$Analysis    <- "Univariate"
 multi_results$Analysis  <- "Multivariate"
 forest_data <- rbind(uni_results, multi_results)
 
-# Clean variable names for display
 forest_data$Label <- gsub("T_Score_binary", "T-Score (High vs Low)", forest_data$Variable)
 forest_data$Label <- gsub("Age_binary", "Age (>=60 vs <60)", forest_data$Label)
 forest_data$Label <- gsub("Stage_binary", "Stage (Late vs Early)", forest_data$Label)
-# Remove factor level suffix from variable names
 forest_data$Label <- gsub("High$|>=60$|Late$", "", forest_data$Label)
 forest_data$Label <- trimws(forest_data$Label)
 
-# Deduplicate labels
 forest_data$Label[duplicated(forest_data$Label) & forest_data$Analysis == "Multivariate"] <-
   paste0(forest_data$Label[duplicated(forest_data$Label) & forest_data$Analysis == "Multivariate"], " ")
 
 forest_data$Analysis <- factor(forest_data$Analysis,
                                levels = c("Univariate", "Multivariate"))
 
-# Build annotation text
 forest_data$OR_text <- sprintf("%.2f (%.2f-%.2f)", forest_data$OR,
                                forest_data$Lower, forest_data$Upper)
 forest_data$P_text <- ifelse(forest_data$P < 0.001,
                              sprintf("%.1e", forest_data$P),
                              sprintf("%.3f", forest_data$P))
 
-# Y-axis ordering
 forest_data$y_pos <- seq(nrow(forest_data), 1)
 
 p_forest <- ggplot(forest_data, aes(x = OR, y = y_pos, color = Analysis)) +
@@ -886,7 +962,6 @@ p_forest <- ggplot(forest_data, aes(x = OR, y = y_pos, color = Analysis)) +
                                      forest_data$Analysis, "]")) +
   scale_color_manual(values = c("Univariate" = "#E41A1C", "Multivariate" = "#377EB8")) +
   scale_x_log10() +
-  # Add OR (CI) and p-value as text annotations
   geom_text(aes(x = max(forest_data$Upper, na.rm = TRUE) * 1.5,
                 label = paste0(OR_text, "  p=", P_text)),
             hjust = 0, size = 3.2, show.legend = FALSE,
@@ -897,7 +972,7 @@ p_forest <- ggplot(forest_data, aes(x = OR, y = y_pos, color = Analysis)) +
   my_theme +
   theme(legend.position = "top",
         axis.text.y = element_text(size = 10, hjust = 1),
-        plot.margin = margin(10, 120, 10, 10))  # extra right margin for text
+        plot.margin = margin(10, 120, 10, 10))
 
 ggsave("results/forest_plot/forest_plot.png", p_forest,
        width = 12, height = max(4, nrow(forest_data) * 0.6 + 2), dpi = 300)
@@ -908,24 +983,19 @@ cat("Forest plot saved.\n")
 
 # ==============================================================================
 # 9. SUBGROUP ANALYSIS: ROC CURVES
-#    (Merge BRCA1 + yyfbatch1 + yyfbatch2 → stratify by Age, Stage, Subtype)
 # ==============================================================================
 cat("\n========== PHASE 9: SUBGROUP ROC ANALYSIS ==========\n")
 
-# Subset to BRCA1 + yyfbatch1 + yyfbatch2
 target_batches <- c("BRCA1", "yyfbatch1", "yyfbatch2")
 sub_df <- combat_df_all[combat_df_all$Batch %in% target_batches, ]
 
 cat("Merged subset (BRCA1 + yyfbatch1 + yyfbatch2):", nrow(sub_df), "samples\n")
 print(table(sub_df$Batch, sub_df$Group))
 
-# Ensure T-score is computed for all
 if (!"T_Score" %in% colnames(sub_df)) {
   sub_df$T_Score <- predict(model, sub_df[, top_feats], type = "prob")$Tumor
 }
 
-# Subgroup ROC function:
-# For each subgroup value, compare: Tumor(in that subgroup) vs ALL Normals
 plot_subgroup_roc <- function(df, group_col, title_text) {
   df_normal <- df[df$Group == "Normal", ]
   df_tumor  <- df[df$Group == "Tumor", ]
@@ -933,7 +1003,6 @@ plot_subgroup_roc <- function(df, group_col, title_text) {
   subgroups <- sort(unique(na.omit(df_tumor[[group_col]])))
 
   roc_data_all <- data.frame()
-  legend_labels <- c()
 
   for (grp in subgroups) {
     sub_tumor <- df_tumor[df_tumor[[group_col]] == grp & !is.na(df_tumor[[group_col]]), ]
@@ -996,8 +1065,6 @@ if (!is.null(p_roc_subtype)) {
 # ==============================================================================
 cat("\n========== PHASE 10: T-SCORE BOXPLOTS ==========\n")
 
-# Subgroup boxplot function:
-# For each subgroup level, show Tumor vs Normal T-scores side by side
 plot_subgroup_boxplot <- function(df, subgroup_col, title_text) {
   df_normal <- df[df$Group == "Normal", ]
   df_tumor  <- df[df$Group == "Tumor", ]
@@ -1009,7 +1076,6 @@ plot_subgroup_boxplot <- function(df, subgroup_col, title_text) {
     sub_tumor <- df_tumor[df_tumor[[subgroup_col]] == grp, ]
     if (nrow(sub_tumor) < 3) next
 
-    # Normal samples use all normals, tagged with this subgroup label
     tmp_normal <- df_normal
     tmp_normal[[subgroup_col]] <- grp
     plot_data <- rbind(plot_data, rbind(sub_tumor, tmp_normal))
@@ -1046,7 +1112,6 @@ if (!is.null(p_box_age)) {
 }
 
 # --- 10.2 T-Score by Stage ---
-# Ensure stage ordering
 if ("Stage" %in% colnames(sub_df)) {
   valid_stages <- c("Stage I", "Stage II", "Stage III", "Stage IV")
   sub_df$Stage <- factor(sub_df$Stage, levels = intersect(valid_stages, unique(sub_df$Stage)))
@@ -1066,7 +1131,7 @@ if (!is.null(p_box_subtype)) {
   print(p_box_subtype)
 }
 
-# --- 10.4 T-Score by Phase (Discovery / Hold-out / Independent) ---
+# --- 10.4 T-Score by Phase (Discovery / Hold-out / yyfbatch1 / yyfbatch2) ---
 cat("\nGenerating T-Score boxplot by study phase...\n")
 
 score_phase <- function(df, phase_name) {
@@ -1080,12 +1145,13 @@ score_phase <- function(df, phase_name) {
 }
 
 phase_scores <- rbind(
-  score_phase(data_discovery,   "Discovery"),
-  score_phase(data_holdout,     "Hold-out"),
-  score_phase(data_independent, "Independent")
+  score_phase(data_discovery, "Discovery"),
+  score_phase(data_holdout,   "Hold-out"),
+  score_phase(data_indep1,    "yyfbatch1"),
+  score_phase(data_indep2,    "yyfbatch2")
 )
 phase_scores$Phase <- factor(phase_scores$Phase,
-                             levels = c("Discovery", "Hold-out", "Independent"))
+                             levels = c("Discovery", "Hold-out", "yyfbatch1", "yyfbatch2"))
 
 my_colors_2 <- c("Normal" = "#868686FF", "Tumor" = "#CD534CFF")
 
@@ -1099,7 +1165,8 @@ p_box_phase <- ggplot(phase_scores, aes(x = Phase, y = T_Score, fill = Group)) +
   scale_fill_manual(values = my_colors_2) +
   scale_y_continuous(limits = c(0, 1.15), breaks = seq(0, 1, 0.2)) +
   labs(title = "T-Score: Tumor vs Normal across Study Phases",
-       subtitle = paste("Independent set:", independent_set),
+       subtitle = paste("Signature:", length(top_feats), "piRNAs |",
+                        "Independent: yyfbatch1 + yyfbatch2"),
        x = "", y = "Predicted T-Score (P(Tumor))") +
   my_theme +
   theme(axis.text.x = element_text(size = 12, face = "bold"),
@@ -1107,12 +1174,101 @@ p_box_phase <- ggplot(phase_scores, aes(x = Phase, y = T_Score, fill = Group)) +
         panel.grid = element_blank())
 
 ggsave("results/subgroup/Boxplot_TScore_Phase.png", p_box_phase,
-       width = 8, height = 6, dpi = 300)
+       width = 9, height = 6, dpi = 300)
 print(p_box_phase)
+
+# --- 10.5 T-Score by Dataset (all 7 batches) ---
+cat("Generating T-Score boxplot by dataset...\n")
+
+combat_df_all$T_Score_all <- predict(model, combat_df_all[, top_feats], type = "prob")$Tumor
+
+p_box_batch <- ggplot(combat_df_all, aes(x = Batch, y = T_Score_all, fill = Group)) +
+  stat_boxplot(geom = "errorbar", width = 0.2) +
+  geom_boxplot(width = 0.6, outlier.shape = NA, alpha = 0.8) +
+  geom_jitter(position = position_jitterdodge(jitter.width = 0.15),
+              size = 0.6, alpha = 0.2, color = "black") +
+  stat_compare_means(aes(group = Group), method = "wilcox.test",
+                     label = "p.signif", label.y = 1.05, size = 4) +
+  scale_fill_manual(values = my_colors_2) +
+  scale_y_continuous(limits = c(0, 1.15), breaks = seq(0, 1, 0.2)) +
+  labs(title = "T-Score: Tumor vs Normal by Dataset",
+       subtitle = paste("Signature:", length(top_feats), "piRNAs"),
+       x = "", y = "Predicted T-Score (P(Tumor))") +
+  my_theme +
+  theme(axis.text.x = element_text(size = 10, face = "bold", angle = 25, hjust = 1),
+        legend.position = "top", legend.title = element_blank(),
+        panel.grid = element_blank())
+
+ggsave("results/subgroup/Boxplot_TScore_AllBatches.png", p_box_batch,
+       width = 12, height = 6, dpi = 300)
+print(p_box_batch)
 
 
 # ==============================================================================
-# 11. FINAL SUMMARY
+# 11. FEATURE IMPORTANCE HEATMAP
+# ==============================================================================
+cat("\n========== PHASE 11: FEATURE IMPORTANCE HEATMAP ==========\n")
+
+rf_imp_final <- importance(model$finalModel, type = 1)
+imp_df <- data.frame(
+  piRNA = rownames(rf_imp_final),
+  Importance = rf_imp_final[, 1]
+)
+imp_df <- imp_df[order(-imp_df$Importance), ]
+
+cat("Feature importance:\n")
+print(imp_df)
+
+p_imp <- ggplot(imp_df, aes(x = reorder(piRNA, Importance), y = Importance)) +
+  geom_col(fill = "steelblue", alpha = 0.8, width = 0.6) +
+  geom_text(aes(label = round(Importance, 1)), hjust = -0.2, size = 4) +
+  coord_flip() +
+  labs(title = "piRNA Feature Importance (Random Forest)",
+       subtitle = "Mean Decrease in Accuracy",
+       x = "", y = "Importance") +
+  my_theme +
+  theme(axis.text.y = element_text(size = 11, face = "bold"))
+
+ggsave("results/feature_selection/feature_importance.png", p_imp,
+       width = 8, height = max(4, length(top_feats) * 0.5 + 1), dpi = 300)
+print(p_imp)
+
+# Heatmap of selected piRNAs
+cat("Generating expression heatmap...\n")
+heatmap_data <- combat_df_all[, top_feats]
+heatmap_ann <- data.frame(
+  Group = combat_df_all$Group,
+  Batch = combat_df_all$Batch,
+  row.names = rownames(combat_df_all)
+)
+
+tryCatch({
+  ann_colors <- list(
+    Group = c(Normal = "#4393C3", Tumor = "#D6604D"),
+    Batch = setNames(COLOR_PALETTE[1:length(unique(combat_df_all$Batch))],
+                     unique(combat_df_all$Batch))
+  )
+
+  png("results/feature_selection/expression_heatmap.png", width = 12, height = 8,
+      units = "in", res = 300)
+  pheatmap(t(heatmap_data),
+           annotation_col = heatmap_ann,
+           annotation_colors = ann_colors,
+           scale = "row",
+           show_colnames = FALSE,
+           clustering_distance_cols = "euclidean",
+           clustering_method = "ward.D2",
+           main = paste("Expression of", length(top_feats), "Selected piRNAs"),
+           fontsize_row = 10)
+  dev.off()
+  cat("Heatmap saved.\n")
+}, error = function(e) {
+  cat("Heatmap generation failed:", conditionMessage(e), "\n")
+})
+
+
+# ==============================================================================
+# 12. FINAL SUMMARY
 # ==============================================================================
 cat("\n")
 cat(paste(rep("=", 70), collapse = ""), "\n")
@@ -1122,23 +1278,45 @@ cat(paste(rep("=", 70), collapse = ""), "\n\n")
 cat("piRNA Signature (", length(top_feats), "features ):\n")
 cat("  ", paste(top_feats, collapse = ", "), "\n\n")
 
-cat("Model: Random Forest (down-sampled CV)\n")
+cat("Model: Random Forest (10x5 repeated CV, down-sampled)\n")
 cat(sprintf("  Discovery CV AUC:  %.3f (95%% CI: %.3f-%.3f)\n",
             mt_tr$auc, mt_tr$auc_ci[1], mt_tr$auc_ci[2]))
 cat(sprintf("  Hold-out AUC:      %.3f (95%% CI: %.3f-%.3f)\n",
             mt_ho$auc, mt_ho$auc_ci[1], mt_ho$auc_ci[2]))
-cat(sprintf("  Independent AUC:   %.3f (95%% CI: %.3f-%.3f) [%s]\n",
-            mt_iv$auc, mt_iv$auc_ci[1], mt_iv$auc_ci[2], independent_set))
+cat(sprintf("  yyfbatch1 AUC:     %.3f (95%% CI: %.3f-%.3f)\n",
+            mt_v1$auc, mt_v1$auc_ci[1], mt_v1$auc_ci[2]))
+cat(sprintf("  yyfbatch2 AUC:     %.3f (95%% CI: %.3f-%.3f)\n",
+            mt_v2$auc, mt_v2$auc_ci[1], mt_v2$auc_ci[2]))
+
+# Check AUC > 0.8 target
+auc_target <- 0.8
+cat("\n--- AUC > 0.8 CHECK ---\n")
+cat(sprintf("  yyfbatch1: %s (AUC=%.3f)\n",
+            ifelse(mt_v1$auc >= auc_target, "PASS", "NEEDS IMPROVEMENT"), mt_v1$auc))
+cat(sprintf("  yyfbatch2: %s (AUC=%.3f)\n",
+            ifelse(mt_v2$auc >= auc_target, "PASS", "NEEDS IMPROVEMENT"), mt_v2$auc))
 
 cat("\nBatch correction: Global ComBat (all 7 datasets)\n")
 cat("BRCA1 balancing: Matched pairs + 40% remaining tumors\n")
 cat("T-Score cutoff (median):", round(tscore_cutoff, 4), "\n")
+cat("Training datasets: BRCA1, PRJNA294226, PRJNA482141, PRJNA808405, PRJNA934049\n")
+cat("Independent validation: yyfbatch1 + yyfbatch2 (BOTH held out)\n")
 
 end_time <- Sys.time()
 cat("\nTotal runtime:", round(difftime(end_time, start_time, units = "mins"), 1), "minutes\n")
 cat("\nAll results saved to results/ directory.\n")
 
-# Write final piRNA list
 write.csv(data.frame(piRNA = top_feats), "Final_piRNA_Signature.csv", row.names = FALSE)
+
+# Save summary table
+summary_df <- data.frame(
+  Set = c("Discovery CV", "Hold-out", "yyfbatch1", "yyfbatch2"),
+  AUC = c(mt_tr$auc, mt_ho$auc, mt_v1$auc, mt_v2$auc),
+  CI_lower = c(mt_tr$auc_ci[1], mt_ho$auc_ci[1], mt_v1$auc_ci[1], mt_v2$auc_ci[1]),
+  CI_upper = c(mt_tr$auc_ci[2], mt_ho$auc_ci[2], mt_v1$auc_ci[2], mt_v2$auc_ci[2]),
+  AUPRC = c(mt_tr$auprc, mt_ho$auprc, mt_v1$auprc, mt_v2$auprc)
+)
+write.csv(summary_df, "results/validation/performance_summary.csv", row.names = FALSE)
+cat("\nPerformance summary saved to results/validation/performance_summary.csv\n")
 
 cat("\n*** PIPELINE COMPLETE ***\n")

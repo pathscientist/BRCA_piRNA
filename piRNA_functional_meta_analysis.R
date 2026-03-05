@@ -139,7 +139,7 @@ cat("Total samples:", nrow(combat_df_all), "\n")
 
 # Extract dataset-level info
 gene_cols <- setdiff(colnames(combat_df_all),
-                     c("Group", "Batch", "T_Score", "T_Score_binary",
+                     c("Group", "Batch", "T_Score", "T_Score_binary", "T_Score_all",
                        "Age", "Stage", "Subtype", "Age_binary", "Stage_binary",
                        "Age_Group", "Outcome01", "OS_time", "OS_status"))
 
