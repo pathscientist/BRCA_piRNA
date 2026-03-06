@@ -102,6 +102,29 @@ recode_group <- function(df, group_col = "Group") {
   df
 }
 
+# --- Deduplicate TCGA samples: keep only _01A (primary tumor) and _11A (solid normal) ---
+dedup_tcga_samples <- function(df) {
+  ids <- rownames(df)
+  is_tcga <- grepl("^TCGA", ids, ignore.case = TRUE)
+  if (!any(is_tcga)) return(df)  # non-TCGA dataset, skip
+
+  # Keep only _01A (primary tumor) and _11A (solid tissue normal) samples
+  keep <- !is_tcga | grepl("_01A$", ids) | grepl("_11A$", ids)
+  n_dropped <- sum(!keep)
+  if (n_dropped > 0) {
+    cat(sprintf("    Dropped %d non-primary vials (_01B/_01C/_06A/etc.)\n", n_dropped))
+  }
+  df <- df[keep, , drop = FALSE]
+
+  # Remove any remaining true duplicates (keep first occurrence)
+  dup <- duplicated(rownames(df))
+  if (any(dup)) {
+    cat(sprintf("    Removed %d duplicate row IDs\n", sum(dup)))
+    df <- df[!dup, , drop = FALSE]
+  }
+  df
+}
+
 # --- Load from processed CSV files ---
 dataset_names <- c("BRCA1", "PRJNA294226", "PRJNA482141",
                     "PRJNA808405", "PRJNA934049",
@@ -114,9 +137,12 @@ if (!exists("ready_list")) {
     for (nm in dataset_names) {
       fpath <- file.path("processed_results", paste0(nm, "_processed.csv"))
       if (file.exists(fpath)) {
-        ready_list[[nm]] <- recode_group(
-          read.csv(fpath, row.names = 1, stringsAsFactors = FALSE, check.names = FALSE)
-        )
+        # Read without row.names to handle duplicates, then set row names manually
+        tmp <- read.csv(fpath, stringsAsFactors = FALSE, check.names = FALSE)
+        rownames(tmp) <- make.unique(as.character(tmp[[1]]))
+        tmp[[1]] <- NULL
+        tmp <- dedup_tcga_samples(tmp)
+        ready_list[[nm]] <- recode_group(tmp)
         cat(sprintf("  Loaded %s: %d samples\n", nm, nrow(ready_list[[nm]])))
       } else {
         cat(sprintf("  WARNING: %s not found, skipping.\n", fpath))
