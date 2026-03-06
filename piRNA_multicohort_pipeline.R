@@ -827,23 +827,94 @@ combat_df_all$T_Score_binary <- factor(
 
 cat("T-Score cutoff (median):", round(tscore_cutoff, 4), "\n")
 
-# --- Load or create clinical data ---
-# >>> REPLACE THIS BLOCK with your real clinical data <<<
+# --- Load clinical data ---
+# Attempts to load from:
+#   1. clinical_data/TCGA_BRCA_clinical.csv (TCGA, from download_tcga_brca_clinical.R)
+#   2. clinical_data/yyfbatch1_clinical_clean.csv (in-house batch 1)
+#   3. clinical_data/yyfbatch2_clinical_clean.csv (in-house batch 2)
+# Falls back to simulated data if none are available.
+
 if (!"Age" %in% colnames(combat_df_all)) {
-  cat("WARNING: No clinical data found. Using simulated clinical data for demonstration.\n")
-  cat("         Replace this block with your real clinical data.\n")
-  set.seed(42)
-  n <- nrow(combat_df_all)
-  combat_df_all$Age <- sample(30:80, n, replace = TRUE)
-  combat_df_all$Stage <- NA
-  is_tumor <- combat_df_all$Group == "Tumor"
-  combat_df_all$Stage[is_tumor] <- sample(
-    c("Stage I", "Stage II", "Stage III", "Stage IV"),
-    sum(is_tumor), replace = TRUE, prob = c(0.3, 0.3, 0.2, 0.2))
-  combat_df_all$Subtype <- NA
-  combat_df_all$Subtype[is_tumor] <- sample(
-    c("Luminal A", "Luminal B", "HER2+", "Basal-like"),
-    sum(is_tumor), replace = TRUE)
+  cat("\n--- Loading clinical data ---\n")
+  clinical_loaded <- FALSE
+
+  # Clinical file paths to try
+  clin_files <- c(
+    BRCA1     = "clinical_data/TCGA_BRCA_clinical.csv",
+    yyfbatch1 = "clinical_data/yyfbatch1_clinical_clean.csv",
+    yyfbatch2 = "clinical_data/yyfbatch2_clinical_clean.csv"
+  )
+
+  for (clin_name in names(clin_files)) {
+    clin_path <- clin_files[clin_name]
+    if (!file.exists(clin_path)) {
+      cat(sprintf("  %s: not found (%s)\n", clin_name, clin_path))
+      next
+    }
+
+    clin_data <- read.csv(clin_path, stringsAsFactors = FALSE)
+    cat(sprintf("  %s: loaded %d records from %s\n",
+                clin_name, nrow(clin_data), clin_path))
+
+    # Match by SampleID (rownames of combat_df_all)
+    sample_ids <- rownames(combat_df_all)
+
+    for (i in seq_along(sample_ids)) {
+      sid <- sample_ids[i]
+      # Try exact match on SampleID
+      idx <- which(clin_data$SampleID == sid)
+      if (length(idx) == 0) {
+        # Try matching first 15 chars (TCGA barcode truncation)
+        idx <- which(clin_data$SampleID == substr(sid, 1, 15))
+      }
+      if (length(idx) == 0) {
+        # Try matching first 12 chars (patient-level)
+        idx <- which(substr(clin_data$SampleID, 1, 12) == substr(sid, 1, 12))
+      }
+      if (length(idx) == 0) next
+
+      row <- clin_data[idx[1], ]
+      if ("Age" %in% colnames(row) && !is.na(row$Age))
+        combat_df_all$Age[i] <- as.numeric(row$Age)
+      if ("Stage" %in% colnames(row) && !is.na(row$Stage))
+        combat_df_all$Stage[i] <- row$Stage
+      if ("Subtype" %in% colnames(row) && !is.na(row$Subtype))
+        combat_df_all$Subtype[i] <- row$Subtype
+      if ("OS_time" %in% colnames(row) && !is.na(row$OS_time))
+        combat_df_all$OS_time[i] <- as.numeric(row$OS_time)
+      if ("OS_status" %in% colnames(row) && !is.na(row$OS_status))
+        combat_df_all$OS_status[i] <- as.numeric(row$OS_status)
+      clinical_loaded <- TRUE
+    }
+
+    n_matched <- sum(!is.na(combat_df_all$Age[combat_df_all$Batch == clin_name]))
+    n_batch   <- sum(combat_df_all$Batch == clin_name)
+    cat(sprintf("    Matched: %d / %d samples in %s\n", n_matched, n_batch, clin_name))
+  }
+
+  if (!clinical_loaded || all(is.na(combat_df_all$Age))) {
+    cat("WARNING: No clinical data matched. Using simulated clinical data for demonstration.\n")
+    cat("         Run 'Rscript scripts/download_tcga_brca_clinical.R' to download TCGA clinical data.\n")
+    set.seed(42)
+    n <- nrow(combat_df_all)
+    combat_df_all$Age <- sample(30:80, n, replace = TRUE)
+    combat_df_all$Stage <- NA
+    is_tumor <- combat_df_all$Group == "Tumor"
+    combat_df_all$Stage[is_tumor] <- sample(
+      c("Stage I", "Stage II", "Stage III", "Stage IV"),
+      sum(is_tumor), replace = TRUE, prob = c(0.3, 0.3, 0.2, 0.2))
+    combat_df_all$Subtype <- NA
+    combat_df_all$Subtype[is_tumor] <- sample(
+      c("Luminal A", "Luminal B", "HER2+", "Basal-like"),
+      sum(is_tumor), replace = TRUE)
+  } else {
+    n_age   <- sum(!is.na(combat_df_all$Age))
+    n_stage <- sum(!is.na(combat_df_all$Stage))
+    n_sub   <- sum(!is.na(combat_df_all$Subtype))
+    n_os    <- sum(!is.na(combat_df_all$OS_time))
+    cat(sprintf("  Clinical data summary: Age=%d, Stage=%d, Subtype=%d, OS_time=%d\n",
+                n_age, n_stage, n_sub, n_os))
+  }
 }
 
 combat_df_all$Age_binary <- factor(

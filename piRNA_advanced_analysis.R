@@ -138,21 +138,81 @@ if (!"T_Score" %in% colnames(merged_df)) {
   merged_df$T_Score <- predict(model, merged_df[, top_feats], type = "prob")$Tumor
 }
 
-# Ensure survival data exists (simulated if not)
-if (!all(c("OS_time", "OS_status") %in% colnames(merged_df))) {
-  # Try alternative column names
-  surv_time_cols <- c("OS_time", "Survival_time", "survival_time", "time", "OS.time")
-  surv_stat_cols <- c("OS_status", "Survival_status", "survival_status", "status", "OS.status")
-  for (tc in surv_time_cols) {
-    if (tc %in% colnames(merged_df)) { merged_df$OS_time <- merged_df[[tc]]; break }
+# ---------------------------------------------------------------------------
+# Load clinical data from CSV files if not already in merged_df
+# ---------------------------------------------------------------------------
+if (!all(c("OS_time", "OS_status") %in% colnames(merged_df)) ||
+    all(is.na(merged_df$OS_time))) {
+  cat("\n--- Loading clinical data for advanced analysis ---\n")
+
+  clin_files <- c(
+    BRCA1     = "clinical_data/TCGA_BRCA_clinical.csv",
+    yyfbatch1 = "clinical_data/yyfbatch1_clinical_clean.csv",
+    yyfbatch2 = "clinical_data/yyfbatch2_clinical_clean.csv"
+  )
+
+  clin_loaded <- FALSE
+  for (clin_name in names(clin_files)) {
+    clin_path <- clin_files[clin_name]
+    if (!file.exists(clin_path)) next
+
+    clin_data <- read.csv(clin_path, stringsAsFactors = FALSE)
+    cat(sprintf("  Loaded %s: %d records\n", clin_path, nrow(clin_data)))
+
+    batch_idx <- which(merged_df$Batch == clin_name)
+    if (length(batch_idx) == 0) next
+
+    for (i in batch_idx) {
+      sid <- rownames(merged_df)[i]
+      idx <- which(clin_data$SampleID == sid)
+      if (length(idx) == 0)
+        idx <- which(clin_data$SampleID == substr(sid, 1, 15))
+      if (length(idx) == 0)
+        idx <- which(substr(clin_data$SampleID, 1, 12) == substr(sid, 1, 12))
+      if (length(idx) == 0) next
+
+      row <- clin_data[idx[1], ]
+      if ("Age" %in% colnames(row) && !is.na(row$Age))
+        merged_df$Age[i] <- as.numeric(row$Age)
+      if ("Stage" %in% colnames(row) && !is.na(row$Stage))
+        merged_df$Stage[i] <- row$Stage
+      if ("Subtype" %in% colnames(row) && !is.na(row$Subtype))
+        merged_df$Subtype[i] <- row$Subtype
+      if ("OS_time" %in% colnames(row) && !is.na(row$OS_time))
+        merged_df$OS_time[i] <- as.numeric(row$OS_time)
+      if ("OS_status" %in% colnames(row) && !is.na(row$OS_status))
+        merged_df$OS_status[i] <- as.numeric(row$OS_status)
+      clin_loaded <- TRUE
+    }
   }
-  for (sc in surv_stat_cols) {
-    if (sc %in% colnames(merged_df)) { merged_df$OS_status <- merged_df[[sc]]; break }
+
+  # Also try alternative column names already in the data
+  if (!clin_loaded || !all(c("OS_time", "OS_status") %in% colnames(merged_df))) {
+    surv_time_cols <- c("OS_time", "Survival_time", "survival_time", "time", "OS.time")
+    surv_stat_cols <- c("OS_status", "Survival_status", "survival_status", "status", "OS.status")
+    for (tc in surv_time_cols) {
+      if (tc %in% colnames(merged_df) && !all(is.na(merged_df[[tc]]))) {
+        merged_df$OS_time <- merged_df[[tc]]; break
+      }
+    }
+    for (sc in surv_stat_cols) {
+      if (sc %in% colnames(merged_df) && !all(is.na(merged_df[[sc]]))) {
+        merged_df$OS_status <- merged_df[[sc]]; break
+      }
+    }
+  }
+
+  if (clin_loaded) {
+    n_os <- sum(!is.na(merged_df$OS_time))
+    cat(sprintf("  Clinical data matched: %d samples with OS_time\n", n_os))
   }
 }
 
-if (!all(c("OS_time", "OS_status") %in% colnames(merged_df))) {
+# Simulate survival if still missing
+if (!all(c("OS_time", "OS_status") %in% colnames(merged_df)) ||
+    all(is.na(merged_df$OS_time))) {
   cat("WARNING: No survival data found. Simulating for demonstration.\n")
+  cat("         Run 'Rscript scripts/download_tcga_brca_clinical.R' to get real data.\n")
   set.seed(42)
   n <- nrow(merged_df)
   is_tumor <- merged_df$Group == "Tumor"
@@ -166,8 +226,9 @@ if (!all(c("OS_time", "OS_status") %in% colnames(merged_df))) {
   merged_df$OS_status[censor_idx] <- 0
 }
 
-# Clinical variables
-if (!"Age" %in% colnames(merged_df)) {
+# Simulate clinical variables if still missing
+if (!"Age" %in% colnames(merged_df) || all(is.na(merged_df$Age))) {
+  cat("WARNING: No clinical covariates found. Simulating Age/Stage/Subtype.\n")
   set.seed(42); n <- nrow(merged_df)
   is_tumor <- merged_df$Group == "Tumor"
   merged_df$Age <- sample(30:80, n, replace = TRUE)
