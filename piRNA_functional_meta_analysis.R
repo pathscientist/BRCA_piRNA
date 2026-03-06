@@ -294,7 +294,7 @@ for (feat in top_feats) {
     metagen(TE = smd_df$SMD, seTE = smd_df$SE,
             studlab = smd_df$Dataset,
             sm = "SMD", method.tau = "REML",
-            comb.fixed = FALSE, comb.random = TRUE)
+            common = FALSE, random = TRUE)
   }, error = function(e) NULL)
 
   if (!is.null(meta_obj)) {
@@ -393,12 +393,8 @@ for (feat in names(meta_results_all)) {
     ) +
     pub_theme +
     theme(
-      plot.margin = margin(10, 100, 10, 10),
-      axis.text.y = element_text(
-        face = ifelse(plot_df$Dataset[order(plot_df$y_pos)] == "Overall",
-                      "bold", "plain"),
-        size = 10
-      )
+      plot.margin = margin(10, 100, 10, 10, unit = "pt"),
+      axis.text.y = element_text(size = 10)
     )
 
   fname <- gsub("[^a-zA-Z0-9_.-]", "_", feat)
