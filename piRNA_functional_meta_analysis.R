@@ -393,7 +393,7 @@ for (feat in names(meta_results_all)) {
     ) +
     pub_theme +
     theme(
-      plot.margin = margin(10, 100, 10, 10, unit = "pt"),
+      plot.margin = ggplot2::margin(10, 100, 10, 10, unit = "pt"),
       axis.text.y = element_text(size = 10)
     )
 
@@ -446,6 +446,8 @@ for (ds in datasets) {
 # Average correlation across datasets
 if (length(cor_per_dataset) > 1) {
   avg_cor <- Reduce("+", cor_per_dataset) / length(cor_per_dataset)
+  # Replace NaN/NA with 0 to avoid hclust failure
+  avg_cor[is.na(avg_cor)] <- 0
 } else {
   avg_cor <- cor_matrix
 }
@@ -1002,7 +1004,6 @@ if (run_enrichment) {
       p_net <- ggraph(g, layout = "fr") +
         # Edges
         geom_edge_link(
-          aes(edge_linetype = edge_type),
           edge_colour = "grey70", edge_width = 0.3, edge_alpha = 0.6,
           show.legend = FALSE
         ) +
