@@ -224,7 +224,7 @@ clin_final <- clin_final[order(clin_final$SampleID), ]
 # Write output — use a separate path if the original is read-only
 out_path <- raw_path
 if (file.exists(raw_path) && file.access(raw_path, 2) != 0) {
-  out_path <- sub("\\.csv$", "_reformatted.csv", raw_path)
+  out_path <- sub("\\.csv$", "_clean.csv", raw_path)
   cat(sprintf("  Original is read-only — writing to: %s\n", out_path))
 }
 

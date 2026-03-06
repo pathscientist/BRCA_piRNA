@@ -866,7 +866,7 @@ if (!"Age" %in% colnames(combat_df_all)) {
 
   # Clinical file paths to try
   clin_files <- c(
-    BRCA1     = "clinical_data/TCGA_BRCA_clinical_reformatted.csv",
+    BRCA1     = "clinical_data/TCGA_BRCA_clinical_clean.csv",
     yyfbatch1 = "clinical_data/yyfbatch1_clinical_clean.csv",
     yyfbatch2 = "clinical_data/yyfbatch2_clinical_clean.csv"
   )
