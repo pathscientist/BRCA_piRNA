@@ -19,7 +19,7 @@ start_time <- Sys.time()
 required_pkgs <- c(
   "sva", "caret", "randomForest", "glmnet", "pROC", "PRROC",
   "ggplot2", "dplyr", "tidyr", "gridExtra", "ggpubr",
-  "forestplot", "survival", "doParallel", "foreach",
+  "forestplot", "logistf", "survival", "doParallel", "foreach",
   "pheatmap", "Boruta", "praznik"
 )
 
@@ -954,27 +954,58 @@ combat_df_all$Stage_binary <- factor(
 
 combat_df_all$Outcome01 <- ifelse(combat_df_all$Group == "Tumor", 1, 0)
 
-# --- Univariate logistic regression ---
-cat("\nUnivariate logistic regression:\n")
+# --- Univariate logistic regression (Firth's penalized for stable OR) ---
+cat("\nUnivariate logistic regression (Firth's penalized):\n")
 
-run_univariate_lr <- function(data, var_name, ref_level = NULL) {
+if (!requireNamespace("logistf", quietly = TRUE))
+  install.packages("logistf", dependencies = TRUE, quiet = TRUE)
+library(logistf)
+
+run_univariate_lr <- function(data, var_name) {
   df <- data[!is.na(data[[var_name]]), ]
   if (nrow(df) < 10) return(NULL)
 
   fml <- as.formula(paste0("Outcome01 ~ ", var_name))
-  fit <- glm(fml, data = df, family = binomial)
-  s   <- summary(fit)
-  ci  <- confint.default(fit)
 
-  coef_rows <- rownames(s$coefficients)[-1]
-  results <- lapply(coef_rows, function(term) {
-    or    <- exp(s$coefficients[term, "Estimate"])
-    lower <- exp(ci[term, 1])
-    upper <- exp(ci[term, 2])
-    pval  <- s$coefficients[term, "Pr(>|z|)"]
-    data.frame(Variable = term, OR = or, Lower = lower, Upper = upper,
-               P = pval, stringsAsFactors = FALSE)
-  })
+  # Try standard GLM first; fall back to Firth if separation detected
+  fit_std <- tryCatch(glm(fml, data = df, family = binomial), error = function(e) NULL)
+  ci_std  <- if (!is.null(fit_std)) tryCatch(confint.default(fit_std), error = function(e) NULL) else NULL
+
+  coef_rows <- if (!is.null(fit_std)) rownames(summary(fit_std)$coefficients)[-1] else character(0)
+  has_separation <- is.null(fit_std) ||
+                    any(abs(coef(fit_std)[coef_rows]) > 10) ||
+                    is.null(ci_std) ||
+                    any(!is.finite(ci_std[coef_rows, ]))
+
+  if (has_separation) {
+    # Use Firth's penalized logistic regression to handle separation
+    cat(sprintf("  %s: using Firth's penalized LR (separation detected)\n", var_name))
+    fit_f <- logistf(fml, data = df)
+    coef_rows <- names(fit_f$coefficients)[-1]
+    results <- lapply(coef_rows, function(term) {
+      idx <- which(names(fit_f$coefficients) == term)
+      data.frame(
+        Variable = term,
+        OR    = exp(fit_f$coefficients[idx]),
+        Lower = exp(fit_f$ci.lower[idx]),
+        Upper = exp(fit_f$ci.upper[idx]),
+        P     = fit_f$prob[idx],
+        stringsAsFactors = FALSE
+      )
+    })
+  } else {
+    s <- summary(fit_std)
+    results <- lapply(coef_rows, function(term) {
+      data.frame(
+        Variable = term,
+        OR    = exp(s$coefficients[term, "Estimate"]),
+        Lower = exp(ci_std[term, 1]),
+        Upper = exp(ci_std[term, 2]),
+        P     = s$coefficients[term, "Pr(>|z|)"],
+        stringsAsFactors = FALSE
+      )
+    })
+  }
   do.call(rbind, results)
 }
 
@@ -992,26 +1023,52 @@ if (!is.null(uni_results)) {
   write.csv(uni_results, "results/forest_plot/univariate_results.csv", row.names = FALSE)
 }
 
-# --- Multivariate logistic regression ---
-cat("\nMultivariate logistic regression:\n")
+# --- Multivariate logistic regression (Firth's penalized) ---
+cat("\nMultivariate logistic regression (Firth's penalized):\n")
 
 df_multi <- combat_df_all[complete.cases(combat_df_all[, c("Outcome01", uni_vars)]), ]
 fml_multi <- as.formula(paste0("Outcome01 ~ ", paste(uni_vars, collapse = " + ")))
-fit_multi <- glm(fml_multi, data = df_multi, family = binomial)
-s_multi   <- summary(fit_multi)
-ci_multi  <- confint.default(fit_multi)
+
+# Try standard GLM first
+fit_multi_std <- tryCatch(glm(fml_multi, data = df_multi, family = binomial),
+                          error = function(e) NULL)
+multi_has_sep <- is.null(fit_multi_std)
+if (!multi_has_sep) {
+  ci_multi_std <- tryCatch(confint.default(fit_multi_std), error = function(e) NULL)
+  coef_rows_m <- rownames(summary(fit_multi_std)$coefficients)[-1]
+  multi_has_sep <- any(abs(coef(fit_multi_std)[coef_rows_m]) > 10) ||
+                   is.null(ci_multi_std) ||
+                   any(!is.finite(ci_multi_std[coef_rows_m, ]))
+}
 
 multi_results <- data.frame()
-coef_rows <- rownames(s_multi$coefficients)[-1]
-for (term in coef_rows) {
-  multi_results <- rbind(multi_results, data.frame(
-    Variable = term,
-    OR    = exp(s_multi$coefficients[term, "Estimate"]),
-    Lower = exp(ci_multi[term, 1]),
-    Upper = exp(ci_multi[term, 2]),
-    P     = s_multi$coefficients[term, "Pr(>|z|)"],
-    stringsAsFactors = FALSE
-  ))
+if (multi_has_sep) {
+  cat("  Using Firth's penalized LR for multivariate (separation detected)\n")
+  fit_multi_f <- logistf(fml_multi, data = df_multi)
+  coef_rows_m <- names(fit_multi_f$coefficients)[-1]
+  for (term in coef_rows_m) {
+    idx <- which(names(fit_multi_f$coefficients) == term)
+    multi_results <- rbind(multi_results, data.frame(
+      Variable = term,
+      OR    = exp(fit_multi_f$coefficients[idx]),
+      Lower = exp(fit_multi_f$ci.lower[idx]),
+      Upper = exp(fit_multi_f$ci.upper[idx]),
+      P     = fit_multi_f$prob[idx],
+      stringsAsFactors = FALSE
+    ))
+  }
+} else {
+  s_multi <- summary(fit_multi_std)
+  for (term in coef_rows_m) {
+    multi_results <- rbind(multi_results, data.frame(
+      Variable = term,
+      OR    = exp(s_multi$coefficients[term, "Estimate"]),
+      Lower = exp(ci_multi_std[term, 1]),
+      Upper = exp(ci_multi_std[term, 2]),
+      P     = s_multi$coefficients[term, "Pr(>|z|)"],
+      stringsAsFactors = FALSE
+    ))
+  }
 }
 multi_results$Sig <- ifelse(multi_results$P < 0.001, "***",
                     ifelse(multi_results$P < 0.01, "**",
@@ -1032,23 +1089,18 @@ library(forestplot)
 lr_label_map <- c(
   "T_Score_binaryHigh" = "risk_score",
   "Age_binary>=60"     = "Age",
-  "Stage_binaryLate (III-IV)" = "Stage"
+  "Stage_binaryLate"   = "Stage"
 )
 
-# Helper: draw one logistic-regression forest panel
+# Helper: draw one forest panel
 draw_lr_forest_panel <- function(df, panel_title) {
   # Clean labels
   df$Names <- sapply(df$Variable, function(v) {
     if (v %in% names(lr_label_map)) lr_label_map[v] else v
   })
 
-  # Clamp extreme CIs for display (keeps table text accurate)
-  df$Lower_plot <- pmax(df$Lower, 1e-2)
-  df$Upper_plot <- pmin(df$Upper, 1e4)
-  df$OR_plot    <- pmin(pmax(df$OR, 1e-2), 1e4)
-
   # Format text columns
-  df$p_text <- ifelse(df$P < 0.001, "<0.001", sprintf("%.3f", df$P))
+  df$p_text  <- ifelse(df$P < 0.001, "<0.001", sprintf("%.3f", df$P))
   df$or_text <- sprintf("%.3f(%.3f,%.3f)", df$OR, df$Lower, df$Upper)
 
   n_rows <- nrow(df)
@@ -1058,35 +1110,43 @@ draw_lr_forest_panel <- function(df, panel_title) {
     c("Odds Ratio(95% CI)", df$or_text)
   )
 
-  mean_vals  <- c(NA, df$OR_plot)
-  lower_vals <- c(NA, df$Lower_plot)
-  upper_vals <- c(NA, df$Upper_plot)
+  mean_vals  <- c(NA, df$OR)
+  lower_vals <- c(NA, df$Lower)
+  upper_vals <- c(NA, df$Upper)
+
+  # Determine sensible x-axis clip range
+  all_vals <- c(df$OR, df$Lower, df$Upper)
+  all_vals <- all_vals[is.finite(all_vals) & all_vals > 0]
+  clip_lower <- max(min(all_vals) * 0.5, 0.01)
+  clip_upper <- min(max(all_vals) * 2, 100)
 
   forestplot(
-    labeltext  = tabletext,
-    mean       = mean_vals,
-    lower      = lower_vals,
-    upper      = upper_vals,
-    zero       = 1,
-    xlog       = TRUE,
-    col        = fpColors(box = "red", line = "black", zero = "gray60"),
-    boxsize    = 0.25,
-    lwd.zero   = 1,
-    lwd.ci     = 1.5,
+    labeltext   = tabletext,
+    mean        = mean_vals,
+    lower       = lower_vals,
+    upper       = upper_vals,
+    zero        = 1,
+    xlog        = TRUE,
+    clip        = c(clip_lower, clip_upper),
+    col         = fpColors(box = "red", line = "black", zero = "gray60"),
+    boxsize     = 0.25,
+    lwd.zero    = 1,
+    lwd.ci      = 1.5,
     ci.vertices = TRUE,
     ci.vertices.height = 0.12,
-    txt_gp     = fpTxtGp(
-      label   = gpar(fontfamily = "sans", cex = 0.95),
-      ticks   = gpar(fontfamily = "sans", cex = 0.8),
-      xlab    = gpar(fontfamily = "sans", cex = 0.9)
+    txt_gp      = fpTxtGp(
+      label  = gpar(fontfamily = "sans", cex = 0.95),
+      ticks  = gpar(fontfamily = "sans", cex = 0.8),
+      xlab   = gpar(fontfamily = "sans", cex = 0.9),
+      title  = gpar(fontfamily = "sans", cex = 1.1, fontface = "bold")
     ),
-    xlab       = "OR",
-    graph.pos  = 3,
-    graphwidth = unit(4, "cm"),
-    title      = panel_title,
-    is.summary = c(TRUE, rep(FALSE, n_rows)),
-    hrzl_lines = list("2" = gpar(lty = 1, lwd = 1, col = "black")),
-    new_page   = FALSE
+    xlab        = "OR",
+    graph.pos   = 3,
+    graphwidth  = unit(5, "cm"),
+    title       = panel_title,
+    is.summary  = c(TRUE, rep(FALSE, n_rows)),
+    hrzl_lines  = list("2" = gpar(lty = 1, lwd = 1, col = "black")),
+    new_page    = FALSE
   )
 }
 
