@@ -525,6 +525,7 @@ if (file.exists(mRNA_cache)) {
 # --- Option 2: Load from CSV/TXT ---
 if (is.null(mRNA_df)) {
   mRNA_paths <- c(
+    "mRNA_expression/TCGA_BRCA_mRNA.csv",
     "data/mRNA_expression.csv", "data/TCGA_BRCA_mRNA.csv",
     "data/mRNA_expression.txt", "data/TCGA_BRCA_mRNA_tpm.csv"
   )
