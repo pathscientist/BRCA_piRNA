@@ -393,108 +393,103 @@ cat(sprintf("Wald test: p=%.2e\n", s_multi_cox$waldtest["pvalue"]))
 
 
 # ==============================================================================
-# 2.3 COX REGRESSION FOREST PLOT
+# 2.3 COX REGRESSION FOREST PLOT (Publication-style table + forest)
 # ==============================================================================
 cat("\n--- 2.3 Cox Regression Forest Plot ---\n")
 
-# Combine univariate and multivariate results
-# Filter univariate to clinical + T-score variables for cleaner forest plot
+# Install forestplot if needed
+if (!requireNamespace("forestplot", quietly = TRUE))
+  install.packages("forestplot", dependencies = TRUE, quiet = TRUE)
+library(forestplot)
+
+# --- Prepare data for both panels ---
+label_map <- c(
+  "T_Score_binary"  = "risk_score",
+  "Age_binary"      = "Age",
+  "Stage_binary"    = "Stage"
+)
+
+# Filter univariate to clinical + T-score for forest plot
 uni_for_forest <- uni_cox_results[uni_cox_results$Variable %in%
                     c("T_Score_binary", "Age_binary", "Stage_binary"), ]
 
-# Build forest plot data
-build_forest_df <- function(uni_df, multi_df) {
-  # Clean variable labels
-  label_map <- c(
-    "T_Score_binary"  = "T-Score (High vs Low)",
-    "Age_binary"      = "Age (>=60 vs <60)",
-    "Stage_binary"    = "Stage (Late vs Early)"
-  )
-
-  # Univariate entries
-  uni_plot <- uni_df
-  uni_plot$Label <- sapply(uni_plot$Variable, function(v) {
-    if (v %in% names(label_map)) label_map[v] else v
-  })
-  uni_plot$Analysis <- "Univariate"
-
-  # Multivariate entries
-  multi_plot <- multi_df
-  multi_plot$Label <- sapply(multi_plot$Variable, function(v) {
-    # Remove factor level suffix for matching
+# --- Helper: build one forest panel (returns a grob) ---
+draw_forest_panel <- function(df, panel_title) {
+  # Clean labels
+  df$Names <- sapply(df$Variable, function(v) {
     base_var <- gsub("High$|>=60$|Late \\(III-IV\\)$", "", v)
     if (base_var %in% names(label_map)) label_map[base_var] else v
   })
-  multi_plot$Analysis <- "Multivariate"
 
-  # Standardize column names
-  cols_needed <- c("Label", "HR", "Lower_95CI", "Upper_95CI", "P_value", "Analysis")
-  uni_out <- uni_plot[, intersect(cols_needed, colnames(uni_plot))]
-  multi_out <- multi_plot[, intersect(cols_needed, colnames(multi_plot))]
+  # Format text columns
+  df$p_text <- ifelse(df$P_value < 0.001, "<0.001",
+                      sprintf("%.3f", df$P_value))
+  df$hr_text <- sprintf("%.3f(%.3f,%.3f)", df$HR, df$Lower_95CI, df$Upper_95CI)
 
-  # Add missing columns
-  for (col in cols_needed) {
-    if (!col %in% colnames(uni_out)) uni_out[[col]] <- NA
-    if (!col %in% colnames(multi_out)) multi_out[[col]] <- NA
-  }
-
-  rbind(uni_out[, cols_needed], multi_out[, cols_needed])
-}
-
-forest_df <- build_forest_df(uni_for_forest, multi_cox_results)
-
-# Add formatted text columns
-forest_df$HR_text <- sprintf("%.2f (%.2f-%.2f)",
-                             forest_df$HR, forest_df$Lower_95CI, forest_df$Upper_95CI)
-forest_df$P_text <- ifelse(forest_df$P_value < 0.001,
-                           format(forest_df$P_value, scientific = TRUE, digits = 2),
-                           sprintf("%.3f", forest_df$P_value))
-
-forest_df$Analysis <- factor(forest_df$Analysis,
-                             levels = c("Univariate", "Multivariate"))
-
-# Create y-axis positions
-forest_df <- forest_df %>%
-  arrange(Analysis, Label) %>%
-  mutate(y_pos = rev(seq_len(n())))
-
-# Draw forest plot
-p_cox_forest <- ggplot(forest_df, aes(x = HR, y = y_pos, color = Analysis)) +
-  geom_vline(xintercept = 1, linetype = "dashed", color = "grey50", linewidth = 0.6) +
-  geom_point(size = 3.5, position = position_dodge(width = 0.6)) +
-  geom_errorbarh(aes(xmin = Lower_95CI, xmax = Upper_95CI),
-                 height = 0.25, linewidth = 0.7,
-                 position = position_dodge(width = 0.6)) +
-  scale_y_continuous(
-    breaks = forest_df$y_pos,
-    labels = paste0(forest_df$Label, " [", forest_df$Analysis, "]"),
-    expand = expansion(mult = c(0.05, 0.05))
-  ) +
-  scale_color_manual(values = c("Univariate" = "#E41A1C", "Multivariate" = "#377EB8")) +
-  scale_x_log10(breaks = c(0.1, 0.25, 0.5, 1, 2, 4, 8),
-                labels = c("0.1", "0.25", "0.5", "1", "2", "4", "8")) +
-  geom_text(aes(x = max(forest_df$Upper_95CI, na.rm = TRUE) * 2.0,
-                label = paste0("HR=", HR_text, "  p=", P_text)),
-            hjust = 0, size = 3, show.legend = FALSE,
-            position = position_dodge(width = 0.6)) +
-  labs(
-    title = "Cox Proportional Hazards Regression",
-    subtitle = "Hazard Ratio (95% CI) — Binary Variables",
-    x = "Hazard Ratio (log scale)",
-    y = "",
-    color = "Analysis"
-  ) +
-  pub_theme +
-  theme(
-    legend.position = "top",
-    axis.text.y = element_text(size = 10, hjust = 1),
-    plot.margin = margin(10, 140, 10, 10)
+  # Rows for the table (header + data)
+  n_rows <- nrow(df)
+  tabletext <- cbind(
+    c("Names",   df$Names),
+    c("p.value", df$p_text),
+    c("Hazard Ratio(95% CI)", df$hr_text)
   )
 
-ggsave("results/cox_analysis/cox_forest_plot.png", p_cox_forest,
-       width = 13, height = max(4, nrow(forest_df) * 0.55 + 2), dpi = 300)
-print(p_cox_forest)
-cat("Cox forest plot saved.\n")
+  # forestplot uses mean/lower/upper; header row gets NA
+  mean_vals  <- c(NA, df$HR)
+  lower_vals <- c(NA, df$Lower_95CI)
+  upper_vals <- c(NA, df$Upper_95CI)
+
+  fp <- forestplot(
+    labeltext  = tabletext,
+    mean       = mean_vals,
+    lower      = lower_vals,
+    upper      = upper_vals,
+    zero       = 1,
+    xlog       = TRUE,
+    col        = fpColors(box = "red", line = "black", zero = "gray60"),
+    boxsize    = 0.25,
+    lwd.zero   = 1,
+    lwd.ci     = 1.5,
+    ci.vertices = TRUE,
+    ci.vertices.height = 0.12,
+    txt_gp     = fpTxtGp(
+      label   = gpar(fontfamily = "sans", cex = 0.95),
+      ticks   = gpar(fontfamily = "sans", cex = 0.8),
+      xlab    = gpar(fontfamily = "sans", cex = 0.9)
+    ),
+    xlab       = "HR",
+    graph.pos  = 3,
+    graphwidth = unit(4, "cm"),
+    title      = panel_title,
+    is.summary = c(TRUE, rep(FALSE, n_rows)),
+    hrzl_lines = list(
+      "2" = gpar(lty = 1, lwd = 1, col = "black")
+    ),
+    new_page   = FALSE
+  )
+  fp
+}
+
+# --- Draw both panels to a single PNG ---
+png("results/cox_analysis/cox_forest_plot.png",
+    width = 2400, height = 1800, res = 300)
+
+# Split the page: top half for univariate, bottom half for multivariate
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(2, 1, heights = unit(c(1, 1), "null"))))
+
+# Top panel — Univariate
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
+draw_forest_panel(uni_for_forest, "Univariable Cox regression")
+upViewport()
+
+# Bottom panel — Multivariate
+pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 1))
+draw_forest_panel(multi_cox_results, "Multivariable Cox regression")
+upViewport()
+
+dev.off()
+cat("Cox forest plot saved: results/cox_analysis/cox_forest_plot.png\n")
 
 
 # ==============================================================================
