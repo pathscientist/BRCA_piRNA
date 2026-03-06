@@ -109,20 +109,11 @@ if (!all(c("OS_time", "OS_status") %in% colnames(merged_df))) {
  }
 }
 
-# Simulated survival if missing (demonstration only)
+# Require real survival data — no simulated fallback
 if (!all(c("OS_time", "OS_status") %in% colnames(merged_df))) {
- cat("WARNING: No survival data found. Simulating for demonstration.\n")
- set.seed(42)
- n <- nrow(merged_df)
- is_tumor <- merged_df$Group == "Tumor"
- merged_df$OS_time <- pmin(
-   round(ifelse(is_tumor, rexp(n, rate = 1/48), rexp(n, rate = 1/120)) *
-         ifelse(merged_df$T_Score > 0.5 & is_tumor, 0.7, 1.0), 1), 72)
- merged_df$OS_status <- ifelse(merged_df$OS_time >= 72, 0, 1)
- merged_df$OS_time[merged_df$OS_time >= 72] <- 72
- censor_idx <- sample(which(merged_df$OS_status == 1),
-                      round(0.2 * sum(merged_df$OS_status == 1)))
- merged_df$OS_status[censor_idx] <- 0
+ stop("OS_time and OS_status columns are required.\n",
+      "Provide clinical data CSVs in clinical_data/ with survival endpoints.\n",
+      "See PROTOCOL.md for the required file format.")
 }
 
 tumor_df <- merged_df[merged_df$Group == "Tumor", ]
