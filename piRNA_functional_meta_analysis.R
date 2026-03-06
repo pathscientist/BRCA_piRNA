@@ -499,147 +499,278 @@ cat("  Spearman correlation heatmaps saved.\n")
 
 # ══════════════════════════════════════════════════════════════════════════════
 #                    PART B: FUNCTIONAL PREDICTION
+#     Predict piRNA functions via piRNA–mRNA correlation & pathway enrichment
 # ══════════════════════════════════════════════════════════════════════════════
 
 cat("\n")
-cat(paste(rep("═", 70), collapse = ""), "\n")
-cat("  PART B: FUNCTIONAL PREDICTION\n")
-cat(paste(rep("═", 70), collapse = ""), "\n")
+cat(paste(rep("\u2550", 70), collapse = ""), "\n")
+cat("  PART B: FUNCTIONAL PREDICTION (piRNA\u2013mRNA Correlation)\n")
+cat(paste(rep("\u2550", 70), collapse = ""), "\n")
 
 
 # ==============================================================================
-# B1. PEARSON'S CORRELATION: piRNAs vs ALL GENES
-#     Identify correlated genes for each signature piRNA
+# B1. LOAD mRNA EXPRESSION DATA (TCGA-BRCA)
 # ==============================================================================
-cat("\n========== B1: Pearson's Correlation (piRNAs vs Genes) ==========\n")
+cat("\n========== B1: Loading mRNA Expression Data ==========\n")
 
-# Strategy: correlate each signature piRNA against all other piRNAs/genes
-# in the expression matrix. If mRNA data is available, it can be loaded
-# separately and joined.
+mRNA_df <- NULL
+mRNA_cache <- "processed_results/TCGA_BRCA_mRNA_log2tpm.rds"
 
-# --- Option A: Correlate within piRNA expression data ---
-# (Use all non-signature piRNAs as potential target correlates)
-non_sig_genes <- setdiff(gene_cols, top_feats)
-cat("  Correlating", length(top_feats), "signature piRNAs against",
-    length(non_sig_genes), "other features...\n")
+# --- Option 1: Load from cached RDS ---
+if (file.exists(mRNA_cache)) {
+  cat("  Loading cached mRNA data:", mRNA_cache, "\n")
+  mRNA_df <- readRDS(mRNA_cache)
+}
 
-# Use only tumor samples for biologically relevant correlations
-tumor_idx <- combat_df_all$Group == "Tumor"
-expr_sig    <- as.matrix(combat_df_all[tumor_idx, top_feats])
-expr_others <- as.matrix(combat_df_all[tumor_idx, non_sig_genes])
+# --- Option 2: Load from CSV/TXT ---
+if (is.null(mRNA_df)) {
+  mRNA_paths <- c(
+    "data/mRNA_expression.csv", "data/TCGA_BRCA_mRNA.csv",
+    "data/mRNA_expression.txt", "data/TCGA_BRCA_mRNA_tpm.csv"
+  )
+  for (fp in mRNA_paths) {
+    if (file.exists(fp)) {
+      cat("  Loading mRNA data from:", fp, "\n")
+      mRNA_df <- tryCatch({
+        if (grepl("\\.csv$", fp))
+          read.csv(fp, row.names = 1, check.names = FALSE)
+        else
+          read.table(fp, header = TRUE, row.names = 1, sep = "\t", check.names = FALSE)
+      }, error = function(e) NULL)
+      if (!is.null(mRNA_df)) break
+    }
+  }
+}
 
-# Compute Pearson correlations: each signature piRNA vs all other genes
+# --- Option 3: Download TCGA-BRCA mRNA via TCGAbiolinks ---
+if (is.null(mRNA_df)) {
+  cat("  No local mRNA file found. Downloading TCGA-BRCA via TCGAbiolinks...\n")
+
+  for (pkg in c("TCGAbiolinks", "SummarizedExperiment")) {
+    if (!requireNamespace(pkg, quietly = TRUE))
+      BiocManager::install(pkg, quiet = TRUE, update = FALSE)
+  }
+  library(TCGAbiolinks)
+  library(SummarizedExperiment)
+
+  mRNA_df <- tryCatch({
+    query <- GDCquery(
+      project = "TCGA-BRCA",
+      data.category = "Transcriptome Profiling",
+      data.type = "Gene Expression Quantification",
+      workflow.type = "STAR - Counts"
+    )
+    GDCdownload(query, method = "api", directory = "GDCdata")
+    se <- GDCprepare(query, directory = "GDCdata")
+
+    # Extract TPM, map to gene symbols, log2-transform
+    tpm_mat <- assay(se, "tpm_unstrand")
+    gene_sym <- rowData(se)$gene_name
+    keep <- !is.na(gene_sym) & gene_sym != "" & !duplicated(gene_sym)
+    tpm_mat <- tpm_mat[keep, ]
+    rownames(tpm_mat) <- gene_sym[keep]
+    tpm_log <- log2(tpm_mat + 1)
+
+    # Transpose: samples in rows, genes in columns
+    df_out <- as.data.frame(t(tpm_log))
+    dir.create(dirname(mRNA_cache), showWarnings = FALSE, recursive = TRUE)
+    saveRDS(df_out, mRNA_cache)
+    cat("  TCGA-BRCA mRNA data downloaded and cached.\n")
+    df_out
+  }, error = function(e) {
+    cat("  TCGAbiolinks download failed:", conditionMessage(e), "\n")
+    NULL
+  })
+}
+
+# --- Validate ---
+run_partB <- !is.null(mRNA_df) && ncol(mRNA_df) >= 100
+if (!run_partB) {
+  cat("\n  *** mRNA expression data not available. ***\n")
+  cat("  To enable functional prediction, provide mRNA expression data:\n")
+  cat("    - Place a CSV at data/mRNA_expression.csv\n")
+  cat("    - Rows = samples (TCGA barcodes), Columns = gene symbols\n")
+  cat("  Or install TCGAbiolinks for automatic download.\n")
+} else {
+  cat("  mRNA data:", nrow(mRNA_df), "samples x", ncol(mRNA_df), "genes\n")
+}
+
+
+# ==============================================================================
+# B2. piRNA–mRNA PEARSON CORRELATION
+# ==============================================================================
+if (run_partB) {
+
+cat("\n========== B2: piRNA\u2013mRNA Pearson Correlation ==========\n")
+
+# Match samples between piRNA and mRNA data using TCGA barcodes
+# TCGA barcodes: first 15 characters identify the sample
+pirna_samples <- rownames(combat_df_all[combat_df_all$Group == "Tumor" &
+                                         combat_df_all$Batch == "BRCA1", ])
+mrna_samples  <- rownames(mRNA_df)
+
+# Try matching by truncated TCGA barcodes (first 15 chars)
+pirna_short <- substr(pirna_samples, 1, 15)
+mrna_short  <- substr(mrna_samples, 1, 15)
+
+common_short <- intersect(pirna_short, mrna_short)
+
+if (length(common_short) < 20) {
+  # Try exact rowname match
+  common_exact <- intersect(pirna_samples, mrna_samples)
+  if (length(common_exact) >= 20) {
+    pirna_matched <- common_exact
+    mrna_matched  <- common_exact
+    cat("  Matched by exact rownames:", length(common_exact), "samples\n")
+  } else {
+    cat("  WARNING: Only", max(length(common_short), length(common_exact)),
+        "samples matched. Using all tumor samples with index matching.\n")
+    # Fallback: use all tumor samples by row order if names don't match
+    tumor_idx <- combat_df_all$Group == "Tumor"
+    n_use <- min(sum(tumor_idx), nrow(mRNA_df))
+    pirna_matched <- rownames(combat_df_all[tumor_idx, ])[1:n_use]
+    mrna_matched  <- rownames(mRNA_df)[1:n_use]
+  }
+} else {
+  # Build matched index
+  pirna_idx <- match(common_short, pirna_short)
+  mrna_idx  <- match(common_short, mrna_short)
+  pirna_matched <- pirna_samples[pirna_idx]
+  mrna_matched  <- mrna_samples[mrna_idx]
+  cat("  Matched by TCGA barcodes:", length(common_short), "samples\n")
+}
+
+# Extract matched expression matrices
+expr_pirna <- as.matrix(combat_df_all[pirna_matched, top_feats, drop = FALSE])
+expr_mrna  <- as.matrix(mRNA_df[mrna_matched, , drop = FALSE])
+
+# Remove mRNA genes with zero variance
+mrna_var <- apply(expr_mrna, 2, var, na.rm = TRUE)
+expr_mrna <- expr_mrna[, mrna_var > 0, drop = FALSE]
+cat("  Computing Pearson correlations:", length(top_feats), "piRNAs x",
+    ncol(expr_mrna), "mRNAs...\n")
+
+# Compute correlations for each signature piRNA vs all mRNAs
 cor_results <- list()
 for (feat in top_feats) {
-  cors <- apply(expr_others, 2, function(col) {
-    ct <- cor.test(expr_sig[, feat], col, method = "pearson")
+  pirna_vec <- expr_pirna[, feat]
+  cors <- apply(expr_mrna, 2, function(mrna_vec) {
+    complete <- complete.cases(pirna_vec, mrna_vec)
+    if (sum(complete) < 20) return(c(r = NA, p = NA))
+    ct <- cor.test(pirna_vec[complete], mrna_vec[complete], method = "pearson")
     c(r = ct$estimate, p = ct$p.value)
   })
   cor_df <- data.frame(
-    piRNA      = feat,
-    Gene       = colnames(cors),
-    Pearson_r  = cors["r.cor", ],
-    P_value    = cors["p", ],
+    piRNA     = feat,
+    Gene      = colnames(cors),
+    Pearson_r = cors["r.cor", ],
+    P_value   = cors["p", ],
     stringsAsFactors = FALSE
   )
-  # Adjust p-values
-  cor_df$P_adj <- p.adjust(cor_df$P_value, method = "BH")
-  # Filter significant correlations (|r| > 0.3 and adj.p < 0.05)
-  cor_df$Significant <- abs(cor_df$Pearson_r) > 0.3 & cor_df$P_adj < 0.05
+  cor_df <- cor_df[!is.na(cor_df$P_value), ]
+  cor_df$FDR <- p.adjust(cor_df$P_value, method = "BH")
+  cor_df$Significant <- abs(cor_df$Pearson_r) > 0.3 & cor_df$FDR < 0.05
   cor_results[[feat]] <- cor_df
 }
 
 all_cors <- do.call(rbind, cor_results)
+rownames(all_cors) <- NULL
 sig_cors <- all_cors[all_cors$Significant, ]
 
-cat(sprintf("  Total significant correlations: %d (|r|>0.3, adj.p<0.05)\n",
+cat(sprintf("  Total significant piRNA\u2013mRNA pairs: %d (|r|>0.3, FDR<0.05)\n",
             nrow(sig_cors)))
 for (feat in top_feats) {
   n_sig <- sum(sig_cors$piRNA == feat)
-  cat(sprintf("    %s: %d correlated genes\n", feat, n_sig))
+  cat(sprintf("    %s: %d correlated mRNAs\n", feat, n_sig))
 }
 
-# Save full correlation table
-write.csv(all_cors, "results/functional/pearson_correlations_all.csv", row.names = FALSE)
-write.csv(sig_cors, "results/functional/pearson_correlations_significant.csv", row.names = FALSE)
+# Save tables
+dir.create("results/functional", showWarnings = FALSE, recursive = TRUE)
+write.csv(all_cors, "results/functional/pearson_piRNA_mRNA_all.csv", row.names = FALSE)
+write.csv(sig_cors, "results/functional/pearson_piRNA_mRNA_significant.csv", row.names = FALSE)
 
-# --- Option B: Load mRNA expression data if available ---
-# >>> EDIT THIS: If you have paired mRNA data <<<
-# mRNA_expr <- read.table("mRNA_expression.txt", header=TRUE, row.names=1, sep="\t")
-# Then replace expr_others above with t(mRNA_expr) to correlate piRNAs vs mRNAs
 
-# --- Correlation plot: top correlated genes per piRNA ---
-cat("\n  Generating correlation summary plot...\n")
+# ==============================================================================
+# B2a. DOT PLOT: piRNA–mRNA Correlation (Figure A style)
+#      Y-axis = Gene, X-axis = piRNA, size = -log10(FDR), color = Pearson r
+# ==============================================================================
+cat("\n  Generating piRNA\u2013mRNA correlation dot plot...\n")
 
-# Top N correlated genes per piRNA
-top_n_corr <- 10
-top_cors <- sig_cors %>%
+# Select top correlated genes per piRNA for the plot
+top_n_per_pirna <- 20
+dot_df <- sig_cors %>%
   group_by(piRNA) %>%
   arrange(desc(abs(Pearson_r))) %>%
-  slice_head(n = top_n_corr) %>%
+  slice_head(n = top_n_per_pirna) %>%
   ungroup()
 
-if (nrow(top_cors) > 0) {
-  p_cor_bar <- ggplot(top_cors,
-                      aes(x = reorder(Gene, abs(Pearson_r)),
-                          y = Pearson_r,
-                          fill = ifelse(Pearson_r > 0, "Positive", "Negative"))) +
-    geom_col(width = 0.7, alpha = 0.85) +
-    coord_flip() +
-    facet_wrap(~ piRNA, scales = "free_y", ncol = 2) +
-    scale_fill_manual(values = c("Positive" = "#2166AC", "Negative" = "#B2182B"),
-                      name = "Correlation") +
+if (nrow(dot_df) > 0) {
+  # Cap -log10(FDR) for display
+  dot_df$neg_log10_fdr <- pmin(-log10(dot_df$FDR), 20)
+
+  # Order genes by average |r| across piRNAs
+  gene_order <- dot_df %>%
+    group_by(Gene) %>%
+    summarise(mean_r = mean(abs(Pearson_r)), .groups = "drop") %>%
+    arrange(desc(mean_r)) %>%
+    pull(Gene)
+  dot_df$Gene <- factor(dot_df$Gene, levels = rev(gene_order))
+
+  p_dotplot <- ggplot(dot_df, aes(x = piRNA, y = Gene)) +
+    geom_point(aes(size = neg_log10_fdr, color = Pearson_r), alpha = 0.85) +
+    scale_size_continuous(
+      range = c(1.5, 7), name = expression(-log[10](FDR)),
+      breaks = c(5, 10, 15)
+    ) +
+    scale_color_gradient2(
+      low = "#B2182B", mid = "#F7F7F7", high = "#2166AC", midpoint = 0,
+      name = "Pearson\ncorrelation",
+      limits = c(-1, 1)
+    ) +
     labs(
-      title = "Top Correlated Genes per Signature piRNA",
-      subtitle = "Pearson's correlation (tumor samples, adj.p < 0.05)",
-      x = "", y = "Pearson's r"
+      title = "Genes Correlated with Signature piRNAs",
+      subtitle = "Pearson correlation (FDR < 0.05, |r| > 0.3)",
+      x = "", y = ""
     ) +
     pub_theme +
     theme(
-      strip.background = element_rect(fill = "grey95"),
-      legend.position = "top"
+      axis.text.x = element_text(angle = 45, hjust = 1, size = 10, face = "bold"),
+      axis.text.y = element_text(size = 8),
+      panel.grid.major = element_line(color = "grey92"),
+      legend.position = "right"
     )
 
-  ggsave("results/functional/correlation_top_genes.png",
-         p_cor_bar, width = 12,
-         height = max(6, ceiling(length(top_feats) / 2) * 4),
-         dpi = 300)
-  cat("  Correlation bar plot saved.\n")
+  n_genes <- length(unique(dot_df$Gene))
+  ggsave("results/functional/piRNA_mRNA_correlation_dotplot.png",
+         p_dotplot, width = max(6, length(top_feats) * 1.5 + 4),
+         height = max(8, n_genes * 0.22 + 3), dpi = 300,
+         limitsize = FALSE)
+  cat("  Dot plot saved: results/functional/piRNA_mRNA_correlation_dotplot.png\n")
 }
 
 
 # ==============================================================================
-# B2. GENE SET ENRICHMENT: KEGG PATHWAYS
+# B3. PATHWAY ENRICHMENT (KEGG, GO, Reactome)
+#     Use correlated mRNA genes to predict piRNA functions
 # ==============================================================================
-cat("\n========== B2: KEGG Pathway Enrichment ==========\n")
+cat("\n========== B3: Pathway Enrichment of Correlated Genes ==========\n")
 
-# Collect all significant correlated genes across piRNAs
 correlated_genes <- unique(sig_cors$Gene)
-cat("  Unique correlated genes for enrichment:", length(correlated_genes), "\n")
+cat("  Unique correlated mRNA genes:", length(correlated_genes), "\n")
 
-# Attempt to map gene names to Entrez IDs
-# piRNA names may not map to standard gene names; we try anyway
-# If you have mRNA gene names, this will work well
-
-# Try mapping gene names (removing common piRNA prefixes)
-gene_names_clean <- gsub("^hsa[-_]", "", correlated_genes)
-gene_names_clean <- gsub("^piR[-_]", "", gene_names_clean)
-
-# Try converting to Entrez IDs
+# Map gene symbols to Entrez IDs
 entrez_map <- tryCatch({
-  bitr(gene_names_clean, fromType = "SYMBOL", toType = "ENTREZID",
+  bitr(correlated_genes, fromType = "SYMBOL", toType = "ENTREZID",
        OrgDb = org.Hs.eg.db)
 }, error = function(e) {
-  cat("  Note: Gene symbol mapping failed. Trying ALIAS...\n")
+  cat("  SYMBOL mapping failed, trying ALIAS...\n")
   tryCatch(
-    bitr(gene_names_clean, fromType = "ALIAS", toType = "ENTREZID",
+    bitr(correlated_genes, fromType = "ALIAS", toType = "ENTREZID",
          OrgDb = org.Hs.eg.db),
     error = function(e2) NULL
   )
 })
 
-# If piRNA names cannot be mapped, use all genes as background
-# and create per-piRNA gene lists from correlation analysis
 run_enrichment <- !is.null(entrez_map) && nrow(entrez_map) >= 5
 
 if (run_enrichment) {
@@ -647,78 +778,59 @@ if (run_enrichment) {
   cat("  Mapped", length(entrez_ids), "genes to Entrez IDs.\n")
 
   # --- KEGG Enrichment ---
+  cat("\n  Running KEGG enrichment...\n")
   kegg_res <- tryCatch({
     enrichKEGG(gene = entrez_ids, organism = "hsa",
-               pvalueCutoff = 0.05, qvalueCutoff = 0.1,
+               pvalueCutoff = 0.05, qvalueCutoff = 0.2,
                minGSSize = 5, maxGSSize = 500)
   }, error = function(e) {
-    cat("  KEGG enrichment failed:", conditionMessage(e), "\n")
-    NULL
+    cat("    KEGG failed:", conditionMessage(e), "\n"); NULL
   })
 
   if (!is.null(kegg_res) && nrow(kegg_res@result[kegg_res@result$p.adjust < 0.05, ]) > 0) {
     kegg_sig <- kegg_res@result[kegg_res@result$p.adjust < 0.05, ]
     write.csv(kegg_sig, "results/functional/kegg_enrichment.csv", row.names = FALSE)
 
-    # KEGG Bar Plot
     n_show <- min(20, nrow(kegg_sig))
     kegg_plot_df <- head(kegg_sig, n_show) %>%
-      mutate(
-        NegLogP = -log10(pvalue),
-        Count = as.numeric(Count),
-        Description = factor(Description, levels = rev(Description))
-      )
+      mutate(Count = as.numeric(Count),
+             Description = factor(Description, levels = rev(Description)))
 
-    p_kegg <- ggplot(kegg_plot_df, aes(x = Count, y = Description, fill = pvalue)) +
+    p_kegg <- ggplot(kegg_plot_df, aes(x = Count, y = Description, fill = p.adjust)) +
       geom_col(width = 0.7) +
-      scale_fill_gradient(low = "grey40", high = "#8FBC8F",
-                          name = "p-value",
-                          limits = c(0.01, 0.05),
-                          oob = squish,
-                          breaks = c(0.01, 0.03, 0.05)) +
-      labs(
-        title = "KEGG Pathway Enrichment Analysis",
-        subtitle = paste0(length(entrez_ids), " correlated genes"),
-        x = "Number of Enriched Genes",
-        y = ""
-      ) +
-      pub_theme +
-      theme(axis.text.y = element_text(size = 9))
+      scale_fill_gradient(low = "#C62828", high = "#FFCDD2",
+                          name = "FDR") +
+      labs(title = "KEGG Pathway Enrichment",
+           subtitle = paste0("Based on ", length(correlated_genes),
+                             " mRNAs correlated with signature piRNAs"),
+           x = "Gene Count", y = "") +
+      pub_theme + theme(axis.text.y = element_text(size = 9))
 
     ggsave("results/functional/kegg_barplot.png",
            p_kegg, width = 10, height = max(5, n_show * 0.35 + 2), dpi = 300)
-    cat("  KEGG bar plot saved (", nrow(kegg_sig), " significant pathways).\n")
+    cat("    KEGG:", nrow(kegg_sig), "significant pathways, plot saved.\n")
   } else {
-    cat("  No significant KEGG pathways found.\n")
+    cat("    No significant KEGG pathways.\n")
   }
 
-  # ==============================================================================
-  # B3. GO ENRICHMENT (BP, CC, MF) — BUBBLE PLOTS
-  # ==============================================================================
-  cat("\n========== B3: GO Enrichment (BP, CC, MF) ==========\n")
-
+  # --- GO Enrichment (BP, CC, MF) ---
+  cat("\n  Running GO enrichment...\n")
   go_categories <- c("BP", "CC", "MF")
-  go_full_names <- c(BP = "Biological Process", CC = "Cellular Component",
-                     MF = "Molecular Function")
+  go_names <- c(BP = "Biological Process", CC = "Cellular Component",
+                MF = "Molecular Function")
 
   for (ont in go_categories) {
-    cat(sprintf("  Running GO %s enrichment...\n", ont))
-
     go_res <- tryCatch({
       enrichGO(gene = entrez_ids, OrgDb = org.Hs.eg.db,
-               ont = ont, pvalueCutoff = 0.05, qvalueCutoff = 0.1,
+               ont = ont, pvalueCutoff = 0.05, qvalueCutoff = 0.2,
                readable = TRUE, minGSSize = 5, maxGSSize = 500)
-    }, error = function(e) {
-      cat(sprintf("    GO %s failed: %s\n", ont, conditionMessage(e)))
-      NULL
-    })
+    }, error = function(e) { NULL })
 
     if (!is.null(go_res) && nrow(go_res@result[go_res@result$p.adjust < 0.05, ]) > 0) {
       go_sig <- go_res@result[go_res@result$p.adjust < 0.05, ]
       write.csv(go_sig, paste0("results/functional/go_", tolower(ont), "_enrichment.csv"),
                 row.names = FALSE)
 
-      # Bubble plot
       n_show <- min(15, nrow(go_sig))
       go_plot_df <- head(go_sig, n_show) %>%
         mutate(
@@ -736,263 +848,245 @@ if (run_enrichment) {
                          size = Count, color = p.adjust)) +
         geom_point(alpha = 0.85) +
         scale_size_continuous(range = c(3, 10), name = "Gene Count") +
-        scale_color_gradient(low = "grey40", high = "#8FBC8F",
-                             name = "FDR",
-                             limits = c(0.01, 0.05), oob = squish,
-                             breaks = c(0.01, 0.03, 0.05)) +
-        labs(
-          title = paste0("GO Enrichment: ", go_full_names[ont]),
-          x = "Gene Ratio",
-          y = ""
-        ) +
-        pub_theme +
-        theme(axis.text.y = element_text(size = 9))
+        scale_color_gradient(low = "#C62828", high = "#FFCDD2",
+                             name = "FDR") +
+        labs(title = paste0("GO Enrichment: ", go_names[ont]),
+             x = "Gene Ratio", y = "") +
+        pub_theme + theme(axis.text.y = element_text(size = 9))
 
       ggsave(paste0("results/functional/go_", tolower(ont), "_bubble.png"),
              p_go, width = 10, height = max(5, n_show * 0.35 + 2), dpi = 300)
-      cat(sprintf("    GO %s: %d significant terms, bubble plot saved.\n",
-                  ont, nrow(go_sig)))
+      cat(sprintf("    GO %s: %d significant terms.\n", ont, nrow(go_sig)))
     } else {
-      cat(sprintf("    No significant GO %s terms found.\n", ont))
+      cat(sprintf("    GO %s: no significant terms.\n", ont))
     }
   }
 
-  # ==============================================================================
-  # B4. REACTOME PATHWAY ENRICHMENT
-  # ==============================================================================
-  cat("\n========== B4: Reactome Pathway Enrichment ==========\n")
-
+  # --- Reactome Enrichment ---
+  cat("\n  Running Reactome enrichment...\n")
   reactome_res <- tryCatch({
     enrichPathway(gene = entrez_ids, organism = "human",
-                  pvalueCutoff = 0.05, qvalueCutoff = 0.1,
+                  pvalueCutoff = 0.05, qvalueCutoff = 0.2,
                   readable = TRUE, minGSSize = 5, maxGSSize = 500)
   }, error = function(e) {
-    cat("  Reactome enrichment failed:", conditionMessage(e), "\n")
-    NULL
+    cat("    Reactome failed:", conditionMessage(e), "\n"); NULL
   })
 
+  reactome_sig <- NULL
   if (!is.null(reactome_res) &&
       nrow(reactome_res@result[reactome_res@result$p.adjust < 0.05, ]) > 0) {
-    react_sig <- reactome_res@result[reactome_res@result$p.adjust < 0.05, ]
-    write.csv(react_sig, "results/functional/reactome_enrichment.csv", row.names = FALSE)
+    reactome_sig <- reactome_res@result[reactome_res@result$p.adjust < 0.05, ]
+    write.csv(reactome_sig, "results/functional/reactome_enrichment.csv",
+              row.names = FALSE)
 
-    n_show <- min(15, nrow(react_sig))
-    react_plot_df <- head(react_sig, n_show) %>%
-      mutate(
-        Count = as.numeric(Count),
-        Description = factor(Description, levels = rev(Description))
-      )
+    n_show <- min(15, nrow(reactome_sig))
+    react_plot_df <- head(reactome_sig, n_show) %>%
+      mutate(Count = as.numeric(Count),
+             Description = factor(Description, levels = rev(Description)))
 
     p_react <- ggplot(react_plot_df,
                       aes(x = Count, y = Description, fill = p.adjust)) +
       geom_col(width = 0.7) +
-      scale_fill_gradient(low = "grey40", high = "#8FBC8F",
-                          name = "FDR", limits = c(0.01, 0.05), oob = squish) +
-      labs(
-        title = "Reactome Pathway Enrichment",
-        x = "Number of Enriched Genes", y = ""
-      ) +
-      pub_theme +
-      theme(axis.text.y = element_text(size = 9))
+      scale_fill_gradient(low = "#C62828", high = "#FFCDD2", name = "FDR") +
+      labs(title = "Reactome Pathway Enrichment",
+           subtitle = "Pathways enriched in piRNA-correlated genes",
+           x = "Gene Count", y = "") +
+      pub_theme + theme(axis.text.y = element_text(size = 9))
 
     ggsave("results/functional/reactome_barplot.png",
            p_react, width = 11, height = max(5, n_show * 0.35 + 2), dpi = 300)
-    cat("  Reactome: ", nrow(react_sig), " significant pathways, plot saved.\n")
+    cat("    Reactome:", nrow(reactome_sig), "significant pathways.\n")
   } else {
-    cat("  No significant Reactome pathways found.\n")
+    cat("    No significant Reactome pathways.\n")
   }
 
-} else {
-  cat("  Gene name mapping was insufficient for enrichment analysis.\n")
-  cat("  To enable enrichment, provide mRNA expression data with standard gene symbols.\n")
-  cat("  Skipping KEGG, GO, and Reactome enrichment.\n\n")
 
-  cat("  >>> ALTERNATIVE APPROACH FOR piRNA FUNCTIONAL PREDICTION <<<\n")
-  cat("  Since piRNA names may not map directly to gene ontologies,\n")
-  cat("  consider these strategies:\n")
-  cat("  1. Use piRBase (http://www.regulatoryrna.org/database/piRNA/) to find\n")
-  cat("     piRNA target genes, then run enrichment on those targets.\n")
-  cat("  2. Use miRanda or piRNAPredictor for piRNA-mRNA interaction prediction.\n")
-  cat("  3. Provide paired mRNA expression data for correlation-based prediction.\n")
-  cat("  4. Load pre-computed piRNA target genes from databases.\n")
-}
+  # ============================================================================
+  # B4. FUNCTIONAL NETWORK: piRNA → Correlated Genes → Reactome Pathways
+  #     (Figure B style: piRNAs as yellow hubs, genes as small nodes,
+  #      pathways as labeled nodes around periphery)
+  # ============================================================================
+  cat("\n========== B4: Functional Interaction Network ==========\n")
 
+  dir.create("results/network", showWarnings = FALSE, recursive = TRUE)
 
-# ==============================================================================
-# B5. FUNCTIONAL INTERACTION NETWORK
-#     (piRNA → correlated genes → KEGG pathways)
-# ==============================================================================
-cat("\n========== B5: Functional Interaction Network ==========\n")
-
-# Build network from correlation results and enrichment results
-build_pirna_network <- function(sig_cors, kegg_sig = NULL, top_genes = 5) {
-  edges <- data.frame()
-  nodes <- data.frame()
-
-  # Node: piRNAs (diamond shape)
-  pirna_nodes <- data.frame(
-    name  = unique(sig_cors$piRNA),
-    type  = "piRNA",
-    group = "piRNA",
-    stringsAsFactors = FALSE
-  )
-
-  # Top correlated genes per piRNA
-  top_per_pirna <- sig_cors %>%
-    group_by(piRNA) %>%
-    arrange(desc(abs(Pearson_r))) %>%
-    slice_head(n = top_genes) %>%
-    ungroup()
-
-  # Node: genes (ellipse shape)
-  gene_nodes <- data.frame(
-    name  = unique(top_per_pirna$Gene),
-    type  = "mRNA",
-    group = "gene",
-    stringsAsFactors = FALSE
-  )
-
-  # Edges: piRNA → gene (correlation)
-  pirna_gene_edges <- top_per_pirna %>%
-    transmute(
-      from   = piRNA,
-      to     = Gene,
-      weight = abs(Pearson_r),
-      type   = ifelse(Pearson_r > 0, "positive", "negative")
-    )
-
-  # If KEGG results available, add pathway nodes
-  pathway_nodes <- data.frame()
-  gene_pathway_edges <- data.frame()
-
-  if (!is.null(kegg_sig) && nrow(kegg_sig) > 0) {
-    top_pathways <- head(kegg_sig, 8)  # Top 8 pathways
-
-    pathway_nodes <- data.frame(
-      name  = top_pathways$Description,
-      type  = "pathway",
-      group = top_pathways$Description,
-      stringsAsFactors = FALSE
-    )
-
-    # Parse gene lists in KEGG results to build gene → pathway edges
-    for (i in seq_len(nrow(top_pathways))) {
-      pathway_genes <- unlist(strsplit(top_pathways$geneID[i], "/"))
-      # Match with our correlated genes
-      matched <- intersect(pathway_genes, gene_nodes$name)
-      if (length(matched) > 0) {
-        gene_pathway_edges <- rbind(gene_pathway_edges, data.frame(
-          from   = matched,
-          to     = top_pathways$Description[i],
-          weight = 1,
-          type   = "pathway",
-          stringsAsFactors = FALSE
-        ))
-        # Color genes by pathway
-        gene_nodes$group[gene_nodes$name %in% matched] <- top_pathways$Description[i]
-      }
+  # Use Reactome if available, otherwise KEGG
+  pathway_sig <- reactome_sig
+  pathway_source <- "Reactome"
+  if (is.null(pathway_sig)) {
+    if (exists("kegg_sig") && !is.null(kegg_sig) && nrow(kegg_sig) > 0) {
+      pathway_sig <- kegg_sig
+      pathway_source <- "KEGG"
     }
   }
 
-  # Combine
-  all_nodes <- rbind(pirna_nodes, gene_nodes, pathway_nodes)
-  all_edges <- rbind(pirna_gene_edges, gene_pathway_edges)
+  if (!is.null(pathway_sig) && nrow(sig_cors) > 0) {
+    # Top correlated genes per piRNA (for the network)
+    top_genes_net <- 15
+    net_cors <- sig_cors %>%
+      group_by(piRNA) %>%
+      arrange(desc(abs(Pearson_r))) %>%
+      slice_head(n = top_genes_net) %>%
+      ungroup()
 
-  list(nodes = all_nodes, edges = all_edges)
-}
+    gene_symbols_in_net <- unique(net_cors$Gene)
 
-if (nrow(sig_cors) > 0) {
-  kegg_sig_for_net <- NULL
-  if (exists("kegg_res") && !is.null(kegg_res)) {
-    kegg_sig_for_net <- kegg_res@result[kegg_res@result$p.adjust < 0.05, ]
-  }
+    # Map from gene symbols in enrichment geneID column
+    # geneID field uses "/" separated gene symbols (Reactome with readable=TRUE)
+    top_pathways <- head(pathway_sig, 15)
 
-  net_data <- build_pirna_network(sig_cors, kegg_sig_for_net, top_genes = 5)
+    # Build edges: piRNA → gene, gene → pathway
+    edges_pirna_gene <- net_cors %>%
+      transmute(from = piRNA, to = Gene,
+                weight = abs(Pearson_r), edge_type = "correlation")
 
-  if (nrow(net_data$edges) > 0) {
-    # Build igraph object
-    g <- graph_from_data_frame(net_data$edges, directed = FALSE,
-                               vertices = net_data$nodes)
-
-    # Set visual attributes
-    V(g)$shape <- ifelse(V(g)$type == "piRNA", "diamond",
-                  ifelse(V(g)$type == "pathway", "square", "circle"))
-
-    # Assign colors by group
-    unique_groups <- unique(V(g)$group)
-    group_colors <- c(
-      "piRNA" = "#E41A1C",
-      "gene"  = "#377EB8",
-      setNames(
-        colorRampPalette(c("#4DAF4A", "#FF7F00", "#984EA3", "#A65628",
-                           "#F781BF", "#999999", "#66C2A5", "#FC8D62"))(
-          max(1, length(unique_groups) - 2)),
-        setdiff(unique_groups, c("piRNA", "gene"))
-      )
+    edges_gene_pathway <- data.frame(
+      from = character(), to = character(),
+      weight = numeric(), edge_type = character(),
+      stringsAsFactors = FALSE
     )
 
-    # Plot with ggraph
-    set.seed(SEED)
-    p_net <- ggraph(g, layout = "fr") +
-      geom_edge_link(aes(edge_alpha = weight,
-                         edge_linetype = ifelse(type == "negative", "dashed", "solid")),
-                     edge_colour = "grey60", edge_width = 0.5,
-                     show.legend = FALSE) +
-      geom_node_point(aes(color = group, shape = type), size = 5, alpha = 0.9) +
-      geom_node_text(aes(label = name), repel = TRUE, size = 2.8,
-                     max.overlaps = 20) +
-      scale_shape_manual(values = c("piRNA" = 18, "mRNA" = 16, "pathway" = 15),
-                         name = "Node Type") +
-      scale_color_manual(values = group_colors, name = "Group") +
-      labs(
-        title = "Functional Interaction Network",
-        subtitle = "piRNAs — Correlated Genes — KEGG Pathways"
-      ) +
-      theme_void() +
-      theme(
-        plot.title    = element_text(size = 14, face = "bold", hjust = 0.5),
-        plot.subtitle = element_text(size = 10, hjust = 0.5, color = "grey40"),
-        legend.position = "right",
-        legend.text = element_text(size = 8)
+    for (i in seq_len(nrow(top_pathways))) {
+      pw_genes <- unlist(strsplit(top_pathways$geneID[i], "/"))
+      matched <- intersect(pw_genes, gene_symbols_in_net)
+      if (length(matched) > 0) {
+        edges_gene_pathway <- rbind(edges_gene_pathway, data.frame(
+          from = matched, to = top_pathways$Description[i],
+          weight = 0.5, edge_type = "pathway",
+          stringsAsFactors = FALSE
+        ))
+      }
+    }
+
+    all_edges <- rbind(edges_pirna_gene, edges_gene_pathway)
+
+    # Only keep genes that connect to at least one pathway
+    genes_with_pathway <- unique(edges_gene_pathway$from)
+    if (length(genes_with_pathway) > 0) {
+      # Keep piRNA→gene edges only for genes that link to pathways
+      edges_pirna_gene_filt <- edges_pirna_gene[edges_pirna_gene$to %in%
+                                                  genes_with_pathway, ]
+      all_edges_filt <- rbind(edges_pirna_gene_filt, edges_gene_pathway)
+    } else {
+      all_edges_filt <- all_edges
+      genes_with_pathway <- gene_symbols_in_net
+    }
+
+    if (nrow(all_edges_filt) > 0) {
+      # Build node data
+      all_node_names <- unique(c(all_edges_filt$from, all_edges_filt$to))
+      node_df <- data.frame(
+        name = all_node_names,
+        type = ifelse(all_node_names %in% top_feats, "piRNA",
+               ifelse(all_node_names %in% top_pathways$Description, "pathway",
+                      "gene")),
+        stringsAsFactors = FALSE
       )
 
-    ggsave("results/network/functional_network.png",
-           p_net, width = 14, height = 10, dpi = 300)
-    cat("  Functional interaction network saved.\n")
+      # Build igraph
+      g <- graph_from_data_frame(all_edges_filt, directed = FALSE,
+                                  vertices = node_df)
 
-    # Also save as edge list
-    write.csv(net_data$edges, "results/network/network_edges.csv", row.names = FALSE)
-    write.csv(net_data$nodes, "results/network/network_nodes.csv", row.names = FALSE)
+      # Node sizing: piRNAs large, pathways medium, genes small
+      V(g)$size <- ifelse(V(g)$type == "piRNA", 12,
+                   ifelse(V(g)$type == "pathway", 6, 3))
+
+      # Plot with ggraph
+      set.seed(SEED)
+
+      # Node colors
+      node_colors <- c("piRNA" = "#FFD700", "gene" = "#87CEEB", "pathway" = "#FFFFFF")
+      node_shapes <- c("piRNA" = 16, "gene" = 16, "pathway" = 15)
+
+      p_net <- ggraph(g, layout = "fr") +
+        # Edges
+        geom_edge_link(
+          aes(edge_linetype = edge_type),
+          edge_colour = "grey70", edge_width = 0.3, edge_alpha = 0.6,
+          show.legend = FALSE
+        ) +
+        # Gene nodes (small, blue)
+        geom_node_point(
+          data = . %>% filter(type == "gene"),
+          aes(size = size), color = "#87CEEB", alpha = 0.8
+        ) +
+        # Pathway nodes (white squares with border)
+        geom_node_point(
+          data = . %>% filter(type == "pathway"),
+          aes(size = size), shape = 22, fill = "white",
+          color = "grey40", stroke = 0.8
+        ) +
+        # piRNA nodes (large yellow)
+        geom_node_point(
+          data = . %>% filter(type == "piRNA"),
+          aes(size = size), color = "#FFD700", alpha = 1
+        ) +
+        # piRNA labels (bold)
+        geom_node_text(
+          data = . %>% filter(type == "piRNA"),
+          aes(label = name), size = 3.5, fontface = "bold",
+          repel = TRUE, max.overlaps = 30
+        ) +
+        # Pathway labels
+        geom_node_text(
+          data = . %>% filter(type == "pathway"),
+          aes(label = name), size = 2.5, color = "grey30",
+          repel = TRUE, max.overlaps = 50
+        ) +
+        scale_size_identity() +
+        labs(
+          title = paste0("Function Prediction of Signature piRNAs"),
+          subtitle = paste0("Based on Pearson\u2019s correlation and ", pathway_source,
+                            " pathway enrichment")
+        ) +
+        theme_void() +
+        theme(
+          plot.title    = element_text(size = 14, face = "bold", hjust = 0.5),
+          plot.subtitle = element_text(size = 10, hjust = 0.5, color = "grey40"),
+          legend.position = "none"
+        )
+
+      ggsave("results/network/functional_network.png",
+             p_net, width = 16, height = 12, dpi = 300)
+      cat("  Functional network saved: results/network/functional_network.png\n")
+
+      write.csv(all_edges_filt, "results/network/network_edges.csv", row.names = FALSE)
+      write.csv(node_df, "results/network/network_nodes.csv", row.names = FALSE)
+    } else {
+      cat("  Not enough connected nodes for network.\n")
+    }
   } else {
-    cat("  Not enough data to build network.\n")
+    cat("  No pathway enrichment results for network construction.\n")
   }
+
 } else {
-  cat("  No significant correlations found. Network skipped.\n")
+  cat("  Gene mapping failed. Cannot run enrichment.\n")
+  cat("  Ensure correlated genes use standard HGNC symbols.\n")
 }
 
 
 # ==============================================================================
-# B6. PER-piRNA SUMMARY: CORRELATED GENES TABLE
+# B5. PER-piRNA CORRELATED GENE TABLES
 # ==============================================================================
-cat("\n========== B6: Per-piRNA Summary ==========\n")
+cat("\n========== B5: Per-piRNA Correlated Gene Tables ==========\n")
 
 for (feat in top_feats) {
   feat_cors <- sig_cors[sig_cors$piRNA == feat, ]
   if (nrow(feat_cors) == 0) {
-    cat(sprintf("  %s: No significant correlated genes.\n", feat))
+    cat(sprintf("  %s: No significant correlated mRNAs.\n", feat))
     next
   }
-
   feat_cors <- feat_cors %>% arrange(desc(abs(Pearson_r)))
   fname <- gsub("[^a-zA-Z0-9_.-]", "_", feat)
   write.csv(feat_cors,
-            paste0("results/functional/correlated_genes_", fname, ".csv"),
+            paste0("results/functional/correlated_mRNAs_", fname, ".csv"),
             row.names = FALSE)
-
-  cat(sprintf("  %s: %d correlated genes (top: %s, r=%.3f)\n",
+  cat(sprintf("  %s: %d correlated mRNAs (top: %s, r=%.3f)\n",
               feat, nrow(feat_cors),
               feat_cors$Gene[1], feat_cors$Pearson_r[1]))
 }
+
+}  # end if (run_partB)
 
 
 # ==============================================================================
@@ -1005,29 +1099,34 @@ cat(paste(rep("=", 70), collapse = ""), "\n\n")
 
 cat("piRNA Signature:", paste(top_feats, collapse = ", "), "\n\n")
 
-cat("PART A — Meta-Analysis:\n")
+cat("PART A \u2014 Meta-Analysis:\n")
 cat("  A1. Expression heatmap across", length(datasets), "datasets\n")
 cat("  A2. SMD forest plots for", length(meta_results_all), "piRNAs\n")
 cat("  A3. Spearman correlation heatmaps (all + averaged)\n\n")
 
-cat("PART B — Functional Prediction:\n")
-cat("  B1. Pearson correlations:", nrow(sig_cors), "significant gene-piRNA pairs\n")
-if (exists("kegg_res") && !is.null(kegg_res)) {
-  n_kegg <- nrow(kegg_res@result[kegg_res@result$p.adjust < 0.05, ])
-  cat("  B2. KEGG pathways:", n_kegg, "significant\n")
+cat("PART B \u2014 Functional Prediction (piRNA\u2013mRNA Correlation):\n")
+if (run_partB) {
+  cat("  B1. mRNA data loaded for piRNA\u2013mRNA correlation\n")
+  cat("  B2. Pearson correlations:", nrow(sig_cors), "significant piRNA\u2013mRNA pairs\n")
+  cat("      Dot plot: results/functional/piRNA_mRNA_correlation_dotplot.png\n")
+  if (exists("kegg_res") && !is.null(kegg_res)) {
+    n_kegg <- nrow(kegg_res@result[kegg_res@result$p.adjust < 0.05, ])
+    cat("  B3. KEGG pathways:", n_kegg, "significant\n")
+  }
+  cat("  B3. GO enrichment: BP, CC, MF bubble plots\n")
+  if (exists("reactome_sig") && !is.null(reactome_sig)) {
+    cat("  B3. Reactome pathways:", nrow(reactome_sig), "significant\n")
+  }
+  cat("  B4. Functional network: piRNA \u2192 genes \u2192 pathways\n")
+  cat("  B5. Per-piRNA correlated mRNA gene tables\n")
+} else {
+  cat("  (Skipped \u2014 mRNA expression data not available)\n")
 }
-cat("  B3. GO enrichment: BP, CC, MF bubble plots\n")
-if (exists("reactome_res") && !is.null(reactome_res)) {
-  n_react <- nrow(reactome_res@result[reactome_res@result$p.adjust < 0.05, ])
-  cat("  B4. Reactome pathways:", n_react, "significant\n")
-}
-cat("  B5. Functional interaction network\n")
-cat("  B6. Per-piRNA correlated gene tables\n\n")
 
-cat("Output directories:\n")
-cat("  results/meta_analysis/  — Heatmaps, SMD forest plots, correlation\n")
-cat("  results/functional/     — KEGG, GO, Reactome, correlation tables\n")
-cat("  results/network/        — Interaction network + edge/node lists\n")
+cat("\nOutput directories:\n")
+cat("  results/meta_analysis/  \u2014 Heatmaps, SMD forest plots, correlation\n")
+cat("  results/functional/     \u2014 piRNA\u2013mRNA correlations, KEGG, GO, Reactome\n")
+cat("  results/network/        \u2014 Functional interaction network\n")
 
 end_time_fm <- Sys.time()
 cat("\nRuntime:", round(difftime(end_time_fm, start_time_fm, units = "mins"), 1), "min\n")
