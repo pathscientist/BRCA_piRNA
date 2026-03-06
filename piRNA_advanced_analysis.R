@@ -146,7 +146,7 @@ if (!all(c("OS_time", "OS_status") %in% colnames(merged_df)) ||
   cat("\n--- Loading clinical data for advanced analysis ---\n")
 
   clin_files <- c(
-    BRCA1     = "clinical_data/TCGA_BRCA_clinical.csv",
+    BRCA1     = "clinical_data/TCGA_BRCA_clinical_clean.csv",
     yyfbatch1 = "clinical_data/yyfbatch1_clinical_clean.csv",
     yyfbatch2 = "clinical_data/yyfbatch2_clinical_clean.csv"
   )

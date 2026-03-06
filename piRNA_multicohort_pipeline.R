@@ -866,7 +866,7 @@ if (!"Age" %in% colnames(combat_df_all)) {
 
   # Clinical file paths to try
   clin_files <- c(
-    BRCA1     = "clinical_data/TCGA_BRCA_clinical.csv",
+    BRCA1     = "clinical_data/TCGA_BRCA_clinical_clean.csv",
     yyfbatch1 = "clinical_data/yyfbatch1_clinical_clean.csv",
     yyfbatch2 = "clinical_data/yyfbatch2_clinical_clean.csv"
   )
@@ -1021,61 +1021,95 @@ cat("Multivariate results:\n")
 print(multi_results)
 write.csv(multi_results, "results/forest_plot/multivariate_results.csv", row.names = FALSE)
 
-# --- Forest Plot ---
+# --- Forest Plot (Publication-style: table + forest, separate panels) ---
 cat("\nGenerating forest plot...\n")
 
-uni_results$Analysis    <- "Univariate"
-multi_results$Analysis  <- "Multivariate"
-forest_data <- rbind(uni_results, multi_results)
+if (!requireNamespace("forestplot", quietly = TRUE))
+  install.packages("forestplot", dependencies = TRUE, quiet = TRUE)
+library(forestplot)
 
-forest_data$Label <- gsub("T_Score_binary", "T-Score (High vs Low)", forest_data$Variable)
-forest_data$Label <- gsub("Age_binary", "Age (>=60 vs <60)", forest_data$Label)
-forest_data$Label <- gsub("Stage_binary", "Stage (Late vs Early)", forest_data$Label)
-forest_data$Label <- gsub("High$|>=60$|Late$", "", forest_data$Label)
-forest_data$Label <- trimws(forest_data$Label)
+# Label mapping for clean variable names
+lr_label_map <- c(
+  "T_Score_binaryHigh" = "risk_score",
+  "Age_binary>=60"     = "Age",
+  "Stage_binaryLate (III-IV)" = "Stage"
+)
 
-forest_data$Label[duplicated(forest_data$Label) & forest_data$Analysis == "Multivariate"] <-
-  paste0(forest_data$Label[duplicated(forest_data$Label) & forest_data$Analysis == "Multivariate"], " ")
+# Helper: draw one logistic-regression forest panel
+draw_lr_forest_panel <- function(df, panel_title) {
+  # Clean labels
+  df$Names <- sapply(df$Variable, function(v) {
+    if (v %in% names(lr_label_map)) lr_label_map[v] else v
+  })
 
-forest_data$Analysis <- factor(forest_data$Analysis,
-                               levels = c("Univariate", "Multivariate"))
+  # Clamp extreme CIs for display (keeps table text accurate)
+  df$Lower_plot <- pmax(df$Lower, 1e-2)
+  df$Upper_plot <- pmin(df$Upper, 1e4)
+  df$OR_plot    <- pmin(pmax(df$OR, 1e-2), 1e4)
 
-forest_data$OR_text <- sprintf("%.2f (%.2f-%.2f)", forest_data$OR,
-                               forest_data$Lower, forest_data$Upper)
-forest_data$P_text <- ifelse(forest_data$P < 0.001,
-                             sprintf("%.1e", forest_data$P),
-                             sprintf("%.3f", forest_data$P))
+  # Format text columns
+  df$p_text <- ifelse(df$P < 0.001, "<0.001", sprintf("%.3f", df$P))
+  df$or_text <- sprintf("%.3f(%.3f,%.3f)", df$OR, df$Lower, df$Upper)
 
-forest_data$y_pos <- seq(nrow(forest_data), 1)
+  n_rows <- nrow(df)
+  tabletext <- cbind(
+    c("Names",   df$Names),
+    c("p.value", df$p_text),
+    c("Odds Ratio(95% CI)", df$or_text)
+  )
 
-p_forest <- ggplot(forest_data, aes(x = OR, y = y_pos, color = Analysis)) +
-  geom_vline(xintercept = 1, linetype = "dashed", color = "grey50") +
-  geom_point(size = 4, position = position_dodge(width = 0.5)) +
-  geom_errorbarh(aes(xmin = Lower, xmax = Upper),
-                 height = 0.2, linewidth = 0.8,
-                 position = position_dodge(width = 0.5)) +
-  scale_y_continuous(breaks = forest_data$y_pos,
-                     labels = paste0(forest_data$Label, " [",
-                                     forest_data$Analysis, "]")) +
-  scale_color_manual(values = c("Univariate" = "#E41A1C", "Multivariate" = "#377EB8")) +
-  scale_x_log10() +
-  geom_text(aes(x = max(forest_data$Upper, na.rm = TRUE) * 1.5,
-                label = paste0(OR_text, "  p=", P_text)),
-            hjust = 0, size = 3.2, show.legend = FALSE,
-            position = position_dodge(width = 0.5)) +
-  labs(title = "Forest Plot: Logistic Regression",
-       subtitle = "Odds Ratio (95% CI) for Tumor vs Normal",
-       x = "Odds Ratio (log scale)", y = "", color = "Analysis") +
-  my_theme +
-  theme(legend.position = "top",
-        axis.text.y = element_text(size = 10, hjust = 1),
-        plot.margin = ggplot2::margin(10, 120, 10, 10))
+  mean_vals  <- c(NA, df$OR_plot)
+  lower_vals <- c(NA, df$Lower_plot)
+  upper_vals <- c(NA, df$Upper_plot)
 
-ggsave("results/forest_plot/forest_plot.png", p_forest,
-       width = 12, height = max(4, nrow(forest_data) * 0.6 + 2), dpi = 300)
-print(p_forest)
+  forestplot(
+    labeltext  = tabletext,
+    mean       = mean_vals,
+    lower      = lower_vals,
+    upper      = upper_vals,
+    zero       = 1,
+    xlog       = TRUE,
+    col        = fpColors(box = "red", line = "black", zero = "gray60"),
+    boxsize    = 0.25,
+    lwd.zero   = 1,
+    lwd.ci     = 1.5,
+    ci.vertices = TRUE,
+    ci.vertices.height = 0.12,
+    txt_gp     = fpTxtGp(
+      label   = gpar(fontfamily = "sans", cex = 0.95),
+      ticks   = gpar(fontfamily = "sans", cex = 0.8),
+      xlab    = gpar(fontfamily = "sans", cex = 0.9)
+    ),
+    xlab       = "OR",
+    graph.pos  = 3,
+    graphwidth = unit(4, "cm"),
+    title      = panel_title,
+    is.summary = c(TRUE, rep(FALSE, n_rows)),
+    hrzl_lines = list("2" = gpar(lty = 1, lwd = 1, col = "black")),
+    new_page   = FALSE
+  )
+}
 
-cat("Forest plot saved.\n")
+# Draw both panels to a single PNG
+png("results/forest_plot/forest_plot.png",
+    width = 2400, height = 1800, res = 300)
+
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(2, 1, heights = unit(c(1, 1), "null"))))
+
+# Top panel — Univariate
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
+draw_lr_forest_panel(uni_results, "Univariable logistic regression")
+upViewport()
+
+# Bottom panel — Multivariate
+pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 1))
+draw_lr_forest_panel(multi_results, "Multivariable logistic regression")
+upViewport()
+
+dev.off()
+
+cat("Forest plot saved: results/forest_plot/forest_plot.png\n")
 
 
 # ==============================================================================

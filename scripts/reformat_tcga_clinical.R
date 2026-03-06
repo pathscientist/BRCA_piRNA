@@ -221,20 +221,20 @@ clin_final <- clin[, output_cols]
 clin_final <- clin_final[!duplicated(clin_final$SampleID), ]
 clin_final <- clin_final[order(clin_final$SampleID), ]
 
-# Back up old file
-backup_path <- sub("\\.csv$", "_raw_backup.csv", raw_path)
-if (!file.exists(backup_path)) {
-  file.copy(raw_path, backup_path)
-  cat(sprintf("\nBacked up original to: %s\n", backup_path))
+# Write output — use a separate path if the original is read-only
+out_path <- raw_path
+if (file.exists(raw_path) && file.access(raw_path, 2) != 0) {
+  out_path <- sub("\\.csv$", "_clean.csv", raw_path)
+  cat(sprintf("  Original is read-only — writing to: %s\n", out_path))
 }
 
-write.csv(clin_final, raw_path, row.names = FALSE)
+write.csv(clin_final, out_path, row.names = FALSE)
 
 # ==============================================================================
 # 5. SUMMARY
 # ==============================================================================
 
-cat(sprintf("\nSaved reformatted clinical data: %s\n", raw_path))
+cat(sprintf("\nSaved reformatted clinical data: %s\n", out_path))
 cat(sprintf("  Total records: %d\n", nrow(clin_final)))
 cat(sprintf("  Tumor:  %d\n", sum(clin_final$Group == "Tumor", na.rm = TRUE)))
 cat(sprintf("  Normal: %d\n", sum(clin_final$Group == "Normal", na.rm = TRUE)))
