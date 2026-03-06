@@ -286,7 +286,7 @@ run_univariate_cox <- function(data, var_name) {
   df <- data[!is.na(data[[var_name]]), ]
   if (nrow(df) < 20 || length(unique(df[[var_name]])) < 2) return(NULL)
 
-  fml <- as.formula(paste0("Surv(OS_time, OS_status) ~ ", var_name))
+  fml <- as.formula(paste0("Surv(OS_time, OS_status) ~ `", var_name, "`"))
   fit <- tryCatch(coxph(fml, data = df), error = function(e) NULL)
   if (is.null(fit)) return(NULL)
 
@@ -359,7 +359,7 @@ cat("Multivariate variables:", paste(multi_vars, collapse = ", "), "\n")
 
 df_multi_cox <- tumor_df[complete.cases(tumor_df[, c("OS_time", "OS_status", multi_vars)]), ]
 fml_multi_cox <- as.formula(
-  paste0("Surv(OS_time, OS_status) ~ ", paste(multi_vars, collapse = " + "))
+  paste0("Surv(OS_time, OS_status) ~ ", paste0("`", multi_vars, "`", collapse = " + "))
 )
 fit_multi_cox <- coxph(fml_multi_cox, data = df_multi_cox)
 s_multi_cox <- summary(fit_multi_cox)
@@ -516,7 +516,7 @@ for (feat in top_feats) {
 
   # Compute HR from Cox
   cox_single <- coxph(
-    as.formula(paste0("Surv(OS_time, OS_status) ~ ", binary_col)),
+    as.formula(paste0("Surv(OS_time, OS_status) ~ `", binary_col, "`")),
     data = tumor_df
   )
   hr_val <- exp(coef(cox_single))

@@ -22,7 +22,7 @@ run_univariate_cox <- function(df, time_col = "OS_time", event_col = "OS_event",
     dat <- df[, c(time_col, event_col, f), drop = FALSE]
     dat <- dat[stats::complete.cases(dat), , drop = FALSE]
     if (nrow(dat) < 20) return(NULL)
-    fit <- survival::coxph(stats::as.formula(paste0("survival::Surv(", time_col, ",", event_col, ") ~ ", f)), data = dat)
+    fit <- survival::coxph(stats::as.formula(paste0("survival::Surv(", time_col, ",", event_col, ") ~ `", f, "`")), data = dat)
     tbl <- broom::tidy(fit, exponentiate = TRUE, conf.int = TRUE)
     tbl$feature <- f
     tbl
@@ -83,7 +83,7 @@ build_nomogram_if_available <- function(df, time_col = "OS_time", event_col = "O
 
   dd <- rms::datadist(dat)
   options(datadist = "dd")
-  f <- stats::as.formula(paste0("survival::Surv(", time_col, ",", event_col, ") ~ ", paste(covariates, collapse = " + ")))
+  f <- stats::as.formula(paste0("survival::Surv(", time_col, ",", event_col, ") ~ ", paste0("`", covariates, "`", collapse = " + ")))
   fit <- rms::cph(f, data = dat, x = TRUE, y = TRUE, surv = TRUE)
   surv_fun <- rms::Survival(fit)
   nom <- rms::nomogram(fit,
