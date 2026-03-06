@@ -1,0 +1,215 @@
+No. ,source_ID,group,RNA_ID,RNA_ID2,smallRNA_batch,Cohort,source,Age at Sample Acquisition,Gender,Histologic Type ( First letter Capitalize) ,Best CS/AJCC Stage,AJCC Clinical T,AJCC Clinical N,AJCC Clinical M,T Stage,N Stage,M stage,ER ,PR  ,Her2                                                 (IHC)
+1,M2200001A,cancer,HR1,HR1,three,batch1,CHTN Breast Ca 2020,26,Female,"Infiltrating Duct Carcinoma, NOS",2B,c2,c1,c0,,,,negative,negative,postive
+2,M2200002A,cancer,LB1,LB1,three,batch1,CHTN Breast Ca 2020,27,Female,"Infiltrating Duct Carcinoma, NOS",1B,c1C,c0,c0,p1C,p1MI,c0,postive,postive,postive
+3,M2200003A,cancer,LA1,LA1,three,batch1,CHTN Breast Ca 2020,30,Female,"Infiltrating Duct Carcinoma, NOS",2A,c2,c0,c0,p2,p0I-,c0,positive,positive,negative
+4,M2200004A,cancer,LA2,LA2,three,batch1,CHTN Breast Ca 2020,30,Female,"Infiltrating Duct Carcinoma, NOS",1A,cT1b,cN0,cM0,pT1c,pN0(i+),cM0,positive,positive,negative
+5,M2200005A,cancer,TN1,TN1,three,batch1,CHTN Breast Ca 2020,31,Female,"Infiltrating Duct Carcinoma, NOS",2B,cT1c,cN1,cM0,,,,negative,negative,negative
+8,M2200008A,cancer,TN2,TN2,three,batch1,CHTN Breast Ca 2020,33,Female,"Infiltrating Duct Carcinoma, NOS",1B,cT1b,cN0,cM0,pT1b,pN0,cM0,negative,negative,negative
+9,M2200009A,cancer,LA3,LA3,three,batch1,CHTN Breast Ca 2020,33,Female,"Lobular Carcinoma, NOS",1B,cT2,cN0,cM0,pT3,pN0(i+),cM0,positive,positive,negative
+10,M2200010A,cancer,BC1,BC1,two,batch1,CHTN Breast Ca 2020,33,Female,"Infiltrating Duct Carcinoma, NOS",1A,cT1c,cN0,cM0,,,,positive,positive,postive
+11,M2200011A,cancer,LB2,LB2,three,batch1,CHTN Breast Ca 2020,33,Female,"Infiltrating Duct Carcinoma, NOS",1B,cT2,cN0,cM0,pT2,pN1,cM0,positive,positive,positive
+12,M2200012A,cancer,LB3,LB3,three,batch1,CHTN Breast Ca 2020,34,Female,"Infiltrating Duct Carcinoma, NOS",1B,cT2,cN1,cM0,,,,positive,positive,positive
+13,M2200013A,cancer,LB4,LB4,three,batch1,CHTN Breast Ca 2020,35,Female,"Infiltrating Duct Carcinoma, NOS",1A,cT1c,cN0,cM0,pT1c,pN0,cM0,positive,positive,positive
+14,M2200014A,cancer,LA4,LA4,three,batch1,CHTN Breast Ca 2020,35,Female,"Infiltrating Duct Carcinoma, NOS",1A,cT1c,cN0,cM0,pT1c,pN0,cM0,positive,positive,negative
+15,M2200015A,cancer,HR2,HR2,three,batch1,CHTN Breast Ca 2020,35,Female,Duct Micropapillary Carcinoma,1A,c1C,c0,c0,p1C,p0I-,c0,negative,negative,positive
+16,M2200016A,cancer,LB5,LB5,three,batch1,CHTN Breast Ca 2020,35,Female,"Infiltrating Duct Carcinoma, NOS",2B,cT3,cN1,cM0,,,,positive,positive,positive
+17,M2200017A,cancer,TN3,TN3,three,batch1,CHTN Breast Ca 2020,36,Female,"Infiltrating Duct Carcinoma, NOS",2A,c2,c0,c0,p1A,p0I-,c0,negative,negative,negative
+19,M2200019A,cancer,LA5,LA5,three,batch1,CHTN Breast Ca 2020,36,Female,"Infiltrating Duct Carcinoma, NOS",2A,cT2,cN1,cM0,,,,positive,positive,negative
+20,M2200020A,cancer,LA6,LA6,three,batch1,CHTN Breast Ca 2020,37,Female,"Infiltrating Duct Carcinoma, NOS",1A,c2,c0,c0,p1C,p0I-,c0,positive,positive,negative
+21,M2200021A,cancer,LA7,LA7,three,batch1,CHTN Breast Ca 2020,38,Female,Mucinous adenocarcinoma,2A,c2,c0,c0,p2,p0I-,c0,positive,positive,negative
+22,M2200022A,cancer,TN4,TN4,three,batch1,CHTN Breast Ca 2020,38,Female,"Infiltrating Duct Carcinoma, NOS",2A,c0,c1,c0,pX,p0,c0,negative,negative,negative
+23,M2200023A,cancer,LA8,LA8,three,batch1,CHTN Breast Ca 2020,38,Female,"Infiltrating Duct Carcinoma, NOS",1A,c1C,c0,c0,p1C,p0I-,c0,positive,positive,negative
+25,M2200025A,cancer,TN5,TN5,three,batch1,CHTN Breast Ca 2020,39,Female,"Infiltrating Duct Carcinoma, NOS",1B,cT1c,cN0,cM0,pT1b,pN0,cM0,negative,negative,negative
+26,M2200026A,cancer,LB6,LB6,three,batch1,CHTN Breast Ca 2020,39,Female,"Infiltrating Duct Carcinoma, NOS",1B,cT2,cN1,cM0,,,,positive,positive,positive
+28,M2200028A,cancer,TN6,TN6,three,batch1,CHTN Breast Ca 2020,39,Female,"Infiltrating Duct Carcinoma, NOS",2A,c2,c0,c0,p0,p0I-,c0,negative,negative,negative
+29,M2200029A,cancer,LB7,LB7,three,batch1,CHTN Breast Ca 2020,40,Female,"Infiltrating Duct Carcinoma, NOS",1A,cT1c,cN0,cM0,pT1c,pN0,cM0,positive,positive,positive
+30,M2200030A,cancer,TN7,TN7,three,batch1,CHTN Breast Ca 2020,40,Female,"Metaplastic Carcinoma, NOS",2A,cT2,cN0,cM0,pT2,pN0,cM0,negative,negative,negative
+31,M2200031A,cancer,LA9,LA9,three,batch1,CHTN Breast Ca 2020,40,Female,"Infiltrating Duct Carcinoma, NOS",2A,cT2,cN0,cM0,,,,positive,positive,negative
+32,M2200032A,cancer,LB8,LB8,three,batch1,CHTN Breast Ca 2020,40,Female,"Infiltrating Duct Carcinoma, NOS",1B,cT1c,cN1,cM0,,,,positive,positive,positive
+33,M2200033A,cancer,LA10,LA10,three,batch1,CHTN Breast Ca 2020,40,Female,"Infiltrating Duct Carcinoma, NOS",2B,c3,c1,c0,p2,p1A,c0,positive,positive,negative
+34,M2200034A,cancer,HR3,HR3,three,batch1,CHTN Breast Ca 2020,40,Female,"Infiltrating Duct Carcinoma, NOS",2B,cT1c,cN0,cM0,pT2,pN1a,cM0,negative,negative,positive
+36,M2200036A,cancer,TN8,TN8,three,batch1,CHTN Breast Ca 2020,42,Female,"Papillary Carcinoma, NOS",2A,c2,c0,c0,p2,p0I-,c0,negative,negative,negative
+39,M2200039A,cancer,LA11,LA11,three,batch1,CHTN Breast Ca 2020,42,Female,"Infiltrating Duct Carcinoma, NOS",1B,c1A,c0,c0,p1C,p1MI,c0,positive,positive,negative
+41,M2200041A,cancer,BC2,BC2,two,batch1,CHTN Breast Ca 2020,43,Female,"Infiltrating Duct Carcinoma, NOS",1A,c1B,c0,c0,p1B,p0I-,c0,positive,positive,negative
+42,M2200042A,cancer,LA12,LA12,three,batch1,CHTN Breast Ca 2020,43,Female,"Infiltrating Duct Carcinoma, NOS",2B,c1C,c0,c0,p2,p1A,c0,positive,positive,negative
+44,M2200044A,cancer,LA13,LA13,three,batch1,CHTN Breast Ca 2020,44,Female,"Infiltrating Duct Carcinoma, NOS",1B,c1C,c0,c0,p1C,p1MI,c0,positive,positive,negative
+45,M2200045A,cancer,LA14,LA14,three,batch1,CHTN Breast Ca 2020,44,Female,"Infiltrating Duct Carcinoma, NOS",1A,cT1c,cN0,cM0,pT2,pN0,cM0,positive,positive,negative
+46,M2200046A,cancer,LA15,LA15,three,batch1,CHTN Breast Ca 2020,44,Female,"Infiltrating Duct Carcinoma, NOS",2A,cT2,cN0,cM0,pT2,pN1,cM0,positive,positive,negative
+47,M2200047A,cancer,LB9,LB9,three,batch1,CHTN Breast Ca 2020,44,Female,"Infiltrating Duct Carcinoma, NOS",1A,cT1c,cN0,cM0,pT2,pN0,cM0,positive,positive,positive
+48,M2200048A,cancer,TN9,TN9,three,batch1,CHTN Breast Ca 2020,44,Female,"Infiltrating Duct Carcinoma, NOS",1A,c1C,c0,c0,p1B,p0I-,c0,negative,negative,negative
+49,M2200049A,cancer,LA16,LA16,three,batch1,CHTN Breast Ca 2020,44,Female,"Infiltrating Duct Carcinoma, NOS",2A,c1C,c0,c0,p1C,p1A,c0,positive,positive,negative
+50,M2200050A,cancer,TN10,TN10,three,batch1,CHTN Breast Ca 2020,44,Female,"Infiltrating Duct Carcinoma, NOS",1A,c1C,c0,c0,p0,p0I-,c0,negative,negative,negative
+51,M2200064A,cancer,LA17,LA17,three,batch1,CHTN Breast Ca 2020,47,Female,Duct Micropapillary Carcinoma,2A,c1B,c0,c0,p1C,p1A,c0,positive,positive,negative
+52,M2200084A,cancer,LA18,LA18,three,batch1,CHTN Breast Ca 2020,49,Female,"Intraductal Carcinoma, Noninfiltrating, NOS",0,cTis(DCIS),cN0,cM0,pTis(DCIS),cN0,cM0,positive,positive,negative
+53,M2200087A,cancer,LA19,LA19,three,batch1,CHTN Breast Ca 2020,50,Female,"Lobular Carcinoma, NOS",2A,c1B,c0,c0,p2,p0I-,c0,positive,positive,negative
+54,M2200088A,cancer,LA20,LA20,three,batch1,CHTN Breast Ca 2020,50,Female,"Infiltrating Duct Carcinoma, NOS",1B,cT1c,cN0,cM0,pT2,pN1a,cM0,positive,positive,negative
+55,M2200089A,cancer,LA21,LA21,three,batch1,CHTN Breast Ca 2020,50,Female,"Infiltrating Duct Carcinoma, NOS",1A,cT1c,cN0,cM0,pT2,pN0,cM0,positive,positive,negative
+56,M2200093A,cancer,LA22,LA22,three,batch1,CHTN Breast Ca 2020,51,Female,"Lobular carcinoma, NOS",2B,c1C,c1,c0,p2,p1A,c0,positive,positive,negative
+57,M2200115A,cancer,LA23,LA23,three,batch1,CHTN Breast Ca 2020,55,Female,Duct Micropapillary Carcinoma,2A,c2,c0,c0,p2,p0I-,c0,positive,positive,negative
+58,M2200117A,cancer,LA24,LA24,three,batch1,CHTN Breast Ca 2020,55,Female,"Lobular Carcinoma, NOS",1A,cT1c,cN0,cM0,pT2,pN0,cM0,positive,positive,negative
+59,M2200143A,cancer,LA25,LA25,three,batch1,CHTN Breast Ca 2020,59,Female,"Infiltrating Duct Carcinoma, NOS",1B,c1C,c0,c0,p1C,p1MI,c0,positive,positive,negative
+60,M2200158A,cancer,LA26,LA26,three,batch1,CHTN Breast Ca 2020,62,Female,"Lobular Carcinoma, NOS",2A,cT3,cN0,cM0,,,,positive,positive,negative
+61,M2200161A,cancer,LA27,LA27,three,batch1,CHTN Breast Ca 2020,62,Female,"Infiltrating Duct Carcinoma, NOS",1B,c1B,c0,c0,p1B,p1MI,c0,positive,positive,negative
+62,M2200167A,cancer,LA28,LA28,three,batch1,CHTN Breast Ca 2020,63,Female,"Lobular Carcinoma, NOS",1A,c1B,c0,c0,p1C,p0I-,c0,positive,positive,negative
+63,M2200174A,cancer,LA29,LA29,three,batch1,CHTN Breast Ca 2020,65,Female,"Lobular Carcinoma, NOS",1A,c1B,c0,c0,p1B,p0I-,c0,positive,positive,negative
+64,M2200183A,cancer,LA30,LA30,three,batch1,CHTN Breast Ca 2020,68,Female,"Lobular Carcinoma, NOS",1A,c1B,c0,c0,p1C,p0I-,c0,positive,positive,negative
+65,M2200054A,cancer,LB10,LB10,three,batch1,CHTN Breast Ca 2020,45,Female,"Infiltrating Duct Carcinoma, NOS",2B,c2,c1,c0,p0,p2A,c0,positive,positive,positive
+66,M2200068A,cancer,LB11,LB11,three,batch1,CHTN Breast Ca 2020,47,Female,Infiltrating Duct Mixed With Other Types of Carcinoma,0,pIS,c0,c0,pIS,p0I-,c0,positive,positive,positive
+67,M2200069A,cancer,LB12,LB12,NA,nosample,CHTN Breast Ca 2020,48,Female,"Infiltrating Duct Carcinoma, NOS",1B,cT1b,cN0,cM0(i+),pT3,pN2a,cM0,positive,positive,positive
+68,M2200076A,cancer,LB13,LB13,three,batch1,CHTN Breast Ca 2020,48,Female,"Infiltrating Duct Carcinoma, NOS",2A,c2,c0,c0,pIS,p0I-,c0,positive,positive,positive
+69,M2200086A,cancer,LB14,LB14,three,batch1,CHTN Breast Ca 2020,50,Female,"Infiltrating Duct Carcinoma, NOS",1A,cT1c,cN0,cM0,pT1c,pN0(i+),cM0,positive,positive,positive
+70,M2200091A,cancer,LB15,LB15,three,batch1,CHTN Breast Ca 2020,51,Female,"Infiltrating Duct Carcinoma, NOS",2B,c2,c0,c0,p2,p1,c0,positive,positive,positive
+71,M2200124A,cancer,LB16,LB16,three,batch1,CHTN Breast Ca 2020,56,Female,"Infiltrating Duct Carcinoma, NOS",2A,pIS,c0,c0,p1C,p1A,c0,positive,positive,positive
+72,M2200126A,cancer,LB17,LB17,three,batch1,CHTN Breast Ca 2020,57,Female,"Infiltrating Duct Carcinoma, NOS",2A,c1B,c0,c0,p1A,p1A,c0,positive,positive,positive
+73,M2200128A,cancer,LB18,LB18,three,batch1,CHTN Breast Ca 2020,57,Female,"Infiltrating Duct Carcinoma, NOS",1B,cT1c,cN1,cM0,,,,positive,positive,positive
+74,M2200129A,cancer,LB19,LB19,three,batch1,CHTN Breast Ca 2020,57,Female,"Infiltrating Duct Carcinoma, NOS",1A,cT2,cN0,cM0,pT1b,pN0,cM0,positive,positive,positive
+75,M2200132A,cancer,LB20,LB20,three,batch1,CHTN Breast Ca 2020,57,Female,"Lobular Carcinoma, NOS",1B,cT2,cN0,cM0,pT2,pN1mi,cM0,positive,positive,positive
+76,M2200147A,cancer,LB21,LB21,three,batch1,CHTN Breast Ca 2020,59,Female,"Infiltrating Duct Carcinoma, NOS",1A,cT1c,cN0,cM0,,,,positive,positive,positive
+77,M2200156A,cancer,LB22,LB22,three,batch1,CHTN Breast Ca 2020,61,Female,"Infiltrating Duct Carcinoma, NOS",1A,c1C,c0,c0,p1C,p0I-,c0,positive,positive,positive
+78,M2200175A,cancer,LB23,LB23,three,batch1,CHTN Breast Ca 2020,65,Female,"Infiltrating Duct Carcinoma, NOS",2A,c1C,c0,c0,p1C,p1A,c0,positive,positive,positive
+79,M2200181A,cancer,LB24,LB24,three,batch1,CHTN Breast Ca 2020,67,Female,Infiltrating Duct and Lobular Carcinoma,1A,c1B,c0,c0,p1C,p0I-,c0,positive,positive,positive
+80,M2200186A,cancer,LB25,LB25,three,batch1,CHTN Breast Ca 2020,68,Female,Infiltrating Duct and Lobular Carcinoma,2B,c3,c0,c0,p3,p1A,c0,positive,positive,positive
+81,M2200194A,cancer,LB26,LB26,three,batch1,CHTN Breast Ca 2020,70,Female,"Cribriform Carcinoma, NOS",1A,c1B,c0,c0,p1C,p0I-,c0,positive,positive,positive
+82,M2200106A,cancer,BC3,BC3,two,batch1,CHTN Breast Ca 2020,53,Female,Infiltrating Duct Mixed With Other Types of Carcinoma,0,pIS,c0,c0,pIS,c0,c0,positive,positive,N/A
+83,M2200139A,cancer,BC4,BC4,two,batch1,CHTN Breast Ca 2020,58,Female,"Infiltrating Duct Carcinoma, NOS",1A,cT1c,cN0,cM0,,,,positive,positive,negative
+84,M2200141A,cancer,BC5,BC5,two,batch1,CHTN Breast Ca 2020,58,Female,"Lobular carcinoma, NOS",1A,cT1b,cN0,cM0,pT1a,pN0,cM0,positive,positive,negative
+85,M2200154A,cancer,BC6,BC6,two,batch1,CHTN Breast Ca 2020,61,Female,"Infiltrating Duct Carcinoma, NOS",2B,cT2,cN0,cM0,,,,positive,negative,negative
+86,M2200155A,cancer,BC7,BC7,two,batch1,CHTN Breast Ca 2020,61,Female,"Infiltrating Duct Carcinoma, NOS",1A,cT1b,cN0,cM0,pT1b,pN0,cM0,positive,negative,positive
+87,M2200162A,cancer,BC8,BC8,two,batch1,CHTN Breast Ca 2020,62,Female,"Infiltrating Duct Carcinoma, NOS",1A,cT1c,cN0,cM0,pT1c,pN0,cM0,positive,negative,negative
+88,M2200055A,cancer,TN11,TN11,three,batch1,CHTN Breast Ca 2020,45,Female,"Infiltrating Duct Carcinoma, NOS",2B,c2,c1,c0,p1B,p1A,c0,negative,negative,negative
+89,M2200058A,cancer,TN12,TN12,three,batch1,CHTN Breast Ca 2020,45,Female,"Infiltrating Duct Carcinoma, NOS",1B,cT1c,cN0,cM0,pT1b,pN0,cM0,negative,negative,negative
+90,M2200071A,cancer,TN13,TN13,three,batch1,CHTN Breast Ca 2020,48,Female,"Infiltrating Duct Carcinoma, NOS",1B,cT1c,cN0,cM0,,,,negative,negative,negative
+91,M2200074A,cancer,TN14,TN14,three,batch1,CHTN Breast Ca 2020,48,Female,"Metaplastic Carcinoma, NOS",2A,c2,c0,c0,p2,p0I-,c0,negative,negative,negative
+92,M2200078A,cancer,TN15,TN15,three,batch1,CHTN Breast Ca 2020,48,Female,"Infiltrating Duct Carcinoma, NOS",1B,cT1c,cN0,cM0,pT1b,pN0,cM0,negative,negative,negative
+93,M2200080A,cancer,TN16,TN16,three,batch1,CHTN Breast Ca 2020,49,Female,"Infiltrating Duct Carcinoma, NOS",2B,c2,c1,c0,p1C,p0,c0,negative,negative,negative
+94,M2200094A,cancer,TN17,TN17,three,batch1,CHTN Breast Ca 2020,51,Female,"Infiltrating Duct Carcinoma, NOS",1A,c1C,c0,c0,p1C,p0I-,c0,negative,negative,negative
+95,M2200101A,cancer,TN18,TN18,three,batch1,CHTN Breast Ca 2020,52,Female,"Metaplastic Carcinoma, NOS",1B,cT1c,cN0,cM0,pT1c,pN0,cM0,negative,negative,negative
+96,M2200122A,cancer,TN19,TN19,three,batch1,CHTN Breast Ca 2020,56,Female,"Infiltrating Duct Carcinoma, NOS",2A,c2,c0,c0,p1C,p0I-,c0,negative,negative,negative
+97,M2200127A,cancer,TN20,TN20,three,batch1,CHTN Breast Ca 2020,57,Female,"Infiltrating Duct Carcinoma, NOS",2A,cT1c,cN0,cM0,pT1b,pN1,cM0,negative,negative,negative
+98,M2200134A,cancer,TN21,TN21,three,batch1,CHTN Breast Ca 2020,57,Female,"Infiltrating Duct Carcinoma, NOS",1A,c1C,c0,c0,p1C,p0I-,c0,negative,negative,negative
+99,M2200149A,cancer,TN22,TN22,three,batch1,CHTN Breast Ca 2020,60,Female,"Infiltrating Duct Carcinoma, NOS",1A,c1B,c0,c0,p1B,p0I-,c0,negative,negative,negative
+100,M2200160A,cancer,TN23,TN23,three,batch1,CHTN Breast Ca 2020,62,Female,"Infiltrating Duct Carcinoma, NOS",0,cTis(DCIS),cN0,cM0,pT1b,pNX,cM0,negative,negative,negative
+101,M2200166A,cancer,TN24,TN24,three,batch1,CHTN Breast Ca 2020,63,Female,"Infiltrating Duct Carcinoma, NOS",1B,cT1b,cN0,cM0,pT1b,pN0,cM0,negative,negative,negative
+102,M2200171A,cancer,TN25,TN25,three,batch1,CHTN Breast Ca 2020,64,Female,"Metaplastic Carcinoma, NOS",2A,c1C,c0,c0,p2,p0I-,c0,negative,negative,negative
+103,M2200176A,cancer,TN26,TN26,three,batch1,CHTN Breast Ca 2020,65,Female,"Neoplasm, Malignant",1,c1B,c0,c0,p1B,p0I-,c0,negative,negative,negative
+104,M2200185A,cancer,TN27,TN27,three,batch1,CHTN Breast Ca 2020,68,Female,"Infiltrating Duct Carcinoma, NOS",1B,cT1a,cN0,cM0,pT1a,pN0,cM0,negative,negative,negative
+105,M2200192A,cancer,TN28,TN28,three,batch1,CHTN Breast Ca 2020,70,Female,"Infiltrating Duct Carcinoma, NOS",2A,c2,c0,c0,p2,p0I-,c0,negative,negative,negative
+106,M2200072A,cancer,HR4,HR4,three,batch1,CHTN Breast Ca 2020,48,Female,"Infiltrating Duct Carcinoma, NOS",2A,c1C,c0,c0,p1C,p1A,c0,negative,negative,positive
+107,M2200095A,cancer,HR5,HR5,three,batch1,CHTN Breast Ca 2020,51,Female,"Infiltrating Duct Carcinoma, NOS",2A,c1C,c0,c0,p2,p0I-,c0,negative,negative,positive
+108,M2200104A,cancer,HR6,HR6,three,batch1,CHTN Breast Ca 2020,53,Female,"Infiltrating Duct Carcinoma, NOS",2A,cT2,cN0,cM0,,,,negative,negative,positive
+109,M2200118A,cancer,HR7,HR7,three,batch1,CHTN Breast Ca 2020,56,Female,"Infiltrating Duct Carcinoma, NOS",1A,c2,c0,c0,p1A,p0I-,c0,negative,negative,positive
+110,M2200182A,cancer,HR8,HR8,three,batch1,CHTN Breast Ca 2020,68,Female,"Infiltrating Duct Carcinoma, NOS",2A,c1C,c1,c0,p0,p2A,c0,negative,negative,positive
+111,M2200191A,cancer,HR9,HR9,three,batch1,CHTN Breast Ca 2020,70,Female,"Infiltrating Duct Carcinoma, NOS",1A,c1A,c0,c0,p1B,p0I-,c0,negative,negative,positive
+112,14-286,cancer,HR10,HR10,three,batch1,BioBank Breast Ca 2020,60,Female,Ductal carcinoma,1B,,,,pT1b(m) ,pN0(sn),pM: Not applicable,negative,negative,positive
+113,14-431,cancer,HR11,HR11,three,batch1,BioBank Breast Ca 2020,54,Female,Ductal carcinoma,1B,,,,pT3,pN0,pM: Not applicable,negative,negative,positive
+114,14-750,cancer,HR12,HR12,three,batch1,BioBank Breast Ca 2020,87,Female,Ductal carcinoma,2A,,,,pT2,pN0,pM: Not applicable,negative,negative,positive
+115,15-179,cancer,HR13,HR13,three,batch1,BioBank Breast Ca 2020,51,Female,Ductal carcinoma,1A,,,,pT1c,pN0(sn),pM: Not applicable,negative,negative,positive
+116,15-696,cancer,HR14,HR14,three,batch1,BioBank Breast Ca 2020,47,Female,Ductal carcinoma with micropapillary features,1A,,,,pT2(sn),pN0,pM: Not applicable,negative,negative,positive
+117,15-790,cancer,HR15,HR15,three,batch1,BioBank Breast Ca 2020,41,Female,Ductal carcinoma,1A,,,,pT1c,pN1,pM: Not applicable,negative,negative,positive
+118,16-094,cancer,HR16,HR16,three,batch1,BioBank Breast Ca 2020,33,Female,Invasive ductal carcinoma,1B,,,,pT3 ,pN0 ,pM: Not applicable,negative,negative,NA
+119,16-1081,cancer,HR17,HR17,three,batch1,BioBank Breast Ca 2020,54,Female,DCIS,0,,,,pTis(DCIS),pNX,pM: Not applicable,negative,negative,NA
+120,16-231,cancer,HR18,HR18,three,batch1,BioBank Breast Ca 2020,58,Female,Invasive ductal carcinoma,1A,,,,pT2,pN0(sn),pM: Not applicable,negative,negative,positive
+121,16-410,cancer,HR19,HR19,three,batch1,BioBank Breast Ca 2020,52,Female,Invasive mammary carcinoma of no special type,1A,,,,pT1a(m),pN0(sn),,negative,negative,positive
+122,17-591,cancer,HR20,HR20,three,batch1,BioBank Breast Ca 2020,79,Female,Ductal carcinoma in situ (DCIS),0,,,,pTis(DCIS),pNX,pM: Not applicable,negative,negative,NA
+123,17-813,cancer,HR21,HR21,three,batch1,BioBank Breast Ca 2020,81,Female,Invasive mammary carcinoma of no special type (invasive ductal carcinoma),1A,,,, pT1c,pN0,pM: Not applicable,negative,negative,Equivocal (2+)
+124,17-921,cancer,HR22,HR22,three,batch1,BioBank Breast Ca 2020,75,Female,Ductal carcinoma in situ (DCIS),0,,,,pTis(DCIS),pNX,pM: Not applicable,negative,negative,NA
+125,18-0228,cancer,HR23,HR23,three,batch1,BioBank Breast Ca 2020,54,Female,"Invasive carcinoma of no special type( ductal, not otherwise specified) ",1A,,,,pT1a,pN0,pM: Not applicable,negative,negative,positive
+126,18-0417,cancer,HR24,HR24,three,batch1,BioBank Breast Ca 2020,54,Female,Ductal carcinoma in situ (DCIS),0,,,,pTis(DCIS),pN0,pM: Not applicable ,negative,negative,NA
+127,18-0810,cancer,HR25,HR25,three,batch1,BioBank Breast Ca 2020,70,Female,Ductal carcinoma in situ ,0,,,,pTis(DCIS),pNX,pM: Not applicable,negative,negative,NA
+128,18-0873,cancer,HR26,HR26,three,batch1,BioBank Breast Ca 2020,62,Female,Ductal carcinoma in situ (DCIS) ,0,,,,pTis(DCIS),pN0,pM: Not applicable,negative,negative,NA
+129,19-0051,cancer,HR27,HR27,three,batch1,BioBank Breast Ca 2020,64,Female,Ductal carcinoma in situ (DCIS) ,0,,,,pTis(DCIS),pNX,pM: Not applicable,negative,negative,NA
+130,19-0367,cancer,HR28,HR28,three,batch1,BioBank Breast Ca 2020,74,Female,Ductal carcinoma in situ (DCIS) ,0,,,,pTis,pNX,pM: Not applicable,negative,negative,NA
+131,M2200195A,benign,Be1,Be1,three,batch1,CHTN Breast Benign 2020,25,Female,,,,,,,,,,,
+132,M2200196A,benign,Be2,Be2,three,batch1,CHTN Breast Benign 2020,25,Female,,,,,,,,,,,
+133,M2200197A,benign,BB1,BB1,two,batch1,CHTN Breast Benign 2020,26,Female,,,,,,,,,,,
+135,M2200199A,benign,BB2,BB2,two,batch1,CHTN Breast Benign 2020,32,Female,,,,,,,,,,,
+137,M2200201A,benign,BB3,BB3,two,batch1,CHTN Breast Benign 2020,32,Female,,,,,,,,,,,
+138,M2200202A,benign,Be3,Be3,three,batch1,CHTN Breast Benign 2020,33,Female,,,,,,,,,,,
+139,M2200203A,benign,Be4,Be4,three,batch1,CHTN Breast Benign 2020,33,Female,,,,,,,,,,,
+141,M2200205A,benign,Be5,Be5,three,batch1,CHTN Breast Benign 2020,33,Female,,,,,,,,,,,
+146,M2200210A,benign,Be6,Be6,three,batch1,CHTN Breast Benign 2020,35,Female,,,,,,,,,,,
+147,M2200211A,benign,Be7,Be7,three,batch1,CHTN Breast Benign 2020,35,Female,,,,,,,,,,,
+148,M2200212A,benign,Be8,Be8,three,batch1,CHTN Breast Benign 2020,36,Female,,,,,,,,,,,
+150,M2200214A,benign,Be9,Be9,three,batch1,CHTN Breast Benign 2020,37,Female,,,,,,,,,,,
+153,M2200217A,benign,BB4,BB4,two,batch1,CHTN Breast Benign 2020,39,Female,,,,,,,,,,,
+156,M2200220A,benign,Be10,Be10,three,batch1,CHTN Breast Benign 2020,40,Female,,,,,,,,,,,
+157,M2200221A,benign,BB5,BB5,two,batch1,CHTN Breast Benign 2020,40,Female,,,,,,,,,,,
+158,M2200222A,benign,Be11,Be11,three,batch1,CHTN Breast Benign 2020,41,Female,,,,,,,,,,,
+159,M2200223A,benign,Be12,Be12,three,batch1,CHTN Breast Benign 2020,42,Female,,,,,,,,,,,
+164,M2200228A,benign,Be13,Be13,three,batch1,CHTN Breast Benign 2020,43,Female,,,,,,,,,,,
+165,M2200229A,benign,Be14,Be14,three,batch1,CHTN Breast Benign 2020,43,Female,,,,,,,,,,,
+166,M2200230A,benign,Be15,Be15,three,batch1,CHTN Breast Benign 2020,44,Female,,,,,,,,,,,
+167,M2200231A,benign,Be16,Be16,three,batch1,CHTN Breast Benign 2020,44,Female,,,,,,,,,,,
+168,M2200232A,benign,BB6,BB6,two,batch1,CHTN Breast Benign 2020,45,Female,,,,,,,,,,,
+169,M2200233A,benign,Be17,Be17,three,batch1,CHTN Breast Benign 2020,45,Female,,,,,,,,,,,
+170,M2200234A,benign,Be18,Be18,three,batch1,CHTN Breast Benign 2020,45,Female,,,,,,,,,,,
+171,M2200235A,benign,BB7,BB7,two,batch1,CHTN Breast Benign 2020,45,Female,,,,,,,,,,,
+172,M2200236A,benign,Be19,Be19,three,batch1,CHTN Breast Benign 2020,45,Female,,,,,,,,,,,
+175,M2200239A,benign,Be20,Be20,three,batch1,CHTN Breast Benign 2020,46,Female,,,,,,,,,,,
+177,M2200241A,benign,Be21,Be21,three,batch1,CHTN Breast Benign 2020,47,Female,,,,,,,,,,,
+180,M2200244A,benign,Be22,Be22,three,batch1,CHTN Breast Benign 2020,49,Female,,,,,,,,,,,
+181,M2200245A,benign,Be23,Be23,three,batch1,CHTN Breast Benign 2020,50,Female,,,,,,,,,,,
+182,M2200247A,benign,Be24,Be24,three,batch1,CHTN Breast Benign 2020,50,Female,,,,,,,,,,,
+183,M2200248A,benign,Be25,Be25,three,batch1,CHTN Breast Benign 2020,50,Female,,,,,,,,,,,
+184,M2200249A,benign,Be26,Be26,three,batch1,CHTN Breast Benign 2020,50,Female,,,,,,,,,,,
+185,M2200256A,benign,Be27,Be27,three,batch1,CHTN Breast Benign 2020,54,Female,,,,,,,,,,,
+186,M2200258A,benign,Be28,Be28,three,batch1,CHTN Breast Benign 2020,55,Female,,,,,,,,,,,
+187,M2200260A,benign,Be29,Be29,three,batch1,CHTN Breast Benign 2020,55,Female,,,,,,,,,,,
+188,M2200262A,benign,Be30,Be30,three,batch1,CHTN Breast Benign 2020,57,Female,,,,,,,,,,,
+189,M2200267A,benign,Be31,Be31,three,batch1,CHTN Breast Benign 2020,61,Female,,,,,,,,,,,
+190,M2200274A,benign,Be32,Be32,three,batch1,CHTN Breast Benign 2020,65,Female,,,,,,,,,,,
+191,M2200275A,benign,Be33,Be33,three,batch1,CHTN Breast Benign 2020,66,Female,,,,,,,,,,,
+192,M2200277A,benign,Be34,Be34,three,batch1,CHTN Breast Benign 2020,67,Female,,,,,,,,,,,
+193,M2200278A,benign,Be35,Be35,three,batch1,CHTN Breast Benign 2020,67,Female,,,,,,,,,,,
+194,M2200279A,benign,Be36,Be36,three,batch1,CHTN Breast Benign 2020,67,Female,,,,,,,,,,,
+195,M2200281A,benign,Be37,Be37,three,batch1,CHTN Breast Benign 2020,68,Female,,,,,,,,,,,
+196,M2200282A,benign,Be38,Be38,three,batch1,CHTN Breast Benign 2020,68,Female,,,,,,,,,,,
+197,M2200283A,benign,Be39,Be39,three,batch1,CHTN Breast Benign 2020,68,Female,,,,,,,,,,,
+198,M2200285A,benign,Be40,Be40,three,batch1,CHTN Breast Benign 2020,70,Female,,,,,,,,,,,
+199,M2200254A,benign,BB8,BB8,two,batch1,CHTN Breast Benign 2020,53,Female,,,,,,,,,,,
+200,M2200255A,benign,BB9,BB9,two,batch1,CHTN Breast Benign 2020,53,Female,,,,,,,,,,,
+201,M2200259A,benign,BB10,BB10,two,batch1,CHTN Breast Benign 2020,55,Female,,,,,,,,,,,
+202,M2200269A,benign,BB11,BB11,two,batch1,CHTN Breast Benign 2020,63,Female,,,,,,,,,,,
+203,M2200270A,benign,BB12,BB12,two,batch1,CHTN Breast Benign 2020,63,Female,,,,,,,,,,,
+204,M2200276A,benign,BB13,BB13,two,batch1,CHTN Breast Benign 2020,66,Female,,,,,,,,,,,
+205,M2200284A,benign,BB14,BB14,two,batch1,CHTN Breast Benign 2020,69,Female,,,,,,,,,,,
+206,CHTN 83857,health,He1,He1,three,batch1,CHTN ),55,Female,,,,,,,,,,,
+207,CHTN 84346,health,He2,He2,three,batch1,CHTN ),66,Female,,,,,,,,,,,
+208,CHTN 80387,health,He3,He3,three,batch1,CHTN ),54,Female,,,,,,,,,,,
+209,CHTN 80394,health,He4,He4,three,batch1,CHTN ),56,Female,,,,,,,,,,,
+210,CHTN 83734,health,He5,He5,three,batch1,CHTN ),61,Female,,,,,,,,,,,
+211,CHTN 83735,health,He6,He6,three,batch1,CHTN ),59,Female,,,,,,,,,,,
+212,CHTN 84193,health,He7,He7,three,batch1,CHTN ),60,Female,,,,,,,,,,,
+213,S000682773,health,He8,He8,three,batch1,CHTN Breast Benign 2020,43,Female,,,,,,,,,,,
+214,S000682774,health,He9,He9,three,batch1,CHTN Breast Benign 2020,38,Female,,,,,,,,,,,
+215,S000682775,health,He10,He10,three,batch1,CHTN Breast Benign 2020,51,Female,,,,,,,,,,,
+216,S000682776,health,He11,He11,three,batch1,CHTN Breast Benign 2020,56,Female,,,,,,,,,,,
+217,S000682777,health,He12,He12,three,batch1,CHTN Breast Benign 2020,40,Female,,,,,,,,,,,
+218,S000682778,health,He13,He13,three,batch1,CHTN Breast Benign 2020,44,Female,,,,,,,,,,,
+219,S000682779,health,He14,He14,three,batch1,CHTN Breast Benign 2020,57,Female,,,,,,,,,,,
+220,S000682780,health,He15,He15,three,batch1,CHTN Breast Benign 2020,40,Female,,,,,,,,,,,
+221,S000682781,health,He16,He16,three,batch1,CHTN Breast Benign 2020,60,Female,,,,,,,,,,,
+222,S000682782,health,He17,He17,three,batch1,CHTN Breast Benign 2020,54,Female,,,,,,,,,,,
+223,S000682783,health,He18,He18,three,batch1,CHTN Breast Benign 2020,59,Female,,,,,,,,,,,
+224,S000684950,health,He19,He19,three,batch1,CHTN Breast Benign 2020,48,Female,,,,,,,,,,,
+225,S000684951,health,He20,He20,three,batch1,CHTN Breast Benign 2020,,Female,,,,,,,,,,,
+226,S000684952,health,He21,He21,three,batch1,CHTN Breast Benign 2020,62,Female,,,,,,,,,,,
+227,S000684953,health,He22,He22,three,batch1,CHTN Breast Benign 2020,47,Female,,,,,,,,,,,
+228,S000684954,health,He23,He23,NA,nosample,CHTN Breast Benign 2020,,Female,,,,,,,,,,,
+229,S000684955,health,He24,He24,three,batch1,CHTN Breast Benign 2020,,Female,,,,,,,,,,,
+230,S000684956,health,He25,He25,three,batch1,CHTN Breast Benign 2020,62,Female,,,,,,,,,,,
+231,S000684957,health,He26,He26,three,batch1,CHTN Breast Benign 2020,66,Female,,,,,,,,,,,
+232,S000684958,health,He27,He27,three,batch1,CHTN Breast Benign 2020,31,Female,,,,,,,,,,,
+233,S000684959,health,He28,He28,three,batch1,CHTN Breast Benign 2020,25,Female,,,,,,,,,,,
+234,S000684960,health,He29,He29,three,batch1,CHTN Breast Benign 2020,33,Female,,,,,,,,,,,
+235,S000682762,health,He30,He30,three,batch1,CHTN Breast Benign 2020,20,Female,,,,,,,,,,,
+236,S000682763,health,He31,He31,three,batch1,CHTN Breast Benign 2020,54,Female,,,,,,,,,,,
+237,S000682764,health,He32,He32,three,batch1,CHTN Breast Benign 2020,40,Female,,,,,,,,,,,
+238,S000682765,health,He33,He33,three,batch1,CHTN Breast Benign 2020,26,Female,,,,,,,,,,,
+239,S000682766,health,He34,He34,three,batch1,CHTN Breast Benign 2020,62,Female,,,,,,,,,,,
+240,S000682767,health,He35,He35,three,batch1,CHTN Breast Benign 2020,28,Female,,,,,,,,,,,
+241,S000682768,health,He36,He36,three,batch1,CHTN Breast Benign 2020,43,Female,,,,,,,,,,,
+242,S000682769,health,He37,He37,three,batch1,CHTN Breast Benign 2020,40,Female,,,,,,,,,,,
+243,S000682770,health,He38,He38,three,batch1,CHTN Breast Benign 2020,40,Female,,,,,,,,,,,
+244,S000682771,health,He39,He39,three,batch1,CHTN Breast Benign 2020,49,Female,,,,,,,,,,,
+245,S000682772,health,He40,He40,three,batch1,CHTN Breast Benign 2020,60,Female,,,,,,,,,,,
