@@ -549,10 +549,12 @@ for (feat in top_feats) {
     annotate("text", x = 50, y = 0.95, label = hr_text,
              hjust = 0, vjust = 1, size = 3.5, fontface = "italic")
 
-  # Save individual plot
+  # Save individual plot (ggsurvplot needs png/print/dev.off, not ggsave)
   fname <- gsub("[^a-zA-Z0-9_.-]", "_", feat)
-  ggsave(paste0("results/km_curves/KM_", fname, ".png"),
-         print(p_km), width = 8, height = 7, dpi = 300)
+  png(paste0("results/km_curves/KM_", fname, ".png"),
+      width = 8, height = 7, units = "in", res = 300)
+  print(p_km)
+  dev.off()
 
   km_plots[[feat]] <- p_km
   cat(sprintf("  %s: HR=%.2f (%.2f-%.2f), p=%.2e\n",
@@ -596,8 +598,10 @@ p_km_risk$plot <- p_km_risk$plot +
   annotate("text", x = 48, y = 0.95, label = hr_risk_text,
            hjust = 0, vjust = 1, size = 3.8, fontface = "italic")
 
-ggsave("results/km_curves/KM_TScore_risk.png",
-       print(p_km_risk), width = 8, height = 7, dpi = 300)
+png("results/km_curves/KM_TScore_risk.png",
+    width = 8, height = 7, units = "in", res = 300)
+print(p_km_risk)
+dev.off()
 
 cat(sprintf("  T-Score risk: HR=%.2f (%.2f-%.2f), Log-rank p=%.2e\n",
             hr_tscore, ci_tscore[1], ci_tscore[2], pval_tscore))
