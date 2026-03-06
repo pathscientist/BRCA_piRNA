@@ -1,0 +1,213 @@
+SampleID,Group,Age,Gender,Histology,AJCC_Stage,Stage_Group,Stage_Binary,Clinical_T,Pathologic_T,T_Stage,T_Category,Clinical_N,Pathologic_N,N_Stage,N_Category,Clinical_M,Pathologic_M,M_Stage,M_Category,ER_Status,PR_Status,HER2_Status,Subtype,OS_time,OS_status,RFS_time,Alive,Recurrence,Neo_Adjuvant,Adjuvant_Rx,source_ID,RNA_ID,Cohort,Batch
+B10_sample94_R1,Normal,40,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200220A,Be10,batch1,yyfbatch2
+B11_sample95_R1,Normal,41,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200222A,Be11,batch1,yyfbatch2
+B12_sample96_R1,Normal,42,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200223A,Be12,batch1,yyfbatch2
+B13_sample97_R1,Normal,43,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200228A,Be13,batch1,yyfbatch2
+B14_sample98_R1,Normal,43,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200229A,Be14,batch1,yyfbatch2
+B15_sample99_R1,Normal,44,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200230A,Be15,batch1,yyfbatch2
+B16_sample100_R1,Normal,44,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200231A,Be16,batch1,yyfbatch2
+B17_sample101_R1,Normal,45,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200233A,Be17,batch1,yyfbatch2
+B18_sample102_R1,Normal,45,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200234A,Be18,batch1,yyfbatch2
+B19_sample103_R1,Normal,45,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200236A,Be19,batch1,yyfbatch2
+B1_sample85_R1,Normal,25,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200195A,Be1,batch1,yyfbatch2
+B20_sample104_R1,Normal,46,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200239A,Be20,batch1,yyfbatch2
+B21_sample105_R1,Normal,47,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200241A,Be21,batch1,yyfbatch2
+B22_sample106_R1,Normal,49,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200244A,Be22,batch1,yyfbatch2
+B23_sample107_R1,Normal,50,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200245A,Be23,batch1,yyfbatch2
+B24_sample108_R1,Normal,50,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200247A,Be24,batch1,yyfbatch2
+B25_sample109_R1,Normal,50,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200248A,Be25,batch1,yyfbatch2
+B26_sample109_R1,Normal,50,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200249A,Be26,batch1,yyfbatch2
+B27_sample109_R1,Normal,54,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200256A,Be27,batch1,yyfbatch2
+B28_sample109_R1,Normal,55,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200258A,Be28,batch1,yyfbatch2
+B29_sample109_R1,Normal,55,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200260A,Be29,batch1,yyfbatch2
+B2_sample86_R1,Normal,25,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200196A,Be2,batch1,yyfbatch2
+B30_sample109_R1,Normal,57,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200262A,Be30,batch1,yyfbatch2
+B31_sample109_R1,Normal,61,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200267A,Be31,batch1,yyfbatch2
+B32_sample116_R1,Normal,65,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200274A,Be32,batch1,yyfbatch2
+B33_sample117_R1,Normal,66,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200275A,Be33,batch1,yyfbatch2
+B34_sample118_R1,Normal,67,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200277A,Be34,batch1,yyfbatch2
+B35_sample119_R1,Normal,67,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200278A,Be35,batch1,yyfbatch2
+B36_sample120_R1,Normal,67,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200279A,Be36,batch1,yyfbatch2
+B37_sample121_R1,Normal,68,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200281A,Be37,batch1,yyfbatch2
+B38_sample122_R1,Normal,68,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200282A,Be38,batch1,yyfbatch2
+B39_sample123_R1,Normal,68,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200283A,Be39,batch1,yyfbatch2
+B3_sample87_R1,Normal,33,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200202A,Be3,batch1,yyfbatch2
+B40_sample124_R1,Normal,70,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200285A,Be40,batch1,yyfbatch2
+B4_sample88_R1,Normal,33,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200203A,Be4,batch1,yyfbatch2
+B5_sample89_R1,Normal,33,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200205A,Be5,batch1,yyfbatch2
+B6_sample90_R1,Normal,35,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200210A,Be6,batch1,yyfbatch2
+B7_sample91_R1,Normal,35,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200211A,Be7,batch1,yyfbatch2
+B8_sample92_R1,Normal,36,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200212A,Be8,batch1,yyfbatch2
+B9_sample93_R1,Normal,37,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200214A,Be9,batch1,yyfbatch2
+HR10_Sample141_R1,Tumor,60,Female,Ductal carcinoma,Stage IB,Stage I,Early,,pT1b,T1b,T1,,pN0,N0,N0,,,,,negative,negative,positive,HER2+,,,,,,,,14-286,HR10,batch1,yyfbatch2
+HR11_sample142_R1,Tumor,54,Female,Ductal carcinoma,Stage IB,Stage I,Early,,pT3,T3,T3,,pN0,N0,N0,,,,,negative,negative,positive,HER2+,,,,,,,,14-431,HR11,batch1,yyfbatch2
+HR12_sample143_R1,Tumor,87,Female,Ductal carcinoma,Stage IIA,Stage II,Early,,pT2,T2,T2,,pN0,N0,N0,,,,,negative,negative,positive,HER2+,,,,,,,,14-750,HR12,batch1,yyfbatch2
+HR13_sample144_R1,Tumor,51,Female,Ductal carcinoma,Stage IA,Stage I,Early,,pT1c,T1c,T1,,pN0,N0,N0,,,,,negative,negative,positive,HER2+,,,,,,,,15-179,HR13,batch1,yyfbatch2
+HR14_sample145_R1,Tumor,47,Female,Ductal carcinoma with micropapillary features,Stage IA,Stage I,Early,,pT2,T2,T2,,pN0,N0,N0,,,,,negative,negative,positive,HER2+,,,,,,,,15-696,HR14,batch1,yyfbatch2
+HR15_sample146_R1,Tumor,41,Female,Ductal carcinoma,Stage IA,Stage I,Early,,pT1c,T1c,T1,,pN1,N1,N1,,,,,negative,negative,positive,HER2+,,,,,,,,15-790,HR15,batch1,yyfbatch2
+HR16_sample147_R1,Tumor,33,Female,Invasive ductal carcinoma,Stage IB,Stage I,Early,,pT3,T3,T3,,pN0,N0,N0,,,,,negative,negative,unknown,Unclassified,,,,,,,,16-094,HR16,batch1,yyfbatch2
+HR17_sample148_R1,Tumor,54,Female,DCIS,Stage 0,Stage 0,Early,,pTis,Tis,Tis,,pNX,NX,NX,,,,,negative,negative,unknown,Unclassified,,,,,,,,16-1081,HR17,batch1,yyfbatch2
+HR18_sample149_R1,Tumor,58,Female,Invasive ductal carcinoma,Stage IA,Stage I,Early,,pT2,T2,T2,,pN0,N0,N0,,,,,negative,negative,positive,HER2+,,,,,,,,16-231,HR18,batch1,yyfbatch2
+HR19_sample150_R1,Tumor,52,Female,Invasive mammary carcinoma of no special type,Stage IA,Stage I,Early,,pT1a,T1a,T1,,pN0,N0,N0,,,,,negative,negative,positive,HER2+,,,,,,,,16-410,HR19,batch1,yyfbatch2
+HR1_sample125_R1,Tumor,26,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIB,Stage II,Early,cT2,,T2,T2,cN1,,N1,N1,cM0,,M0,M0,negative,negative,positive,HER2+,,,,,,,,M2200001A,HR1,batch1,yyfbatch2
+HR20_sample151_R1,Tumor,79,Female,Ductal carcinoma in situ (DCIS),Stage 0,Stage 0,Early,,pTis,Tis,Tis,,pNX,NX,NX,,,,,negative,negative,unknown,Unclassified,,,,,,,,17-591,HR20,batch1,yyfbatch2
+HR21_sample152_R1,Tumor,81,Female,Invasive mammary carcinoma of no special type (invasive ductal carcinoma),Stage IA,Stage I,Early,,pT1c,T1c,T1,,pN0,N0,N0,,,,,negative,negative,equivocal,Unclassified,,,,,,,,17-813,HR21,batch1,yyfbatch2
+HR22_sample153_R1,Tumor,75,Female,Ductal carcinoma in situ (DCIS),Stage 0,Stage 0,Early,,pTis,Tis,Tis,,pNX,NX,NX,,,,,negative,negative,unknown,Unclassified,,,,,,,,17-921,HR22,batch1,yyfbatch2
+HR23_sample154_R1,Tumor,54,Female,"Invasive carcinoma of no special type( ductal, not otherwise specified)",Stage IA,Stage I,Early,,pT1a,T1a,T1,,pN0,N0,N0,,,,,negative,negative,positive,HER2+,,,,,,,,18-0228,HR23,batch1,yyfbatch2
+HR24_sample155_R1,Tumor,54,Female,Ductal carcinoma in situ (DCIS),Stage 0,Stage 0,Early,,pTis,Tis,Tis,,pN0,N0,N0,,,,,negative,negative,unknown,Unclassified,,,,,,,,18-0417,HR24,batch1,yyfbatch2
+HR25_sample156_R1,Tumor,70,Female,Ductal carcinoma in situ,Stage 0,Stage 0,Early,,pTis,Tis,Tis,,pNX,NX,NX,,,,,negative,negative,unknown,Unclassified,,,,,,,,18-0810,HR25,batch1,yyfbatch2
+HR26_sample157_R1,Tumor,62,Female,Ductal carcinoma in situ (DCIS),Stage 0,Stage 0,Early,,pTis,Tis,Tis,,pN0,N0,N0,,,,,negative,negative,unknown,Unclassified,,,,,,,,18-0873,HR26,batch1,yyfbatch2
+HR27_sample158_R1,Tumor,64,Female,Ductal carcinoma in situ (DCIS),Stage 0,Stage 0,Early,,pTis,Tis,Tis,,pNX,NX,NX,,,,,negative,negative,unknown,Unclassified,,,,,,,,19-0051,HR27,batch1,yyfbatch2
+HR28_sample159_R1,Tumor,74,Female,Ductal carcinoma in situ (DCIS),Stage 0,Stage 0,Early,,pTis,Tis,Tis,,pNX,NX,NX,,,,,negative,negative,unknown,Unclassified,,,,,,,,19-0367,HR28,batch1,yyfbatch2
+HR2_sample126_R1,Tumor,35,Female,Duct Micropapillary Carcinoma,Stage IA,Stage I,Early,cT1C,pT1C,T1C,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,negative,negative,positive,HER2+,,,,,,,,M2200015A,HR2,batch1,yyfbatch2
+HR3_sample127_R1,Tumor,40,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIB,Stage II,Early,cT1c,pT2,T2,T2,cN0,pN1a,N1a,N1,cM0,pM0,M0,M0,negative,negative,positive,HER2+,,,,,,,,M2200034A,HR3,batch1,yyfbatch2
+HR4_sample128_R1,Tumor,48,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT1C,pT1C,T1C,T1,cN0,pN1A,N1A,N1,cM0,pM0,M0,M0,negative,negative,positive,HER2+,,,,,,,,M2200072A,HR4,batch1,yyfbatch2
+HR5_sample129_R1,Tumor,51,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT1C,pT2,T2,T2,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,negative,negative,positive,HER2+,,,,,,,,M2200095A,HR5,batch1,yyfbatch2
+HR6_sample130_R1,Tumor,53,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT2,,T2,T2,cN0,,N0,N0,cM0,,M0,M0,negative,negative,positive,HER2+,,,,,,,,M2200104A,HR6,batch1,yyfbatch2
+HR7_sample131_R1,Tumor,56,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT2,pT1A,T1A,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,negative,negative,positive,HER2+,,,,,,,,M2200118A,HR7,batch1,yyfbatch2
+HR8_sample132_R1,Tumor,68,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT1C,pT0,T0,T0,cN1,pN2A,N2A,N2,cM0,pM0,M0,M0,negative,negative,positive,HER2+,,,,,,,,M2200182A,HR8,batch1,yyfbatch2
+HR9_sample133_R1,Tumor,70,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1A,pT1B,T1B,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,negative,negative,positive,HER2+,,,,,,,,M2200191A,HR9,batch1,yyfbatch2
+He10_sample162_R1,Normal,51,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682775,He10,batch1,yyfbatch2
+He11_sample163_R1,Normal,56,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682776,He11,batch1,yyfbatch2
+He12_sample164_R1,Normal,40,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682777,He12,batch1,yyfbatch2
+He13_sample165_R1,Normal,44,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682778,He13,batch1,yyfbatch2
+He14_sample166_R1,Normal,57,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682779,He14,batch1,yyfbatch2
+He15_sample167_R1,Normal,40,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682780,He15,batch1,yyfbatch2
+He16_sample168_R1,Normal,60,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682781,He16,batch1,yyfbatch2
+He17_sample169_R1,Normal,54,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682782,He17,batch1,yyfbatch2
+He18_sample170_R1,Normal,59,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682783,He18,batch1,yyfbatch2
+He19_sample171_R1,Normal,48,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000684950,He19,batch1,yyfbatch2
+He1_sample134_R1,Normal,55,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,CHTN 83857,He1,batch1,yyfbatch2
+He20_sample172_R1,Normal,,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000684951,He20,batch1,yyfbatch2
+He21_sample173_R1,Normal,62,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000684952,He21,batch1,yyfbatch2
+He22_sample174_R1,Normal,47,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000684953,He22,batch1,yyfbatch2
+He24_sample176_R1,Normal,,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000684955,He24,batch1,yyfbatch2
+He25_sample177_R1,Normal,62,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000684956,He25,batch1,yyfbatch2
+He26_sample178_R1,Normal,66,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000684957,He26,batch1,yyfbatch2
+He27_sample179_R1,Normal,31,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000684958,He27,batch1,yyfbatch2
+He28_sample180_R1,Normal,25,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000684959,He28,batch1,yyfbatch2
+He29_sample181_R1,Normal,33,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000684960,He29,batch1,yyfbatch2
+He2_sample135_R1,Normal,66,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,CHTN 84346,He2,batch1,yyfbatch2
+He30_sample182_R1,Normal,20,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682762,He30,batch1,yyfbatch2
+He31_sample183_R1,Normal,54,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682763,He31,batch1,yyfbatch2
+He32_sample184_R1,Normal,40,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682764,He32,batch1,yyfbatch2
+He33_sample185_R1,Normal,26,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682765,He33,batch1,yyfbatch2
+He34_sample186_R1,Normal,62,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682766,He34,batch1,yyfbatch2
+He35_sample187_R1,Normal,28,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682767,He35,batch1,yyfbatch2
+He36_sample188_R1,Normal,43,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682768,He36,batch1,yyfbatch2
+He37_sample189_R1,Normal,40,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682769,He37,batch1,yyfbatch2
+He38_sample190_R1,Normal,40,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682770,He38,batch1,yyfbatch2
+He39_sample191_R1,Normal,49,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682771,He39,batch1,yyfbatch2
+He3_sample136_R1,Normal,54,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,CHTN 80387,He3,batch1,yyfbatch2
+He40_sample192_R1,Normal,60,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682772,He40,batch1,yyfbatch2
+He4_sample137_R1,Normal,56,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,CHTN 80394,He4,batch1,yyfbatch2
+He5_sample138_R1,Normal,61,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,CHTN 83734,He5,batch1,yyfbatch2
+He6_sample139_R1,Normal,59,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,CHTN 83735,He6,batch1,yyfbatch2
+He7_sample140_R1,Normal,60,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,CHTN 84193,He7,batch1,yyfbatch2
+He8_sample160_R1,Normal,43,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682773,He8,batch1,yyfbatch2
+He9_sample161_R1,Normal,38,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,S000682774,He9,batch1,yyfbatch2
+LA10_sample10_R1,Tumor,40,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIB,Stage II,Early,cT3,pT2,T2,T2,cN1,pN1A,N1A,N1,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200033A,LA10,batch1,yyfbatch2
+LA11_sample11_R1,Tumor,42,Female,"Infiltrating Duct Carcinoma, NOS",Stage IB,Stage I,Early,cT1A,pT1C,T1C,T1,cN0,pN1MI,N1MI,N1,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200039A,LA11,batch1,yyfbatch2
+LA12_sample12_R1,Tumor,43,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIB,Stage II,Early,cT1C,pT2,T2,T2,cN0,pN1A,N1A,N1,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200042A,LA12,batch1,yyfbatch2
+LA13_sample13_R1,Tumor,44,Female,"Infiltrating Duct Carcinoma, NOS",Stage IB,Stage I,Early,cT1C,pT1C,T1C,T1,cN0,pN1MI,N1MI,N1,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200044A,LA13,batch1,yyfbatch2
+LA14_sample14_R1,Tumor,44,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1c,pT2,T2,T2,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200045A,LA14,batch1,yyfbatch2
+LA15_sample15_R1,Tumor,44,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT2,pT2,T2,T2,cN0,pN1,N1,N1,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200046A,LA15,batch1,yyfbatch2
+LA16_sample16_R1,Tumor,44,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT1C,pT1C,T1C,T1,cN0,pN1A,N1A,N1,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200049A,LA16,batch1,yyfbatch2
+LA17_sample17_R1,Tumor,47,Female,Duct Micropapillary Carcinoma,Stage IIA,Stage II,Early,cT1B,pT1C,T1C,T1,cN0,pN1A,N1A,N1,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200064A,LA17,batch1,yyfbatch2
+LA18_sample18_R1,Tumor,49,Female,"Intraductal Carcinoma, Noninfiltrating, NOS",Stage 0,Stage 0,Early,cTis,pTis,Tis,Tis,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200084A,LA18,batch1,yyfbatch2
+LA19_sample19_R1,Tumor,50,Female,"Lobular Carcinoma, NOS",Stage IIA,Stage II,Early,cT1B,pT2,T2,T2,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200087A,LA19,batch1,yyfbatch2
+LA1_sample1_R1,Tumor,30,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT2,pT2,T2,T2,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200003A,LA1,batch1,yyfbatch2
+LA20_sample20_R1,Tumor,50,Female,"Infiltrating Duct Carcinoma, NOS",Stage IB,Stage I,Early,cT1c,pT2,T2,T2,cN0,pN1a,N1a,N1,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200088A,LA20,batch1,yyfbatch2
+LA21_sample21_R1,Tumor,50,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1c,pT2,T2,T2,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200089A,LA21,batch1,yyfbatch2
+LA22_sample22_R1,Tumor,51,Female,"Lobular carcinoma, NOS",Stage IIB,Stage II,Early,cT1C,pT2,T2,T2,cN1,pN1A,N1A,N1,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200093A,LA22,batch1,yyfbatch2
+LA23_sample23_R1,Tumor,55,Female,Duct Micropapillary Carcinoma,Stage IIA,Stage II,Early,cT2,pT2,T2,T2,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200115A,LA23,batch1,yyfbatch2
+LA24_sample24_R1,Tumor,55,Female,"Lobular Carcinoma, NOS",Stage IA,Stage I,Early,cT1c,pT2,T2,T2,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200117A,LA24,batch1,yyfbatch2
+LA25_sample25_R1,Tumor,59,Female,"Infiltrating Duct Carcinoma, NOS",Stage IB,Stage I,Early,cT1C,pT1C,T1C,T1,cN0,pN1MI,N1MI,N1,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200143A,LA25,batch1,yyfbatch2
+LA26_sample26_R1,Tumor,62,Female,"Lobular Carcinoma, NOS",Stage IIA,Stage II,Early,cT3,,T3,T3,cN0,,N0,N0,cM0,,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200158A,LA26,batch1,yyfbatch2
+LA27_sample27_R1,Tumor,62,Female,"Infiltrating Duct Carcinoma, NOS",Stage IB,Stage I,Early,cT1B,pT1B,T1B,T1,cN0,pN1MI,N1MI,N1,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200161A,LA27,batch1,yyfbatch2
+LA28_sample28_R1,Tumor,63,Female,"Lobular Carcinoma, NOS",Stage IA,Stage I,Early,cT1B,pT1C,T1C,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200167A,LA28,batch1,yyfbatch2
+LA29_sample29_R1,Tumor,65,Female,"Lobular Carcinoma, NOS",Stage IA,Stage I,Early,cT1B,pT1B,T1B,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200174A,LA29,batch1,yyfbatch2
+LA2_sample2_R1,Tumor,30,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1b,pT1c,T1c,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200004A,LA2,batch1,yyfbatch2
+LA30_sample30_R1,Tumor,68,Female,"Lobular Carcinoma, NOS",Stage IA,Stage I,Early,cT1B,pT1C,T1C,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200183A,LA30,batch1,yyfbatch2
+LA3_sample3_R1,Tumor,33,Female,"Lobular Carcinoma, NOS",Stage IB,Stage I,Early,cT2,pT3,T3,T3,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200009A,LA3,batch1,yyfbatch2
+LA4_sample4_R1,Tumor,35,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1c,pT1c,T1c,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200014A,LA4,batch1,yyfbatch2
+LA5_sample5_R1,Tumor,36,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT2,,T2,T2,cN1,,N1,N1,cM0,,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200019A,LA5,batch1,yyfbatch2
+LA6_sample6_R1,Tumor,37,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT2,pT1C,T1C,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200020A,LA6,batch1,yyfbatch2
+LA7_sample7_R1,Tumor,38,Female,Mucinous adenocarcinoma,Stage IIA,Stage II,Early,cT2,pT2,T2,T2,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200021A,LA7,batch1,yyfbatch2
+LA8_sample8_R1,Tumor,38,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1C,pT1C,T1C,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200023A,LA8,batch1,yyfbatch2
+LA9_sample9_R1,Tumor,40,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT2,,T2,T2,cN0,,N0,N0,cM0,,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200031A,LA9,batch1,yyfbatch2
+LB10_sample68_R1,Tumor,45,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIB,Stage II,Early,cT2,pT0,T0,T0,cN1,pN2A,N2A,N2,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200054A,LB10,batch1,yyfbatch2
+LB11_sample69_R1,Tumor,47,Female,Infiltrating Duct Mixed With Other Types of Carcinoma,Stage 0,Stage 0,Early,cTIS,pTIS,TIS,Tis,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200068A,LB11,batch1,yyfbatch2
+LB13_sample71_R1,Tumor,48,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT2,pTIS,TIS,Tis,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200076A,LB13,batch1,yyfbatch2
+LB14_sample72_R1,Tumor,50,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1c,pT1c,T1c,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200086A,LB14,batch1,yyfbatch2
+LB15_sample73_R1,Tumor,51,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIB,Stage II,Early,cT2,pT2,T2,T2,cN0,pN1,N1,N1,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200091A,LB15,batch1,yyfbatch2
+LB16_sample74_R1,Tumor,56,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cTIS,pT1C,T1C,T1,cN0,pN1A,N1A,N1,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200124A,LB16,batch1,yyfbatch2
+LB17_sample75_R1,Tumor,57,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT1B,pT1A,T1A,T1,cN0,pN1A,N1A,N1,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200126A,LB17,batch1,yyfbatch2
+LB18_sample76_R1,Tumor,57,Female,"Infiltrating Duct Carcinoma, NOS",Stage IB,Stage I,Early,cT1c,,T1c,T1,cN1,,N1,N1,cM0,,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200128A,LB18,batch1,yyfbatch2
+LB19_sample77_R1,Tumor,57,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT2,pT1b,T1b,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200129A,LB19,batch1,yyfbatch2
+LB1_sample59_R1,Tumor,27,Female,"Infiltrating Duct Carcinoma, NOS",Stage IB,Stage I,Early,cT1C,pT1C,T1C,T1,cN0,pN1MI,N1MI,N1,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200002A,LB1,batch1,yyfbatch2
+LB20_sample78_R1,Tumor,57,Female,"Lobular Carcinoma, NOS",Stage IB,Stage I,Early,cT2,pT2,T2,T2,cN0,pN1mi,N1mi,N1,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200132A,LB20,batch1,yyfbatch2
+LB21_sample79_R1,Tumor,59,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1c,,T1c,T1,cN0,,N0,N0,cM0,,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200147A,LB21,batch1,yyfbatch2
+LB22_sample80_R1,Tumor,61,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1C,pT1C,T1C,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200156A,LB22,batch1,yyfbatch2
+LB23_sample81_R1,Tumor,65,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT1C,pT1C,T1C,T1,cN0,pN1A,N1A,N1,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200175A,LB23,batch1,yyfbatch2
+LB24_sample82_R1,Tumor,67,Female,Infiltrating Duct and Lobular Carcinoma,Stage IA,Stage I,Early,cT1B,pT1C,T1C,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200181A,LB24,batch1,yyfbatch2
+LB25_sample83_R1,Tumor,68,Female,Infiltrating Duct and Lobular Carcinoma,Stage IIB,Stage II,Early,cT3,pT3,T3,T3,cN0,pN1A,N1A,N1,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200186A,LB25,batch1,yyfbatch2
+LB26_sample84_R1,Tumor,70,Female,"Cribriform Carcinoma, NOS",Stage IA,Stage I,Early,cT1B,pT1C,T1C,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200194A,LB26,batch1,yyfbatch2
+LB2_sample60_R1,Tumor,33,Female,"Infiltrating Duct Carcinoma, NOS",Stage IB,Stage I,Early,cT2,pT2,T2,T2,cN0,pN1,N1,N1,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200011A,LB2,batch1,yyfbatch2
+LB3_sample61_R1,Tumor,34,Female,"Infiltrating Duct Carcinoma, NOS",Stage IB,Stage I,Early,cT2,,T2,T2,cN1,,N1,N1,cM0,,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200012A,LB3,batch1,yyfbatch2
+LB4_sample62_R1,Tumor,35,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1c,pT1c,T1c,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200013A,LB4,batch1,yyfbatch2
+LB5_sample63_R1,Tumor,35,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIB,Stage II,Early,cT3,,T3,T3,cN1,,N1,N1,cM0,,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200016A,LB5,batch1,yyfbatch2
+LB6_sample64_R1,Tumor,39,Female,"Infiltrating Duct Carcinoma, NOS",Stage IB,Stage I,Early,cT2,,T2,T2,cN1,,N1,N1,cM0,,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200026A,LB6,batch1,yyfbatch2
+LB7_sample65_R1,Tumor,40,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1c,pT1c,T1c,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200029A,LB7,batch1,yyfbatch2
+LB8_sample66_R1,Tumor,40,Female,"Infiltrating Duct Carcinoma, NOS",Stage IB,Stage I,Early,cT1c,,T1c,T1,cN1,,N1,N1,cM0,,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200032A,LB8,batch1,yyfbatch2
+LB9_sample67_R1,Tumor,44,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1c,pT2,T2,T2,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200047A,LB9,batch1,yyfbatch2
+TN10_sample40_R1,Tumor,44,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1C,pT0,T0,T0,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200050A,TN10,batch1,yyfbatch2
+TN11_sample41_R1,Tumor,45,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIB,Stage II,Early,cT2,pT1B,T1B,T1,cN1,pN1A,N1A,N1,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200055A,TN11,batch1,yyfbatch2
+TN12_sample42_R1,Tumor,45,Female,"Infiltrating Duct Carcinoma, NOS",Stage IB,Stage I,Early,cT1c,pT1b,T1b,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200058A,TN12,batch1,yyfbatch2
+TN13_sample43_R1,Tumor,48,Female,"Infiltrating Duct Carcinoma, NOS",Stage IB,Stage I,Early,cT1c,,T1c,T1,cN0,,N0,N0,cM0,,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200071A,TN13,batch1,yyfbatch2
+TN14_sample44_R1,Tumor,48,Female,"Metaplastic Carcinoma, NOS",Stage IIA,Stage II,Early,cT2,pT2,T2,T2,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200074A,TN14,batch1,yyfbatch2
+TN15_sample45_R1,Tumor,48,Female,"Infiltrating Duct Carcinoma, NOS",Stage IB,Stage I,Early,cT1c,pT1b,T1b,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200078A,TN15,batch1,yyfbatch2
+TN16_sample46_R1,Tumor,49,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIB,Stage II,Early,cT2,pT1C,T1C,T1,cN1,pN0,N0,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200080A,TN16,batch1,yyfbatch2
+TN17_sample47_R1,Tumor,51,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1C,pT1C,T1C,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200094A,TN17,batch1,yyfbatch2
+TN18_sample48_R1,Tumor,52,Female,"Metaplastic Carcinoma, NOS",Stage IB,Stage I,Early,cT1c,pT1c,T1c,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200101A,TN18,batch1,yyfbatch2
+TN19_sample49_R1,Tumor,56,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT2,pT1C,T1C,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200122A,TN19,batch1,yyfbatch2
+TN1_sample31_R1,Tumor,31,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIB,Stage II,Early,cT1c,,T1c,T1,cN1,,N1,N1,cM0,,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200005A,TN1,batch1,yyfbatch2
+TN20_sample50_R1,Tumor,57,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT1c,pT1b,T1b,T1,cN0,pN1,N1,N1,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200127A,TN20,batch1,yyfbatch2
+TN21_sample51_R1,Tumor,57,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1C,pT1C,T1C,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200134A,TN21,batch1,yyfbatch2
+TN22_sample52_R1,Tumor,60,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1B,pT1B,T1B,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200149A,TN22,batch1,yyfbatch2
+TN23_sample53_R1,Tumor,62,Female,"Infiltrating Duct Carcinoma, NOS",Stage 0,Stage 0,Early,cTis,pT1b,T1b,T1,cN0,pNX,NX,NX,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200160A,TN23,batch1,yyfbatch2
+TN24_sample54_R1,Tumor,63,Female,"Infiltrating Duct Carcinoma, NOS",Stage IB,Stage I,Early,cT1b,pT1b,T1b,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200166A,TN24,batch1,yyfbatch2
+TN25_sample55_R1,Tumor,64,Female,"Metaplastic Carcinoma, NOS",Stage IIA,Stage II,Early,cT1C,pT2,T2,T2,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200171A,TN25,batch1,yyfbatch2
+TN26_sample56_R1,Tumor,65,Female,"Neoplasm, Malignant",Stage I,Stage I,Early,cT1B,pT1B,T1B,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200176A,TN26,batch1,yyfbatch2
+TN27_sample57_R1,Tumor,68,Female,"Infiltrating Duct Carcinoma, NOS",Stage IB,Stage I,Early,cT1a,pT1a,T1a,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200185A,TN27,batch1,yyfbatch2
+TN28_sample58_R1,Tumor,70,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT2,pT2,T2,T2,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200192A,TN28,batch1,yyfbatch2
+TN2_sample32_R1,Tumor,33,Female,"Infiltrating Duct Carcinoma, NOS",Stage IB,Stage I,Early,cT1b,pT1b,T1b,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200008A,TN2,batch1,yyfbatch2
+TN3_sample33_R1,Tumor,36,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT2,pT1A,T1A,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200017A,TN3,batch1,yyfbatch2
+TN4_sample34_R1,Tumor,38,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT0,pTX,TX,TX,cN1,pN0,N0,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200022A,TN4,batch1,yyfbatch2
+TN5_sample35_R1,Tumor,39,Female,"Infiltrating Duct Carcinoma, NOS",Stage IB,Stage I,Early,cT1c,pT1b,T1b,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200025A,TN5,batch1,yyfbatch2
+TN6_sample36_R1,Tumor,39,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT2,pT0,T0,T0,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200028A,TN6,batch1,yyfbatch2
+TN7_sample37_R1,Tumor,40,Female,"Metaplastic Carcinoma, NOS",Stage IIA,Stage II,Early,cT2,pT2,T2,T2,cN0,pN0,N0,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200030A,TN7,batch1,yyfbatch2
+TN8_sample38_R1,Tumor,42,Female,"Papillary Carcinoma, NOS",Stage IIA,Stage II,Early,cT2,pT2,T2,T2,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200036A,TN8,batch1,yyfbatch2
+TN9_sample39_R1,Tumor,44,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1C,pT1B,T1B,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,negative,negative,negative,Triple-negative,,,,,,,,M2200048A,TN9,batch1,yyfbatch2
+b197A_bksample9,Normal,26,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200197A,BB1,batch1,yyfbatch2
+b199A_bksample10,Normal,32,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200199A,BB2,batch1,yyfbatch2
+b201A_bksample11,Normal,32,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200201A,BB3,batch1,yyfbatch2
+b217A_bksample12,Normal,39,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200217A,BB4,batch1,yyfbatch2
+b221A_bksample13,Normal,40,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200221A,BB5,batch1,yyfbatch2
+b232A_bksample14,Normal,45,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200232A,BB6,batch1,yyfbatch2
+b235A_bksample15,Normal,45,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200235A,BB7,batch1,yyfbatch2
+b254A_bksample16,Normal,53,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200254A,BB8,batch1,yyfbatch2
+b255A_bksample17,Normal,53,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200255A,BB9,batch1,yyfbatch2
+b259A_bksample18,Normal,55,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200259A,BB10,batch1,yyfbatch2
+b269A_bksample19,Normal,63,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200269A,BB11,batch1,yyfbatch2
+b270A_bksample20,Normal,63,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200270A,BB12,batch1,yyfbatch2
+b276A_bksample21,Normal,66,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200276A,BB13,batch1,yyfbatch2
+b284A_bksample22,Normal,69,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200284A,BB14,batch1,yyfbatch2
+c106A_bksample3,Tumor,53,Female,Infiltrating Duct Mixed With Other Types of Carcinoma,Stage 0,Stage 0,Early,cTIS,pTIS,TIS,Tis,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,unknown,Luminal A,,,,,,,,M2200106A,BC3,batch1,yyfbatch2
+c10A_bksample1,Tumor,33,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1c,,T1c,T1,cN0,,N0,N0,cM0,,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200010A,BC1,batch1,yyfbatch2
+c139A_bksample4,Tumor,58,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1c,,T1c,T1,cN0,,N0,N0,cM0,,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200139A,BC4,batch1,yyfbatch2
+c141A_bksample5,Tumor,58,Female,"Lobular carcinoma, NOS",Stage IA,Stage I,Early,cT1b,pT1a,T1a,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200141A,BC5,batch1,yyfbatch2
+c154A_bksample6,Tumor,61,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIB,Stage II,Early,cT2,,T2,T2,cN0,,N0,N0,cM0,,M0,M0,positive,negative,negative,Luminal A,,,,,,,,M2200154A,BC6,batch1,yyfbatch2
+c155A_bksample7,Tumor,61,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1b,pT1b,T1b,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,negative,positive,Luminal B,,,,,,,,M2200155A,BC7,batch1,yyfbatch2
+c162A_bksample8,Tumor,62,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1c,pT1c,T1c,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,negative,negative,Luminal A,,,,,,,,M2200162A,BC8,batch1,yyfbatch2
+c41A_bksample2,Tumor,43,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1B,pT1B,T1B,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200041A,BC2,batch1,yyfbatch2
