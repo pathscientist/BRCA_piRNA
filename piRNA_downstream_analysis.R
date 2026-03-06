@@ -422,11 +422,10 @@ draw_forest_panel <- function(df, panel_title) {
   })
 
   # Format text columns
-  df$p_text <- ifelse(df$P_value < 0.001, "<0.001",
-                      sprintf("%.3f", df$P_value))
+  df$p_text  <- ifelse(df$P_value < 0.001, "<0.001",
+                       sprintf("%.3f", df$P_value))
   df$hr_text <- sprintf("%.3f(%.3f,%.3f)", df$HR, df$Lower_95CI, df$Upper_95CI)
 
-  # Rows for the table (header + data)
   n_rows <- nrow(df)
   tabletext <- cbind(
     c("Names",   df$Names),
@@ -434,38 +433,43 @@ draw_forest_panel <- function(df, panel_title) {
     c("Hazard Ratio(95% CI)", df$hr_text)
   )
 
-  # forestplot uses mean/lower/upper; header row gets NA
   mean_vals  <- c(NA, df$HR)
   lower_vals <- c(NA, df$Lower_95CI)
   upper_vals <- c(NA, df$Upper_95CI)
 
+  # Determine sensible x-axis clip range
+  all_vals <- c(df$HR, df$Lower_95CI, df$Upper_95CI)
+  all_vals <- all_vals[is.finite(all_vals) & all_vals > 0]
+  clip_lower <- max(min(all_vals) * 0.5, 0.01)
+  clip_upper <- min(max(all_vals) * 2, 100)
+
   fp <- forestplot(
-    labeltext  = tabletext,
-    mean       = mean_vals,
-    lower      = lower_vals,
-    upper      = upper_vals,
-    zero       = 1,
-    xlog       = TRUE,
-    col        = fpColors(box = "red", line = "black", zero = "gray60"),
-    boxsize    = 0.25,
-    lwd.zero   = 1,
-    lwd.ci     = 1.5,
+    labeltext   = tabletext,
+    mean        = mean_vals,
+    lower       = lower_vals,
+    upper       = upper_vals,
+    zero        = 1,
+    xlog        = TRUE,
+    clip        = c(clip_lower, clip_upper),
+    col         = fpColors(box = "red", line = "black", zero = "gray60"),
+    boxsize     = 0.25,
+    lwd.zero    = 1,
+    lwd.ci      = 1.5,
     ci.vertices = TRUE,
     ci.vertices.height = 0.12,
-    txt_gp     = fpTxtGp(
-      label   = gpar(fontfamily = "sans", cex = 0.95),
-      ticks   = gpar(fontfamily = "sans", cex = 0.8),
-      xlab    = gpar(fontfamily = "sans", cex = 0.9)
+    txt_gp      = fpTxtGp(
+      label  = gpar(fontfamily = "sans", cex = 0.95),
+      ticks  = gpar(fontfamily = "sans", cex = 0.8),
+      xlab   = gpar(fontfamily = "sans", cex = 0.9),
+      title  = gpar(fontfamily = "sans", cex = 1.1, fontface = "bold")
     ),
-    xlab       = "HR",
-    graph.pos  = 3,
-    graphwidth = unit(4, "cm"),
-    title      = panel_title,
-    is.summary = c(TRUE, rep(FALSE, n_rows)),
-    hrzl_lines = list(
-      "2" = gpar(lty = 1, lwd = 1, col = "black")
-    ),
-    new_page   = FALSE
+    xlab        = "HR",
+    graph.pos   = 3,
+    graphwidth  = unit(5, "cm"),
+    title       = panel_title,
+    is.summary  = c(TRUE, rep(FALSE, n_rows)),
+    hrzl_lines  = list("2" = gpar(lty = 1, lwd = 1, col = "black")),
+    new_page    = FALSE
   )
   fp
 }
