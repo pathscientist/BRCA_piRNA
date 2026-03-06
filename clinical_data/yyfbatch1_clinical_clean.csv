@@ -1,0 +1,193 @@
+SampleID,Group,Age,Gender,Histology,AJCC_Stage,Stage_Group,Stage_Binary,Clinical_T,Pathologic_T,T_Stage,T_Category,Clinical_N,Pathologic_N,N_Stage,N_Category,Clinical_M,Pathologic_M,M_Stage,M_Category,ER_Status,PR_Status,HER2_Status,Subtype,OS_time,OS_status,RFS_time,Alive,Recurrence,Neo_Adjuvant,Adjuvant_Rx,source_ID,RNA_ID,Cohort,Batch
+vBe10_merged,Normal,38,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200216A,vBe10,batch2,yyfbatch1
+vBe11_merged,Normal,39,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200218A,vBe11,batch2,yyfbatch1
+vBe12_merged,Normal,40,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200219A,vBe12,batch2,yyfbatch1
+vBe13_merged,Normal,42,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200224A,vBe13,batch2,yyfbatch1
+vBe14_merged,Normal,42,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200225A,vBe14,batch2,yyfbatch1
+vBe15_merged,Normal,42,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200226A,vBe15,batch2,yyfbatch1
+vBe16_merged,Normal,42,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200227A,vBe16,batch2,yyfbatch1
+vBe17_merged,Normal,46,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200237A,vBe17,batch2,yyfbatch1
+vBe18_merged,Normal,46,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200238A,vBe18,batch2,yyfbatch1
+vBe19_merged,Normal,46,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200240A,vBe19,batch2,yyfbatch1
+vBe1_merged,Normal,29,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200198A,vBe1,batch2,yyfbatch1
+vBe20_merged,Normal,48,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200242A,vBe20,batch2,yyfbatch1
+vBe21_merged,Normal,49,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200243A,vBe21,batch2,yyfbatch1
+vBe22_merged,Normal,40,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,13-268,vBe22,batch2,yyfbatch1
+vBe23_merged,Normal,72,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,13-471,vBe23,batch2,yyfbatch1
+vBe24_merged,Normal,52,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,14-404,vBe24,batch2,yyfbatch1
+vBe25_merged,Normal,49,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,15-231,vBe25,batch2,yyfbatch1
+vBe27_merged,Normal,32,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,15-817,vBe27,batch2,yyfbatch1
+vBe29_merged,Normal,35,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,15-893,vBe29,batch2,yyfbatch1
+vBe2_merged,Normal,32,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200200A,vBe2,batch2,yyfbatch1
+vBe30_merged,Normal,32,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,16-047,vBe30,batch2,yyfbatch1
+vBe31_merged,Normal,34,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,16-064,vBe31,batch2,yyfbatch1
+vBe32_merged,Normal,55,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,16-079,vBe32,batch2,yyfbatch1
+vBe33_merged,Normal,34,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,16-121,vBe33,batch2,yyfbatch1
+vBe36_merged,Normal,34,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,16-427,vBe36,batch2,yyfbatch1
+vBe37_merged,Normal,48,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,16-682,vBe37,batch2,yyfbatch1
+vBe38_merged,Normal,61,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,16-788,vBe38,batch2,yyfbatch1
+vBe3_merged,Normal,33,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200204A,vBe3,batch2,yyfbatch1
+vBe40_merged,Normal,46,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,16-1039,vBe40,batch2,yyfbatch1
+vBe42_merged,Normal,41,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,17-160,vBe42,batch2,yyfbatch1
+vBe44_merged,Normal,53,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,17-544,vBe44,batch2,yyfbatch1
+vBe49_merged,Normal,34,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,17-637,vBe49,batch2,yyfbatch1
+vBe4_merged,Normal,34,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200206A,vBe4,batch2,yyfbatch1
+vBe51_merged,Normal,47,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,17-725,vBe51,batch2,yyfbatch1
+vBe52_merged,Normal,58,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,17-729,vBe52,batch2,yyfbatch1
+vBe53_merged,Normal,60,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,17-731,vBe53,batch2,yyfbatch1
+vBe5_merged,Normal,34,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200207A,vBe5,batch2,yyfbatch1
+vBe60_merged,Normal,52,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,17-848,vBe60,batch2,yyfbatch1
+vBe61_merged,Normal,50,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,17-897,vBe61,batch2,yyfbatch1
+vBe63_merged,Normal,45,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,17-1124,vBe63,batch2,yyfbatch1
+vBe66_merged,Normal,66,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,17-100062,vBe66,batch2,yyfbatch1
+vBe67_merged,Normal,59,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,17-100065,vBe67,batch2,yyfbatch1
+vBe6_merged,Normal,35,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200208A,vBe6,batch2,yyfbatch1
+vBe70_merged,Normal,62,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,18-0009,vBe70,batch2,yyfbatch1
+vBe71_merged,Normal,55,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,18-0278,vBe71,batch2,yyfbatch1
+vBe72_merged,Normal,40,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,18-0624,vBe72,batch2,yyfbatch1
+vBe73_merged,Normal,49,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,18-0777,vBe73,batch2,yyfbatch1
+vBe74_merged,Normal,40,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,18-0786,vBe74,batch2,yyfbatch1
+vBe77_merged,Normal,47,F,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,19-0379,vBe77,batch2,yyfbatch1
+vBe7_merged,Normal,35,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200209A,vBe7,batch2,yyfbatch1
+vBe8_merged,Normal,36,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200213A,vBe8,batch2,yyfbatch1
+vBe9_merged,Normal,38,Female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,M2200215A,vBe9,batch2,yyfbatch1
+vCa100_merged,Tumor,42,female,LEFT BREAST Intraductal Carcinoma grade 3,Stage 0,Stage 0,Early,,,,,,,,,,,,,positive,negative,negative,Luminal A,20.93,0,,Yes,NED,"adriamycin & cyclophosphamide, paclitaxel",Tamoxifen and later swicthed to Anastrazole,13060-12501,vCa100,batch2,yyfbatch1
+vCa101_merged,Tumor,61,female,"Left Breast Mastectomy - Invasive ductal carcinoma, grade 2",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,,0,,yes,,No known presurgical therapy,Adjuvant therapy with letrozole,13061-12501,vCa101,batch2,yyfbatch1
+vCa102_merged,Tumor,71,female,"Right Breast - Invasive lobular carcinoma with pleomorphic features, nuclear grade 3,",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,18.17,0,,YES,NED,No known presurgical therapy,Adjuvant therapy with anastrozole,13104-12501,vCa102,batch2,yyfbatch1
+vCa103_merged,Tumor,62,female,"Left Breast - Invasive ductal carcinoma, Grade 1",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,negative,negative,Luminal A,20.3,0,,YES,NED,No known presurgical therapy,Adjuvant therapy with anastrozole,13128-12501,vCa103,batch2,yyfbatch1
+vCa104_merged,Tumor,64,female,"Right breast mastectomy - Ductal carcinoma in-situ (DCIS), grade 1 and 2, cribriform and micropapillary types",Stage 0,Stage 0,Early,,,,,,,,,,,,,positive,positive,unknown,Luminal A,18.77,0,,YES,NED,No known presurgical therapy,No adjuvant therapy,13151-12501,vCa104,batch2,yyfbatch1
+vCa105_merged,Tumor,47,female,"RIGHT BREAST - invasive ductal carcinoma, Grade III",Stage 0,Stage 0,Early,,,,,,,,,,,,,negative,negative,equivocal,Unclassified,18.4,0,,YES,NED,Taxotrene + Carboplatin + Transtuzumab + Pertuzumab,Adjuvant RT and trastuzumab + pertuzumab,13153-12501,vCa105,batch2,yyfbatch1
+vCa106_merged,Tumor,71,female,Right Breast Invasive ductal carcinoma grade 3,Stage IIA,Stage II,Early,,,,,,,,,,,,,positive,negative,negative,Luminal A,19.83,0,,YES,Status Unknown,No known presurgical therapy,No adjuvant therapy,13284-12501,vCa106,batch2,yyfbatch1
+vCa107_merged,Tumor,49,female,"Right breast: Invasive ductal carcinoma, Grade 3",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,negative,negative,Luminal A,18.2,0,,Yes,NED,No known presurgical therapy,"Adjuvant Rx with adriamycin & cyclophosphamide, paclitaxel",13562-12501,vCa107,batch2,yyfbatch1
+vCa108_merged,Tumor,70,female,"Left breast - Residual microscopic focus of ductal carcinoma in situ (DCIS), grade 1, solid type; Right breast upper outer quadrant: Invasive ductal carcinoma, grade 2",LEFT - STAGE 0; RIGHT 1A,,,,,,,,,,,,,,,positive,positive,negative,Luminal A,19.07,0,,Yes,NED,No known presurgical therapy,Adjuvant therapy with anastrozole,13576-12501,vCa108,batch2,yyfbatch1
+vCa109_merged,Tumor,57,female,"Left - Invasive ductal carcinoma, grade 3",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,19.07,0,,Yes,NED,No known presurgical therapy,Adjuvant Rt with chemo - Anastrazole,13590-12501,vCa109,batch2,yyfbatch1
+vCa10_merged,Tumor,43,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1b,pT1b,T1b,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200043A,vCa10,batch2,yyfbatch1
+vCa110_merged,Tumor,82,female,"LEFT BREAST BIOPSY: Invasive ductal carcinoma, grade 2; Residual ductal carcinoma in-situ, cribriform type, grade 2 involving a single duct",Stage IA,Stage I,Early,,,,,,,,,,,,,unknown,unknown,negative,Unclassified,19.2,0,,yes,NED,No known presurgical therapy,Adjuvant RT,13665-12501,vCa110,batch2,yyfbatch1
+vCa111_merged,Tumor,59,female,"Left breast, lumpectomy: Invasive ductal carcinoma, Grade I",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,negative,negative,Luminal A,19.13,0,,Yes,NED,No known presurgical therapy,Adjuvant RT + Anastrazole (switched Later to exemestane),13783-12501,vCa111,batch2,yyfbatch1
+vCa112_merged,Tumor,69,female,"Left Invasive ductal carcinoma, grade 1 (3 months prior); (Current) L lumpectomy:  Minimal fibrocystic changes including usual ductal hyperplasia, sclerosing adenosis and calcifications in benign ducts.",Stage IA,Stage I,Early,,,,,,,,,,,,,unknown,unknown,unknown,Unclassified,18.83,0,,Yes,NED,Neoadjuvant RT,,13787-12501,vCa112,batch2,yyfbatch1
+vCa113_merged,Tumor,64,female,"LEFT BREAST -  Infiltrating ductal cancer,",Stage 0,Stage 0,Early,,,,,,,,,,,,,negative,negative,negative,Triple-negative,18.47,0,,Yes,NED,doxorubicin & cyclophosphamide x 4 f/b paclitaxel,,13856-12501,vCa113,batch2,yyfbatch1
+vCa114_merged,Tumor,58,female,"Right breast; lumpectomy): Ductal carcinoma in situ (DCIS), grade 1, cribriform type.",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,negative,negative,Luminal A,16.73,0,,Yes,NED,No known presurgical therapy,Adjuvant RT,13872-12501,vCa114,batch2,yyfbatch1
+vCa115_merged,Tumor,46,female,"Right breast - Invasive lobular carcinoma, grade 2",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,18.27,0,,Yes,NED,No known presurgical therapy,Tamoxifen.,13885-12501,vCa115,batch2,yyfbatch1
+vCa11_merged,Tumor,44,Female,"Lobular Carcinoma In Situ, NOS",Stage 0,Stage 0,Early,cTIS,pTIS,TIS,Tis,cN0,pN0,N0,N0,cM0,pM0,M0,M0,unknown,unknown,unknown,Unclassified,,,,,,,,M2200051A,vCa11,batch2,yyfbatch1
+vCa12_merged,Tumor,45,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cTIS,pT1MI,T1MI,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200052A,vCa12,batch2,yyfbatch1
+vCa13_merged,Tumor,45,Female,"Intraductal Carcinoma, Noninfiltrating, NOS",Stage 0,Stage 0,Early,cTis,pTis,Tis,Tis,cN0,pN0,N0,N0,cM0,pM0,M0,M0,negative,negative,unknown,Unclassified,,,,,,,,M2200053A,vCa13,batch2,yyfbatch1
+vCa14_merged,Tumor,45,Female,"Ductal Carcinoma In Situ, Solid Type",Stage 0,Stage 0,Early,cTIS,pTIS,TIS,Tis,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,unknown,Luminal A,,,,,,,,M2200056A,vCa14,batch2,yyfbatch1
+vCa15_merged,Tumor,45,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1c,pT1a,T1a,T1,cN0,pNX,NX,NX,cM0,pM0,M0,M0,positive,negative,negative,Luminal A,,,,,,,,M2200060A,vCa15,batch2,yyfbatch1
+vCa16_merged,Tumor,46,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cTIS,pT1MI,T1MI,T1,cN0,pN0I+,N0I+,N0,cM0,pM0,M0,M0,unknown,unknown,unknown,Unclassified,,,,,,,,M2200061A,vCa16,batch2,yyfbatch1
+vCa17_merged,Tumor,47,Female,"Intraductal Carcinoma, Noninfiltrating, NOS",Stage 0,Stage 0,Early,cTis,pTis,Tis,Tis,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,unknown,Luminal A,,,,,,,,M2200063A,vCa17,batch2,yyfbatch1
+vCa18_merged,Tumor,47,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1mi,pT1mi,T1mi,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,negative,positive,Luminal B,,,,,,,,M2200066A,vCa18,batch2,yyfbatch1
+vCa19_merged,Tumor,49,Female,"Intraductal Carcinoma, Noninfiltrating, NOS",Stage 0,Stage 0,Early,cTis,pTis,Tis,Tis,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,unknown,Luminal A,,,,,,,,M2200081A,vCa19,batch2,yyfbatch1
+vCa1_merged,Tumor,32,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cTIS,pT1MI,T1MI,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,negative,positive,Luminal B,,,,,,,,M2200006A,vCa1,batch2,yyfbatch1
+vCa20_merged,Tumor,49,Female,Infiltrating Duct Mixed With Other Types of Carcinoma,Stage 0,Stage 0,Early,cTIS,pTIS,TIS,Tis,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,unknown,Luminal A,,,,,,,,M2200082A,vCa20,batch2,yyfbatch1
+vCa21_merged,Tumor,49,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1a,pT1a,T1a,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200083A,vCa21,batch2,yyfbatch1
+vCa22_merged,Tumor,50,Female,Infiltrating Duct Mixed With Other Types of Carcinoma,Stage 0,Stage 0,Early,cTIS,pTIS,TIS,Tis,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,unknown,Luminal A,,,,,,,,M2200090A,vCa22,batch2,yyfbatch1
+vCa23_merged,Tumor,51,Female,Intraductal Carcinoma and Lobular Carcinoma In Situ,Stage 0,Stage 0,Early,cTIS,pTIS,TIS,Tis,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,unknown,Luminal A,,,,,,,,M2200092A,vCa23,batch2,yyfbatch1
+vCa24_merged,Tumor,51,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cTIS,pT1A,T1A,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,negative,positive,Luminal B,,,,,,,,M2200099A,vCa24,batch2,yyfbatch1
+vCa25_merged,Tumor,52,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1mi,pT1mi,T1mi,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200102A,vCa25,batch2,yyfbatch1
+vCa26_merged,Tumor,58,Female,Cribriform Carcinoma In Situ,Stage 0,Stage 0,Early,cTIS,pTIS,TIS,Tis,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,negative,unknown,Luminal A,,,,,,,,M2200138A,vCa26,batch2,yyfbatch1
+vCa27_merged,Tumor,59,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT2,pT1A,T1A,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200142A,vCa27,batch2,yyfbatch1
+vCa28_merged,Tumor,62,Female,"Intraductal Carcinoma, Noninfiltrating, NOS",Stage 0,Stage 0,Early,cTis,pTis,Tis,Tis,cN0,pN0,N0,N0,cM0,pM0,M0,M0,negative,negative,unknown,Unclassified,,,,,,,,M2200164A,vCa28,batch2,yyfbatch1
+vCa29_merged,Tumor,64,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cTis,pT1mi,T1mi,T1,cN0,pN0,N0,N0,cM0,pM0,M0,M0,positive,negative,negative,Luminal A,,,,,,,,M2200170A,vCa29,batch2,yyfbatch1
+vCa2_merged,Tumor,32,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT2,,T2,T2,cN1,,N1,N1,cM0,,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200007A,vCa2,batch2,yyfbatch1
+vCa30_merged,Tumor,65,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1B,pT1,T1,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200172A,vCa30,batch2,yyfbatch1
+vCa31_merged,Tumor,66,Female,Infiltrating Duct Mixed With Other Types of Carcinoma,Stage 0,Stage 0,Early,cTIS,pTIS,TIS,Tis,cN0,pN0,N0,N0,cM0,pM0,M0,M0,negative,negative,unknown,Unclassified,,,,,,,,M2200179A,vCa31,batch2,yyfbatch1
+vCa32_merged,Tumor,69,Female,"Ductal Carcinoma In Situ, Solid Type",Stage 0,Stage 0,Early,cTIS,pTIS,TIS,Tis,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,negative,negative,unknown,Unclassified,,,,,,,,M2200188A,vCa32,batch2,yyfbatch1
+vCa33_merged,Tumor,65,F,Ductal carcinoma in situ,,,,,pTis,Tis,Tis,,pN0,N0,N0,,,,,negative,negative,unknown,Unclassified,,,,,,,,15-641,vCa33,batch2,yyfbatch1
+vCa34_merged,Tumor,66,F,Invasive ductal carcinoma,,,,,pT1a,T1a,T1,,pNX,NX,NX,,,,,unknown,unknown,equivocal,Unclassified,,,,,,,,16-292,vCa34,batch2,yyfbatch1
+vCa3_merged,Tumor,36,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1C,pT1B,T1B,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,negative,negative,Luminal A,,,,,,,,M2200018A,vCa3,batch2,yyfbatch1
+vCa40_merged,Tumor,65,F,"Invasive mammary carcinoma, no special type (invasive ductal carcinoma)",,,,,pT1a,T1a,T1,,pN0,N0,N0,cM34,,M34,M3,negative,negative,negative,Triple-negative,,,,,,,,17-598,vCa40,batch2,yyfbatch1
+vCa41_merged,Tumor,66,F,"Invasive mammary carcinoma, no special type (invasive ductal carcinoma)",,,,,pT1a,T1a,T1,,pN0,N0,N0,cM44,,M44,M4,negative,negative,negative,Triple-negative,,,,,,,,17-699,vCa41,batch2,yyfbatch1
+vCa42_merged,Tumor,70,F,Ductal carcinoma in situ (DCIS),,,,,pTis,Tis,Tis,,pNX,NX,NX,cM32,,M32,M3,unknown,unknown,unknown,Unclassified,,,,,,,,17-737,vCa42,batch2,yyfbatch1
+vCa43_merged,Tumor,57,F,Invasive mammary carcinoma of no special type (invasive ductal carcinoma,,,,,pT1a,T1a,T1,,pN0,N0,N0,cM48,,M48,M4,unknown,unknown,negative,Unclassified,,,,,,,,17-969,vCa43,batch2,yyfbatch1
+vCa44_merged,Tumor,55,F,Invasive mammary carcinoma of no special type,,,,,pT2,T2,T2,,pN0,N0,N0,cM44,,M44,M4,unknown,unknown,negative,Unclassified,,,,,,,,18-0011,vCa44,batch2,yyfbatch1
+vCa46_merged,Tumor,59,F,Ductal carcinoma in situ,,,,,pTis,Tis,Tis,,pNX,NX,NX,cM28,,M28,M2,unknown,unknown,unknown,Unclassified,,,,,,,,18-0307,vCa46,batch2,yyfbatch1
+vCa47_merged,Tumor,59,F,Ductal carcinoma in situ (DCIS),,,,,pTis,Tis,Tis,,pNX,NX,NX,cM24,,M24,M2,unknown,unknown,unknown,Unclassified,,,,,,,,18-0401,vCa47,batch2,yyfbatch1
+vCa48_merged,Tumor,51,F,Lobular carcinoma in situ and atypical lobular hyperplasia,,,,,,,,,,,,cM44,,M44,M4,unknown,unknown,unknown,Unclassified,,,,,,,,18-0620,vCa48,batch2,yyfbatch1
+vCa49_merged,Tumor,51,F,Ductal carcinoma in situ ( DCIS),,,,,pTis,Tis,Tis,,pN0,N0,N0,cM40,,M40,M4,unknown,unknown,unknown,Unclassified,,,,,,,,18-0669,vCa49,batch2,yyfbatch1
+vCa4_merged,Tumor,39,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIA,Stage II,Early,cT1C,pT2,T2,T2,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,negative,negative,Luminal A,,,,,,,,M2200024A,vCa4,batch2,yyfbatch1
+vCa52_merged,Tumor,30,F,"Invasive carcinoma of no special type (ductal, not otherwise specified)",,,,,pT1a,T1a,T1,,pN0,N0,N0,cM21,,M21,M2,unknown,unknown,negative,Unclassified,,,,,,,,19-0444,vCa52,batch2,yyfbatch1
+vCa54_merged,Tumor,61,female,"Locally advanced right breast cancer diagnosed 3 years prior to blood draw; infiltrating ductal carcinoma, grade III",Stage IV,Stage IV,Late,,,,,,,,,,,,,negative,negative,negative,Triple-negative,8.27,1,,NO,Metastatic disease,NA - patient had metastatic Ca to the lungs on the date of blood draw,Abraxane + atezolizumab,0652-10802,vCa54,batch2,yyfbatch1
+vCa55_merged,Tumor,62,female,REPEAT PATIENT; different encounter,Stage IV,Stage IV,Late,,,,,,,,,,,,,negative,negative,negative,Triple-negative,4.87,1,,NO,Metastatic disease,No known presurgical therapy,Abraxane + atezolizumab,0652-10803,vCa55,batch2,yyfbatch1
+vCa56_merged,Tumor,63,female,"right breast cancer - IDC, grade 2 + DCIS, grade 3, solid type, small foci",Stage IV,Stage IV,Late,,,,,,,,,,,,,positive,negative,negative,Luminal A,22.6,1,69.6,NO,Yes,No known presurgical therapy,Adriamycin/Cytoxan followed by Paclitaxel,0708-10802,vCa56,batch2,yyfbatch1
+vCa57_merged,Tumor,68,female,No Carcinoma Identified ; Please see notes for full disease,Stage 0,Stage 0,Early,,,,,,,,,,,,,unknown,unknown,unknown,Unclassified,29.93,0,,Yes,NED,"adriamycin, cyclophosphamide, and paclitaxel",,10716-12501,vCa57,batch2,yyfbatch1
+vCa58_merged,Tumor,61,female,"(Breast, left; lumpectomy): Ductal carcinoma in situ, grade 2, solid and perform types",Stage 0,Stage 0,Early,,,,,,,,,,,,,positive,positive,unknown,Luminal A,28.87,0,,Yes,NED,No known presurgical therapy,Adjuvant RT + Tamoxifen,10871-12501,vCa58,batch2,yyfbatch1
+vCa59_merged,Tumor,65,female,"Left - Ductal carcinoma in situ (DCIS), grade 2, cribriform type",Stage 0,Stage 0,Early,,,,,,,,,,,,,positive,positive,unknown,Luminal A,26.43,0,,Yes,Unknown; No follow up post 2019,No known presurgical therapy,Adjuvant RT,10872-12501,vCa59,batch2,yyfbatch1
+vCa5_merged,Tumor,39,Female,Infiltrating Duct Mixed With Other Types of Carcinoma,Stage 0,Stage 0,Early,cTIS,pTIS,TIS,Tis,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,unknown,Luminal A,,,,,,,,M2200027A,vCa5,batch2,yyfbatch1
+vCa60_merged,Tumor,57,female,"Left - Ductal carcinoma in situ (DCIS), Grade 3, solid and cribriform type,",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,unknown,Luminal A,22.37,,,Unknown,NED,No known presurgical therapy,Ajuvant Rx with Tamoxifen,10874-12501,vCa60,batch2,yyfbatch1
+vCa61_merged,Tumor,56,female,"Right - Invasive ductal carcinoma, Grade 3",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,negative,negative,Luminal A,25.7,0,,Yes,NED,No known presurgical therapy,Adjuvant RT,10875-12501,vCa61,batch2,yyfbatch1
+vCa62_merged,Tumor,61,female,"Left - Ductal carcinoma in situ (DCIS), grade 3",Stage 0,Stage 0,Early,,,,,,,,,,,,,positive,negative,unknown,Luminal A,28.73,0,,Yes,NED,No known presurgical therapy,,10903-12501,vCa62,batch2,yyfbatch1
+vCa63_merged,Tumor,58,female,BILATERAL MASTECTOMIES: RIGHT: Benign; LEFT : Residual 8 mm IDC,Stage IA,Stage I,Early,,,,,,,,,,,,,unknown,negative,negative,Unclassified,18.1,0,,Yes,NED,doxorubicin & cyclophosphamide x 4 f/b paclitaxel,carboplatin x 4 cycles,10935-12502,vCa63,batch2,yyfbatch1
+vCa64_merged,Tumor,43,female,"Breast, left - Invasive ductal carcinoma, grade 2",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,23.93,0,,Yes,NED,No known presurgical therapy,,11019-12501,vCa64,batch2,yyfbatch1
+vCa65_merged,Tumor,46,female,"Left breast, Ductal carcinoma in situ, cribriform and solid patterns with necrosis, grade 3",Stage 0,Stage 0,Early,,,,,,,,,,,,,negative,positive,unknown,Luminal A,26.63,0,,Yes,NED,No known presurgical therapy,,11066-12501,vCa65,batch2,yyfbatch1
+vCa66_merged,Tumor,72,female,"Left - Invasive ductal carcinoma, grade 2",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,,0,,Yes,NED,No known presurgical therapy,Adjuvant RT and anastrozole,11097-12501,vCa66,batch2,yyfbatch1
+vCa67_merged,Tumor,47,female,Invasive ductal cacinoma of the right breast,Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,23.23,0,,yes,NED,No known presurgical therapy,Adjuvant RT and Tamoxifen,11108-12501,vCa67,batch2,yyfbatch1
+vCa68_merged,Tumor,59,female,"Left - Ductal carcinoma in situ, grade 2, solid and cribriform type,",Stage 0,Stage 0,Early,,,,,,,,,,,,,positive,positive,unknown,Luminal A,25.37,0,,Yes,NED,No known presurgical therapy,,11186-12501,vCa68,batch2,yyfbatch1
+vCa69_merged,Tumor,33,female,"RIGHT - Features consistent with treatment effect. No residual in situ carcinoma identified; LEFT - Invasive ductal carcinoma, grade 2",RIGHT - STAGE 0; LEFT - STAGE STAGE 3C,,,,,,,,,,,,,,,positive,negative,negative,Luminal A,26.7,0,,Yes,NED,doxorubicin & cyclophosphamide x 4 f/b paclitaxel,anastrazole,11237-12501,vCa69,batch2,yyfbatch1
+vCa6_merged,Tumor,41,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cT1C,pT1C,T1C,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,negative,negative,Luminal A,,,,,,,,M2200035A,vCa6,batch2,yyfbatch1
+vCa70_merged,Tumor,83,female,"left - Invasive ductal carcinoma, grade 1",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,negative,negative,Luminal A,27.0,0,,YES,NED,No known presurgical therapy,Anastrozole + Denosumab,11556-12501,vCa70,batch2,yyfbatch1
+vCa71_merged,Tumor,68,female,"Left - Two separate histologically distinct cancers 5 mm from each other. 1 - Invasive carcinoma with ductal and lobular features, grade 1; 2 - Invasive lobular carcinoma, grade 1",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,25.87,0,,YES,NED,No known presurgical therapy,Adjuvant RT and anastrozole,11558-12501,vCa71,batch2,yyfbatch1
+vCa72_merged,Tumor,63,female,"Left - Extensive ductal carcinoma in situ solid and cribriform types with associated necrosis, grade 2",Stage 0,Stage 0,Early,,,,,,,,,,,,,positive,positive,unknown,Luminal A,26.17,0,,Yes,NED,,anastrozole,11560-12501,vCa72,batch2,yyfbatch1
+vCa73_merged,Tumor,70,female,"(Left breast; mastectomy): Residual lobular carcinoma in situ; infiltrating lobular cancer, L breast, grade 2",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,27.07,0,,Yes,NED,No known presurgical therapy,,11593-12501,vCa73,batch2,yyfbatch1
+vCa74_merged,Tumor,50,female,"Lft breast biospy showed Invasive lobular carcinoma, grade 1",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,23.87,0,,yes,NED,No known presurgical therapy,Adjuvant RT and  goserelin + denosumab and exemestane,11742-12502,vCa74,batch2,yyfbatch1
+vCa75_merged,Tumor,73,female,"Left breast - RESIDUAL INVASIVE DUCTAL CARCINOMA, GRADE 3",Stage IA,Stage I,Early,,,,,,,,,,,,,negative,negative,negative,Triple-negative,25.13,0,,Yes,NED,doxorubicin & cyclophosphamide x 4 f/b paclitaxel,capecitibine,11772-12501,vCa75,batch2,yyfbatch1
+vCa76_merged,Tumor,29,female,"Left breast, mass, 1 o' clock; biopsy: Invasive ductal carcinoma, Grade 3",Stage 0,Stage 0,Early,,,,,,,,,,,,,unknown,unknown,unknown,Unclassified,22.03,0,,yes,NED,"adriamycin, cyclophosphamide, and paclitaxel",Adjuvant RT,11830-12501,vCa76,batch2,yyfbatch1
+vCa77_merged,Tumor,72,female,"Residual microinvasive invasive ductal carcinoma, grade 2",Stage IIA,Stage II,Early,,,,,,,,,,,,,positive,negative,negative,Luminal A,,,,,,Fulvestrant + Palbociclib,,11906-12501,vCa77,batch2,yyfbatch1
+vCa78_merged,Tumor,46,female,"Right - Invasive ductal carcinoma, grade 3",Stage IA,Stage I,Early,,,,,,,,,,,,,negative,negative,negative,Triple-negative,25.23,0,,Yes,NED,No known presurgical therapy,Adjuvant RT,11926-12501,vCa78,batch2,yyfbatch1
+vCa79_merged,Tumor,51,female,"Right -  Invasive ductal carcinoma, Grade 2",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,25.23,0,,Yes,NED,No known presurgical therapy,Tamoxifen only,11988-12501,vCa79,batch2,yyfbatch1
+vCa7_merged,Tumor,42,Female,Mucinous adenocarcinoma,Stage IA,Stage I,Early,cT1C,pT1C,T1C,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,negative,Luminal A,,,,,,,,M2200037A,vCa7,batch2,yyfbatch1
+vCa80_merged,Tumor,71,female,"Left - Invasive ductal carcinoma, grade 1",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,25.13,0,,Yes,NED,No known presurgical therapy,None (patient refused any therapy),12068-12501,vCa80,batch2,yyfbatch1
+vCa81_merged,Tumor,30,female,"Left - Invasive ductal carcinoma, grade 2,",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,24.23,0,,Yes,NED,No known presurgical therapy,Tamoxifen.,12127-12501,vCa81,batch2,yyfbatch1
+vCa82_merged,Tumor,52,female,"Left - Invasive lobular carcinoma, classical type, grade 2",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,21.57,0,,Yes,NED,No known presurgical therapy,prozac,12185-12501,vCa82,batch2,yyfbatch1
+vCa83_merged,Tumor,74,female,"left - Invasive ductal carcinoma with focal mucin production, grade 2",Stage IB,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,24.47,0,,Yes,NED,No known presurgical therapy,Adjuvant therapy with letrozole,12235-12501,vCa83,batch2,yyfbatch1
+vCa84_merged,Tumor,53,female,Left - Invasive ductal carcinoma grade 3,Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,21.33,0,,Yes,NED,No known presurgical therapy,taxotere and cyclophosphamide and later anastrozole along with adjuvant RT,12238-12501,vCa84,batch2,yyfbatch1
+vCa85_merged,Tumor,54,female,"Right - Invasive ductal carcinoma, grade 1;",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,24.17,0,,yes,NED,No known presurgical therapy,Adjuvant therapy with letrozole,12276-12501,vCa85,batch2,yyfbatch1
+vCa86_merged,Tumor,72,female,"Ductal carcinoma in situ, grade 2, solid and cribriform types;  infiltrating ductal cancer, L breast",Stage IA,Stage I,Early,,,,,,,,,,,,,unknown,unknown,negative,Unclassified,24.4,0,,Yes,NED,No known presurgical therapy,anastrozole,12323-12501,vCa86,batch2,yyfbatch1
+vCa87_merged,Tumor,58,female,"Invasive ductal carcinoma, grade 3",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,negative,positive,Luminal B,21.03,0,,Yes,NED,No known presurgical therapy,Adjuvant RT,12328-12501,vCa87,batch2,yyfbatch1
+vCa88_merged,Tumor,49,female,"Right Breast - Invasive ductal carcinoma, grade 2,",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,24.1,0,,Yes,NED,No known presurgical therapy,Adjuvant RT,12353-12501,vCa88,batch2,yyfbatch1
+vCa89_merged,Tumor,49,female,"infiltrating ductal cancer, R breast, lower outer quadrant, 1 cm, grade 2",Stage IA,Stage I,Early,,,,,,,,,,,,,unknown,unknown,negative,Unclassified,23.8,0,,Yes,NED,No known presurgical therapy,Adjuvant RT + Anastrazole,12353-12502,vCa89,batch2,yyfbatch1
+vCa8_merged,Tumor,42,Female,"Infiltrating Duct Carcinoma, NOS",Stage IA,Stage I,Early,cTIS,pT1A,T1A,T1,cN0,pN0I-,N0I-,N0,cM0,pM0,M0,M0,positive,positive,positive,Luminal B,,,,,,,,M2200038A,vCa8,batch2,yyfbatch1
+vCa90_merged,Tumor,66,female,Right - no residual ductal carcinoma in situ or invasive tumor present; Benign breast tissue with therapy associated changes,Stage 0,Stage 0,Early,,,,,,,,,,,,,positive,negative,positive,Luminal B,23.03,0,,Yes,NED,Taxotere + Carboplatin + Herceptin+ Perjeta,trastuzumab + pertuzumab +  anastrozole,12365-12501,vCa90,batch2,yyfbatch1
+vCa91_merged,Tumor,64,female,"right DCIS, grade 2,",Stage 0,Stage 0,Early,,,,,,,,,,,,,positive,positive,unknown,Luminal A,23.73,0,,Yes,NED,No known presurgical therapy,Adjuvant RT + Anastrazole and currently exemestane,12503-12501,vCa91,batch2,yyfbatch1
+vCa92_merged,Tumor,77,female,"(Left breast; lumpectomy): Invasive ductal carcinoma, grade 2,",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,20.57,0,,Yes,NED,No known presurgical therapy,,12506-12501,vCa92,batch2,yyfbatch1
+vCa93_merged,Tumor,81,female,"(Right breast mass; lumpectomy): Ductal carcinoma in situ, grade 3, solid and cribriform type,",Stage 0,Stage 0,Early,,,,,,,,,,,,,negative,negative,unknown,Unclassified,22.93,0,,Yes,NED,No known presurgical therapy,Adjuvant RT,12512-12501,vCa93,batch2,yyfbatch1
+vCa94_merged,Tumor,57,female,"(Breast, left; lumpectomy): Residual Ductal carcinoma in-situ (DCIS), grade 2, cribriform and micropapillary types",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,18.77,0,,Yes,NED,Pathology report mentions previous therapy however the medical chart does not specify which one. The patient was referred to Rush for a second opinion.,Adjuvant RT + Anastrazole,12648-12501,vCa94,batch2,yyfbatch1
+vCa95_merged,Tumor,68,female,"left breast multifocal multicentric IDC, grade II; right breast invasive ductal carcinoma with lobular features",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,positive,Luminal B,22.9,0,,Yes,NED,No known presurgical therapy,,12774-12501,vCa95,batch2,yyfbatch1
+vCa96_merged,Tumor,64,female,"Left breast - Ductal carcinoma in situ and, cribriform type",Stage 0,Stage 0,Early,,,,,,,,,,,,,positive,negative,unknown,Luminal A,22.73,0,,yes,NED,No known presurgical therapy,,12829-12501,vCa96,batch2,yyfbatch1
+vCa97_merged,Tumor,71,female,"Left lumpectomy): Invasive ductal carcinoma, grade 1",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,negative,negative,Luminal A,18.83,0,,Yes,NED,No known presurgical therapy,Adjuvant Anastrazole,12866-12501,vCa97,batch2,yyfbatch1
+vCa98_merged,Tumor,50,female,"Right breast mastectomy - Ductal carcinoma in situ (DCIS) grade 2, cribriform type",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,16.43,0,,YES,NED,No known presurgical therapy,"adjuvant therapy - tamoxifen, goserelin and zoledronic acid.",13024-12501,vCa98,batch2,yyfbatch1
+vCa99_merged,Tumor,65,female,"Left Breast - Invasive carcinoma with abundant extracellular mucin (Mucinous carcinoma), grade 1",Stage IA,Stage I,Early,,,,,,,,,,,,,positive,positive,negative,Luminal A,21.13,0,,YES,NED,No known presurgical therapy,Adjuvant therapy with anastrozole,13041-12501,vCa99,batch2,yyfbatch1
+vCa9_merged,Tumor,43,Female,"Infiltrating Duct Carcinoma, NOS",Stage IIIA,Stage III,Late,cT2,pT2,T2,T2,cN1,pN2A,N2A,N2,cM0,pM0,M0,M0,positive,positive,unknown,Luminal A,,,,,,,,M2200040A,vCa9,batch2,yyfbatch1
+vHe10_merged,Normal,63,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,10216-10101,vHe10,batch2,yyfbatch1
+vHe11_merged,Normal,56,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,10256-50101,vHe11,batch2,yyfbatch1
+vHe12_merged,Normal,57,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,10277-10101,vHe12,batch2,yyfbatch1
+vHe13_merged,Normal,70,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,10284-50101,vHe13,batch2,yyfbatch1
+vHe14_merged,Normal,68,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,10378-10101,vHe14,batch2,yyfbatch1
+vHe15_merged,Normal,73,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,10464-10101,vHe15,batch2,yyfbatch1
+vHe16_merged,Normal,59,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,10725-10101,vHe16,batch2,yyfbatch1
+vHe17_merged,Normal,63,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,11434-10101,vHe17,batch2,yyfbatch1
+vHe18_merged,Normal,60,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,11675-10101,vHe18,batch2,yyfbatch1
+vHe19_merged,Normal,62,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,11753-10101,vHe19,batch2,yyfbatch1
+vHe1_merged,Normal,73,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,0491-50101,vHe1,batch2,yyfbatch1
+vHe20_merged,Normal,58,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,11931-10101,vHe20,batch2,yyfbatch1
+vHe21_merged,Normal,70,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,12156-10101,vHe21,batch2,yyfbatch1
+vHe22_merged,Normal,59,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,12195-10101,vHe22,batch2,yyfbatch1
+vHe23_merged,Normal,74,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,12945-10101,vHe23,batch2,yyfbatch1
+vHe24_merged,Normal,64,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,12948-10101,vHe24,batch2,yyfbatch1
+vHe25_merged,Normal,62,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,0307-10101,vHe25,batch2,yyfbatch1
+vHe26_merged,Normal,61,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,0413-10101,vHe26,batch2,yyfbatch1
+vHe27_merged,Normal,64,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,0777-50101,vHe27,batch2,yyfbatch1
+vHe28_merged,Normal,61,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,0851-50102,vHe28,batch2,yyfbatch1
+vHe29_merged,Normal,68,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,10002-50101,vHe29,batch2,yyfbatch1
+vHe2_merged,Normal,73,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,0514-10101,vHe2,batch2,yyfbatch1
+vHe30_merged,Normal,75,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,10144-10101,vHe30,batch2,yyfbatch1
+vHe31_merged,Normal,64,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,10198-10102,vHe31,batch2,yyfbatch1
+vHe32_merged,Normal,74,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,10224-10101,vHe32,batch2,yyfbatch1
+vHe33_merged,Normal,72,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,10442-50101,vHe33,batch2,yyfbatch1
+vHe34_merged,Normal,59,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,12061-10101,vHe34,batch2,yyfbatch1
+vHe3_merged,Normal,64,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,12074-10101,vHe3,batch2,yyfbatch1
+vHe4_merged,Normal,65,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,0271-10102,vHe4,batch2,yyfbatch1
+vHe5_merged,Normal,62,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,0852-50102,vHe5,batch2,yyfbatch1
+vHe6_merged,Normal,67,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,0921-50102,vHe6,batch2,yyfbatch1
+vHe7_merged,Normal,76,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,10033-50101,vHe7,batch2,yyfbatch1
+vHe8_merged,Normal,56,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,10112-10101,vHe8,batch2,yyfbatch1
+vHe9_merged,Normal,59,female,,,,,,,,,,,,,,,,,unknown,unknown,unknown,,,,,,,,,10204-10101,vHe9,batch2,yyfbatch1
