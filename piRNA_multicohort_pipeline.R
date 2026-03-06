@@ -1069,7 +1069,7 @@ p_forest <- ggplot(forest_data, aes(x = OR, y = y_pos, color = Analysis)) +
   my_theme +
   theme(legend.position = "top",
         axis.text.y = element_text(size = 10, hjust = 1),
-        plot.margin = margin(10, 120, 10, 10))
+        plot.margin = ggplot2::margin(10, 120, 10, 10))
 
 ggsave("results/forest_plot/forest_plot.png", p_forest,
        width = 12, height = max(4, nrow(forest_data) * 0.6 + 2), dpi = 300)
