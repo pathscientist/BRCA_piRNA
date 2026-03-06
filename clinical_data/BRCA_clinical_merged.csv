@@ -1,0 +1,195 @@
+sample_id,group,ER_status,PR_status,HER2_IHC_status,HER2_final,tumor_stage,days_to_death,days_to_last_followup,neoplasm_status,vital_status
+TCGA_3C_AAAU_01A,Cancer,Positive,Positive,Negative,Negative,stage x,NA,4047,WITH TUMOR,alive
+TCGA_3C_AALI_01A,Cancer,Positive,Positive,Positive,Positive,stage iib,NA,4005,TUMOR FREE,alive
+TCGA_3C_AALJ_01A,Cancer,Positive,Positive,Indeterminate,Indeterminate,stage iib,NA,1474,TUMOR FREE,alive
+TCGA_3C_AALK_01A,Cancer,Positive,Positive,Positive,Positive,stage ia,NA,1448,TUMOR FREE,alive
+TCGA_4H_AAAK_01A,Cancer,Positive,Positive,Equivocal,Equivocal,stage iiia,NA,348,TUMOR FREE,alive
+TCGA_5L_AAT0_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,1477,TUMOR FREE,alive
+TCGA_5L_AAT1_01A,Cancer,Positive,Positive,Equivocal,Equivocal,stage iv,NA,1471,WITH TUMOR,alive
+TCGA_5T_A9QA_01A,Cancer,Positive,Negative,Equivocal,Negative,stage iia,NA,303,NA,alive
+TCGA_A1_A0SB_01A,Cancer,Positive,Negative,Negative,Negative,stage i,NA,259,TUMOR FREE,alive
+TCGA_A1_A0SD_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,437,NA,alive
+TCGA_A1_A0SE_01A,Cancer,Positive,Positive,Negative,Negative,stage i,NA,1321,TUMOR FREE,alive
+TCGA_A1_A0SF_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,1463,TUMOR FREE,alive
+TCGA_A1_A0SG_01A,Cancer,Positive,Positive,Negative,Negative,stage iib,NA,434,NA,alive
+TCGA_A1_A0SH_01A,Cancer,Negative,Positive,Equivocal,Negative,stage iia,NA,1437,TUMOR FREE,alive
+TCGA_A1_A0SI_01A,Cancer,Positive,Positive,Negative,Negative,stage iib,NA,635,TUMOR FREE,alive
+TCGA_A1_A0SJ_01A,Cancer,Positive,Positive,Equivocal,Negative,stage iiia,NA,416,TUMOR FREE,alive
+TCGA_A1_A0SK_01A,Cancer,Negative,Negative,Negative,Negative,stage iia,967,NA,WITH TUMOR,dead
+TCGA_A1_A0SM_01A,Cancer,Positive,Negative,Positive,Positive,stage iia,NA,242,TUMOR FREE,alive
+TCGA_A1_A0SN_01A,Cancer,Positive,Positive,Positive,Positive,stage iia,NA,1196,TUMOR FREE,alive
+TCGA_A1_A0SO_01A,Cancer,Negative,Negative,Equivocal,Negative,stage iib,NA,852,TUMOR FREE,alive
+TCGA_A1_A0SP_01A,Cancer,Negative,Negative,Negative,Negative,stage iia,NA,584,TUMOR FREE,alive
+TCGA_A1_A0SQ_01A,Cancer,Positive,Positive,Negative,Negative,stage iib,NA,554,TUMOR FREE,alive
+TCGA_A2_A04N_01A,Cancer,NA,NA,NA,NA,stage ia,NA,4354,TUMOR FREE,alive
+TCGA_A2_A04P_01A,Cancer,NA,NA,NA,NA,stage iiic,548,NA,WITH TUMOR,dead
+TCGA_A2_A04Q_01A,Cancer,NA,NA,NA,NA,stage ia,NA,2385,NA,alive
+TCGA_A2_A04R_01A,Cancer,NA,NA,NA,NA,stage ia,NA,3709,TUMOR FREE,alive
+TCGA_A2_A04T_01A,Cancer,NA,NA,NA,NA,stage iia,NA,2246,TUMOR FREE,alive
+TCGA_A2_A04U_01A,Cancer,NA,NA,NA,NA,stage iia,NA,2654,NA,alive
+TCGA_A2_A04V_01A,Cancer,NA,NA,NA,NA,stage iia,1920,NA,WITH TUMOR,dead
+TCGA_A2_A04W_01A,Cancer,NA,NA,NA,NA,stage iib,NA,3102,TUMOR FREE,alive
+TCGA_A2_A04X_01A,Cancer,NA,NA,NA,NA,stage iia,NA,1686,TUMOR FREE,alive
+TCGA_A2_A04Y_01A,Cancer,NA,NA,NA,NA,stage iib,NA,1099,TUMOR FREE,alive
+TCGA_A2_A0CK_01A,Cancer,Positive,Positive,Negative,Negative,stage iiia,NA,4159,TUMOR FREE,alive
+TCGA_A2_A0CL_01A,Cancer,Positive,Positive,Negative,Negative,stage iiia,NA,3015,TUMOR FREE,alive
+TCGA_A2_A0CM_01A,Cancer,NA,NA,NA,NA,stage iia,754,NA,WITH TUMOR,dead
+TCGA_A2_A0CO_01A,Cancer,Positive,Positive,Negative,Negative,stage iib,3492,3409,TUMOR FREE,dead
+TCGA_A2_A0CP_01A,Cancer,Positive,Positive,NA,NA,stage ia,NA,2813,TUMOR FREE,alive
+TCGA_A2_A0CQ_01A,Cancer,Positive,Positive,Equivocal,Negative,stage ia,NA,2695,TUMOR FREE,alive
+TCGA_A2_A0CR_01A,Cancer,Positive,Positive,Negative,Negative,stage iib,NA,3283,TUMOR FREE,alive
+TCGA_A2_A0CS_01A,Cancer,Positive,Positive,Equivocal,Negative,stage iv,2348,2298,NA,dead
+TCGA_A2_A0CT_01A,Cancer,Positive,Negative,Equivocal,Negative,stage iia,NA,2289,TUMOR FREE,alive
+TCGA_A2_A0CU_01A,Cancer,Positive,Positive,Equivocal,Negative,stage iia,158,NA,TUMOR FREE,dead
+TCGA_A2_A0CV_01A,Cancer,Positive,Positive,Negative,Negative,stage iib,NA,3011,TUMOR FREE,alive
+TCGA_A2_A0CW_01A,Cancer,Positive,Positive,Equivocal,Negative,stage iib,NA,3283,TUMOR FREE,alive
+TCGA_A2_A0CY_01A,Cancer,Positive,Positive,Negative,Negative,stage iib,NA,1673,TUMOR FREE,alive
+TCGA_A2_A0CZ_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,1616,TUMOR FREE,alive
+TCGA_A2_A0D0_01A,Cancer,Negative,Negative,Negative,Negative,stage iia,NA,2048,NA,alive
+TCGA_A2_A0D1_01A,Cancer,Negative,Negative,Positive,Positive,stage iia,NA,1051,TUMOR FREE,alive
+TCGA_A2_A0D2_01A,Cancer,Negative,Negative,Negative,Negative,stage iia,NA,1027,TUMOR FREE,alive
+TCGA_A2_A0D3_01A,Cancer,Positive,Positive,Negative,Negative,stage ia,NA,1873,TUMOR FREE,alive
+TCGA_A2_A0D4_01A,Cancer,Positive,Positive,Negative,Negative,stage iib,NA,767,TUMOR FREE,alive
+TCGA_A2_A0EM_01A,Cancer,Positive,Positive,NA,NA,stage ia,NA,3094,TUMOR FREE,alive
+TCGA_A2_A0EN_01A,Cancer,Positive,Positive,Equivocal,Negative,stage iia,NA,2718,TUMOR FREE,alive
+TCGA_A2_A0EO_01A,Cancer,Positive,Positive,Negative,Negative,stage ia,NA,2442,TUMOR FREE,alive
+TCGA_A2_A0EP_01A,Cancer,Positive,Negative,Negative,Negative,stage i,NA,3603,TUMOR FREE,alive
+TCGA_A2_A0EQ_01A,Cancer,Negative,Negative,Positive,Positive,stage iia,NA,2426,TUMOR FREE,alive
+TCGA_A2_A0ER_01A,Cancer,Positive,Positive,Equivocal,Negative,stage ib,NA,2263,TUMOR FREE,alive
+TCGA_A2_A0ES_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,2190,TUMOR FREE,alive
+TCGA_A2_A0ET_01A,Cancer,Positive,Positive,Equivocal,Negative,stage iiia,NA,1066,TUMOR FREE,alive
+TCGA_A2_A0EU_01A,Cancer,Positive,Positive,Negative,Negative,stage ia,NA,1043,TUMOR FREE,alive
+TCGA_A2_A0EV_01A,Cancer,Positive,Positive,Negative,Negative,stage ia,NA,968,TUMOR FREE,alive
+TCGA_A2_A0EW_01A,Cancer,Positive,Positive,Negative,Negative,stage iiic,1884,905,WITH TUMOR,dead
+TCGA_A2_A0EX_01A,Cancer,NA,NA,NA,NA,stage iib,NA,752,TUMOR FREE,alive
+TCGA_A2_A0EY_01A,Cancer,Positive,Negative,Positive,Positive,stage iib,NA,1925,TUMOR FREE,alive
+TCGA_A2_A0ST_01A,Cancer,Negative,Negative,NA,NA,stage iia,NA,3017,WITH TUMOR,alive
+TCGA_A2_A0SU_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,1662,TUMOR FREE,alive
+TCGA_A2_A0SV_01A,Cancer,NA,NA,NA,NA,stage iv,825,NA,WITH TUMOR,dead
+TCGA_A2_A0SW_01A,Cancer,NA,NA,NA,NA,stage iv,1365,NA,WITH TUMOR,dead
+TCGA_A2_A0SX_01A,Cancer,Negative,Negative,Negative,Negative,stage ia,NA,1534,WITH TUMOR,alive
+TCGA_A2_A0SY_01A,Cancer,Positive,Positive,NA,NA,stage iiia,NA,1347,TUMOR FREE,alive
+TCGA_A2_A0T0_01A,Cancer,Negative,Negative,Negative,Negative,stage iib,NA,533,TUMOR FREE,alive
+TCGA_A2_A0T1_01A,Cancer,Negative,Negative,Positive,Positive,stage iiic,NA,521,TUMOR FREE,alive
+TCGA_A2_A0T2_01A,Cancer,NA,NA,NA,NA,stage iv,255,NA,WITH TUMOR,dead
+TCGA_A2_A0T3_01A,Cancer,Positive,Positive,Equivocal,Negative,stage ib,NA,1516,TUMOR FREE,alive
+TCGA_A2_A0T4_01A,Cancer,Positive,Positive,Equivocal,Negative,stage iia,NA,624,TUMOR FREE,alive
+TCGA_A2_A0T5_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,531,TUMOR FREE,alive
+TCGA_A2_A0T6_01A,Cancer,Positive,Positive,Negative,Negative,stage iib,NA,575,TUMOR FREE,alive
+TCGA_A2_A0T7_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,631,TUMOR FREE,alive
+TCGA_A2_A0YC_01A,Cancer,Positive,Positive,NA,NA,stage iib,NA,990,WITH TUMOR,alive
+TCGA_A2_A0YD_01A,Cancer,Positive,Positive,NA,NA,stage iib,NA,769,TUMOR FREE,alive
+TCGA_A2_A0YF_01A,Cancer,Positive,Negative,Negative,Negative,stage i,NA,1535,TUMOR FREE,alive
+TCGA_A2_A0YG_01A,Cancer,Positive,Positive,Positive,Positive,stage iiic,NA,666,TUMOR FREE,alive
+TCGA_A2_A0YH_01A,Cancer,Positive,Positive,Negative,Negative,stage iiia,NA,659,TUMOR FREE,alive
+TCGA_A2_A0YI_01A,Cancer,Positive,Positive,Negative,Negative,stage i,NA,1505,TUMOR FREE,alive
+TCGA_A2_A0YK_01A,Cancer,Positive,Negative,Negative,Negative,stage iia,NA,588,TUMOR FREE,alive
+TCGA_A2_A0YL_01A,Cancer,Positive,Positive,Negative,Negative,stage iiia,NA,1474,TUMOR FREE,alive
+TCGA_A2_A0YM_01A,Cancer,Negative,Negative,NA,NA,stage iia,NA,965,TUMOR FREE,alive
+TCGA_A2_A0YT_01A,Cancer,Positive,Negative,NA,NA,stage iiib,723,NA,TUMOR FREE,dead
+TCGA_A2_A1FV_01A,Cancer,Positive,Positive,Negative,Negative,stage iib,NA,714,TUMOR FREE,alive
+TCGA_A2_A1FW_01A,Cancer,Positive,Negative,Negative,Negative,stage iiia,NA,528,TUMOR FREE,alive
+TCGA_A2_A1FX_01A,Cancer,Positive,Positive,NA,NA,stage iiia,NA,1847,TUMOR FREE,alive
+TCGA_A2_A1FZ_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,683,TUMOR FREE,alive
+TCGA_A2_A1G0_01A,Cancer,Positive,Positive,Equivocal,Negative,stage iib,NA,616,TUMOR FREE,alive
+TCGA_A2_A1G1_01A,Cancer,Negative,Negative,Equivocal,Positive,stage iib,NA,584,TUMOR FREE,alive
+TCGA_A2_A1G4_01A,Cancer,Positive,Positive,Negative,Negative,stage iiia,NA,595,TUMOR FREE,alive
+TCGA_A2_A1G6_01A,Cancer,Negative,Negative,Negative,Negative,stage iiia,NA,501,TUMOR FREE,alive
+TCGA_A2_A259_01A,Cancer,Positive,Positive,Negative,Negative,stage i,NA,1596,TUMOR FREE,alive
+TCGA_A2_A25A_01A,Cancer,Positive,Positive,Equivocal,Negative,stage iia,NA,3276,TUMOR FREE,alive
+TCGA_A2_A25B_01A,Cancer,Positive,Positive,Equivocal,Negative,stage iib,NA,1291,WITH TUMOR,alive
+TCGA_A2_A25C_01A,Cancer,Positive,Positive,Negative,Negative,stage iib,NA,523,TUMOR FREE,alive
+TCGA_A2_A25D_01A,Cancer,Positive,Negative,Negative,Negative,stage iiic,NA,552,TUMOR FREE,alive
+TCGA_A2_A25E_01A,Cancer,Positive,Positive,Equivocal,Equivocal,stage iiia,NA,3204,TUMOR FREE,alive
+TCGA_A2_A25F_01A,Cancer,Negative,Positive,Negative,Negative,stage iia,NA,322,TUMOR FREE,alive
+TCGA_A2_A3KC_01A,Cancer,Positive,Positive,Equivocal,Negative,stage iib,NA,1102,TUMOR FREE,alive
+TCGA_A2_A3KD_01A,Cancer,Positive,Positive,Negative,Negative,stage iiia,NA,1206,TUMOR FREE,alive
+TCGA_A2_A3XS_01A,Cancer,Negative,Negative,NA,NA,stage iiia,1032,NA,WITH TUMOR,dead
+TCGA_A2_A3XT_01A,Cancer,Negative,Negative,Negative,Negative,stage iib,NA,2770,TUMOR FREE,alive
+TCGA_A2_A3XU_01A,Cancer,Negative,Negative,NA,NA,stage iib,912,NA,WITH TUMOR,dead
+TCGA_A2_A3XV_01A,Cancer,Positive,Negative,Equivocal,Positive,stage iia,NA,996,TUMOR FREE,alive
+TCGA_A2_A3XW_01A,Cancer,Positive,Negative,Negative,Negative,stage iib,NA,1712,TUMOR FREE,alive
+TCGA_A2_A3XX_01A,Cancer,Negative,Negative,Negative,Negative,stage iia,1439,1168,TUMOR FREE,dead
+TCGA_A2_A3XY_01A,Cancer,Negative,Negative,Negative,Negative,stage iib,1093,1064,WITH TUMOR,dead
+TCGA_A2_A3XZ_01A,Cancer,Negative,Negative,Positive,Positive,stage i,NA,1532,TUMOR FREE,alive
+TCGA_A2_A3Y0_01A,Cancer,Positive,Negative,Negative,Negative,stage iib,NA,1546,TUMOR FREE,alive
+TCGA_A2_A4RW_01A,Cancer,Positive,Positive,Negative,Negative,stage iiic,NA,222,TUMOR FREE,alive
+TCGA_A2_A4RX_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,742,TUMOR FREE,alive
+TCGA_A2_A4RY_01A,Cancer,Positive,Positive,Negative,Negative,stage iiic,NA,648,TUMOR FREE,alive
+TCGA_A2_A4S0_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,706,TUMOR FREE,alive
+TCGA_A2_A4S1_01A,Cancer,Positive,Negative,Negative,Negative,stage iia,NA,820,TUMOR FREE,alive
+TCGA_A2_A4S2_01A,Cancer,Positive,Positive,Negative,Negative,stage iiia,NA,643,TUMOR FREE,alive
+TCGA_A2_A4S3_01A,Cancer,Positive,Positive,Negative,Negative,stage iib,NA,666,NA,alive
+TCGA_A7_A0CD_01A,Cancer,NA,NA,NA,NA,stage i,NA,1165,TUMOR FREE,alive
+TCGA_A7_A0CE_01A,Cancer,NA,NA,NA,NA,stage iia,NA,1074,TUMOR FREE,alive
+TCGA_A7_A0CE_11A,Normal,NA,NA,NA,NA,stage iia,NA,1074,TUMOR FREE,alive
+TCGA_A7_A0CG_01A,Cancer,NA,NA,NA,NA,stage iia,NA,1043,NA,alive
+TCGA_A7_A0CH_01A,Cancer,NA,NA,NA,NA,stage iia,NA,1079,TUMOR FREE,alive
+TCGA_A7_A0CJ_01A,Cancer,NA,NA,NA,NA,stage iia,NA,931,TUMOR FREE,alive
+TCGA_A7_A0D9_01A,Cancer,NA,NA,NA,NA,stage iia,NA,1139,TUMOR FREE,alive
+TCGA_A7_A0D9_11A,Normal,NA,NA,NA,NA,stage iia,NA,1139,TUMOR FREE,alive
+TCGA_A7_A0DA_01A,Cancer,NA,NA,NA,NA,stage iia,NA,1085,TUMOR FREE,alive
+TCGA_A7_A0DB_01A,Cancer,NA,NA,NA,NA,stage iia,NA,1007,TUMOR FREE,alive
+TCGA_A7_A0DB_01A,Cancer,NA,NA,NA,NA,stage iia,NA,1007,TUMOR FREE,alive
+TCGA_A7_A0DB_01C,Cancer,NA,NA,NA,NA,stage iia,NA,1007,TUMOR FREE,alive
+TCGA_A7_A0DB_11A,Normal,NA,NA,NA,NA,stage iia,NA,1007,TUMOR FREE,alive
+TCGA_A7_A0DC_01A,Cancer,NA,NA,NA,NA,stage ia,NA,906,NA,alive
+TCGA_A7_A0DC_01B,Cancer,NA,NA,NA,NA,stage ia,NA,906,NA,alive
+TCGA_A7_A0DC_11A,Normal,NA,NA,NA,NA,stage ia,NA,906,NA,alive
+TCGA_A7_A13D_01A,Cancer,NA,NA,NA,NA,stage iia,NA,965,TUMOR FREE,alive
+TCGA_A7_A13D_01A,Cancer,NA,NA,NA,NA,stage iia,NA,965,TUMOR FREE,alive
+TCGA_A7_A13D_01B,Cancer,NA,NA,NA,NA,stage iia,NA,965,TUMOR FREE,alive
+TCGA_A7_A13E_01A,Cancer,NA,NA,NA,NA,stage iib,614,326,WITH TUMOR,dead
+TCGA_A7_A13E_01A,Cancer,NA,NA,NA,NA,stage iib,614,326,WITH TUMOR,dead
+TCGA_A7_A13E_01B,Cancer,NA,NA,NA,NA,stage iib,614,326,WITH TUMOR,dead
+TCGA_A7_A13E_11A,Normal,NA,NA,NA,NA,stage iib,614,326,WITH TUMOR,dead
+TCGA_A7_A13F_01A,Cancer,Positive,Positive,Equivocal,Negative,stage iiia,NA,765,TUMOR FREE,alive
+TCGA_A7_A13F_11A,Normal,Positive,Positive,Equivocal,Negative,stage iiia,NA,765,TUMOR FREE,alive
+TCGA_A7_A13G_01A,Cancer,NA,NA,NA,NA,NA,NA,NA,NA,NA
+TCGA_A7_A13G_01B,Cancer,NA,NA,NA,NA,NA,NA,NA,NA,NA
+TCGA_A7_A13G_11A,Normal,NA,NA,NA,NA,NA,NA,NA,NA,NA
+TCGA_A7_A13H_01A,Cancer,Positive,Positive,Equivocal,Negative,stage iib,NA,899,TUMOR FREE,alive
+TCGA_A7_A26E_01A,Cancer,Positive,Positive,Negative,Negative,stage iiia,NA,954,TUMOR FREE,alive
+TCGA_A7_A26E_01A,Cancer,Positive,Positive,Negative,Negative,stage iiia,NA,954,TUMOR FREE,alive
+TCGA_A7_A26E_01B,Cancer,Positive,Positive,Negative,Negative,stage iiia,NA,954,TUMOR FREE,alive
+TCGA_A7_A26F_01A,Cancer,NA,NA,NA,NA,NA,NA,NA,NA,NA
+TCGA_A7_A26F_01B,Cancer,NA,NA,NA,NA,NA,NA,NA,NA,NA
+TCGA_A7_A26G_01A,Cancer,Negative,Negative,Negative,Negative,stage iia,NA,722,TUMOR FREE,alive
+TCGA_A7_A26H_01A,Cancer,Positive,Negative,Equivocal,Positive,stage iia,NA,724,WITH TUMOR,alive
+TCGA_A7_A26I_01A,Cancer,NA,NA,NA,NA,NA,NA,NA,NA,NA
+TCGA_A7_A26I_01B,Cancer,NA,NA,NA,NA,NA,NA,NA,NA,NA
+TCGA_A7_A26J_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,627,TUMOR FREE,alive
+TCGA_A7_A26J_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,627,TUMOR FREE,alive
+TCGA_A7_A26J_01B,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,627,TUMOR FREE,alive
+TCGA_A7_A2KD_01A,Cancer,Positive,Positive,Positive,Positive,stage iiia,NA,679,TUMOR FREE,alive
+TCGA_A7_A3IY_01A,Cancer,Positive,Positive,Negative,Negative,stage i,NA,345,TUMOR FREE,alive
+TCGA_A7_A3IZ_01A,Cancer,Positive,Negative,Equivocal,Negative,stage iia,NA,322,TUMOR FREE,alive
+TCGA_A7_A3J0_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,313,TUMOR FREE,alive
+TCGA_A7_A3J1_01A,Cancer,Positive,Positive,Negative,Negative,stage ia,NA,343,TUMOR FREE,alive
+TCGA_A7_A3RF_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,408,WITH TUMOR,alive
+TCGA_A7_A425_01A,Cancer,Positive,Positive,Indeterminate,Negative,stage iiic,NA,447,WITH TUMOR,alive
+TCGA_A7_A426_01A,Cancer,Positive,Positive,Negative,Negative,stage iiic,NA,364,TUMOR FREE,alive
+TCGA_A7_A4SA_01A,Cancer,Positive,Negative,Negative,Negative,stage iib,NA,454,TUMOR FREE,alive
+TCGA_A7_A4SB_01A,Cancer,Positive,Positive,Negative,Negative,stage iiia,NA,418,TUMOR FREE,alive
+TCGA_A7_A4SC_01A,Cancer,Positive,Negative,Equivocal,Negative,stage iib,NA,446,TUMOR FREE,alive
+TCGA_A7_A4SD_01A,Cancer,Negative,Negative,Equivocal,Negative,stage iia,NA,441,TUMOR FREE,alive
+TCGA_A7_A4SE_01A,Cancer,Negative,Negative,Negative,Negative,stage iia,NA,644,TUMOR FREE,alive
+TCGA_A7_A4SF_01A,Cancer,Positive,Negative,Positive,Positive,stage iia,NA,545,TUMOR FREE,alive
+TCGA_A7_A56D_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,448,TUMOR FREE,alive
+TCGA_A7_A5ZV_01A,Cancer,Negative,Negative,Equivocal,Negative,stage iia,NA,368,TUMOR FREE,alive
+TCGA_A7_A5ZW_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,326,TUMOR FREE,alive
+TCGA_A7_A5ZX_01A,Cancer,Positive,Positive,Negative,Negative,stage iiic,NA,336,TUMOR FREE,alive
+TCGA_A7_A6VV_01A,Cancer,Negative,Negative,Negative,Negative,stage iia,NA,313,TUMOR FREE,alive
+TCGA_A7_A6VW_01A,Cancer,Negative,Negative,Negative,Negative,stage iia,NA,285,TUMOR FREE,alive
+TCGA_A7_A6VX_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,317,TUMOR FREE,alive
+TCGA_A7_A6VY_01A,Cancer,Negative,Negative,Negative,Negative,stage iib,NA,266,TUMOR FREE,alive
+TCGA_A8_A06N_01A,Cancer,Positive,Negative,Negative,Negative,stage iiib,NA,0,TUMOR FREE,alive
+TCGA_A8_A06O_01A,Cancer,Positive,Positive,Negative,Negative,stage i,NA,396,TUMOR FREE,alive
+TCGA_A8_A06P_01A,Cancer,Positive,Positive,Negative,Negative,stage iiia,NA,396,TUMOR FREE,alive
+TCGA_A8_A06Q_01A,Cancer,Positive,Positive,Negative,Negative,stage iiia,NA,31,TUMOR FREE,alive
+TCGA_A8_A06R_01A,Cancer,Positive,Negative,Positive,Positive,stage iib,NA,547,TUMOR FREE,alive
+TCGA_A8_A06T_01A,Cancer,Positive,Positive,Positive,Positive,stage iiia,NA,1614,TUMOR FREE,alive
+TCGA_A8_A06U_01A,Cancer,Positive,Positive,Positive,Positive,stage iib,883,NA,TUMOR FREE,dead
+TCGA_A8_A06Y_01A,Cancer,Positive,Positive,Negative,Negative,stage iia,NA,791,TUMOR FREE,alive
+TCGA_A8_A06Z_01A,Cancer,Positive,Positive,Negative,Negative,stage iib,NA,31,NA,alive
+TCGA_A8_A075_01A,Cancer,Positive,Positive,Positive,Positive,stage iib,NA,518,TUMOR FREE,alive
