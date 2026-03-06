@@ -142,7 +142,7 @@ for (batch in c("yyfbatch1", "yyfbatch2")) {
 }
 ```
 
-**Note on yyfbatch2:** OS_time and OS_status are 100% empty. Survival analyses (Cox regression, KM curves, prognostic model figure) will only use TCGA + yyfbatch1 data. The diagnostic model (Script 1) does NOT require survival data — it works with Group labels only.
+**Note on survival data:** yyfbatch2 has 0% survival data and yyfbatch1 has only ~31% (69% missing). Survival analyses (Cox regression, KM curves, prognostic model figure) will effectively only use TCGA-BRCA data. The diagnostic model (Script 1) does NOT require survival data — it works with Group labels only.
 
 ---
 
@@ -366,7 +366,7 @@ BRCA_piRNA/
 |---------|----------|
 | `Error: No data found` | Place all 7 `*_processed.csv` files in `processed_results/` |
 | `combat_df_all not found` | Run Step 1 first, or `combat_df_all <- readRDS("results/models/combat_df_all.rds")` |
-| `OS_time`/`OS_status` missing | Reformat TCGA clinical (Step 0). yyfbatch2 has no survival data — expected |
+| `OS_time`/`OS_status` missing | Reformat TCGA clinical (Step 0). Only TCGA has usable survival data |
 | `Age`/`Stage`/`Subtype` missing | Reformat clinical files (Step 0). Subtype partially empty in yyfbatch — OK |
 | `ComBat error` | All 7 datasets must share common piRNA column names |
 | mRNA / immune / enrichment skipped | Provide `mRNA_expression/TCGA_BRCA_mRNA.csv` |
