@@ -50,11 +50,32 @@ def load_data(mrna_path, pirna_path):
         pirna = pirna.drop(columns=["Group"])
     print(f"  piRNA matrix: {pirna.shape[0]} samples x {pirna.shape[1]} piRNAs")
 
-    # Find common samples
+    # Find common samples and report mismatches
     common = mrna.index.intersection(pirna.index)
-    print(f"  Common samples: {len(common)}")
+    mrna_only = mrna.index.difference(pirna.index)
+    pirna_only = pirna.index.difference(mrna.index)
+
+    print(f"\n  Sample matching summary:")
+    print(f"    Common samples (used for correlation): {len(common)}")
+    print(f"    mRNA-only samples (no piRNA data):     {len(mrna_only)}")
+    print(f"    piRNA-only samples (no mRNA data):     {len(pirna_only)}")
+
     if len(common) == 0:
         sys.exit("ERROR: No common samples found. Check sample ID formats.")
+
+    # Save sample matching report
+    outdir = os.path.dirname(mrna_path)
+    report_path = os.path.join(outdir, "..", "results", "sample_matching_report.csv")
+    os.makedirs(os.path.dirname(report_path), exist_ok=True)
+    report_rows = []
+    for s in sorted(common):
+        report_rows.append({"SampleID": s, "In_mRNA": True, "In_piRNA": True, "Status": "matched"})
+    for s in sorted(mrna_only):
+        report_rows.append({"SampleID": s, "In_mRNA": True, "In_piRNA": False, "Status": "mRNA_only"})
+    for s in sorted(pirna_only):
+        report_rows.append({"SampleID": s, "In_mRNA": False, "In_piRNA": True, "Status": "piRNA_only"})
+    pd.DataFrame(report_rows).to_csv(report_path, index=False)
+    print(f"    Sample matching report saved: {report_path}")
 
     mrna = mrna.loc[common].astype(np.float64)
     pirna = pirna.loc[common].astype(np.float64)
