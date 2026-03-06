@@ -6,6 +6,108 @@ This project builds a piRNA-based diagnostic and prognostic signature for breast
 
 ---
 
+## Pipeline Workflow
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                         DATA PREPARATION (Step 0)                               │
+│                                                                                 │
+│  ┌──────────────────────┐   ┌──────────────────────┐   ┌────────────────────┐   │
+│  │ 5 Public Datasets    │   │ yyfbatch1 (n≈192)    │   │ yyfbatch2 (n≈192)  │   │
+│  │ BRCA1, PRJNA294226,  │   │ In-house validation  │   │ In-house validation│   │
+│  │ PRJNA482141,         │   │ Survival: 31% avail  │   │ Survival: 0%       │   │
+│  │ PRJNA808405,         │   └──────────┬───────────┘   └─────────┬──────────┘   │
+│  │ PRJNA934049          │              │                         │               │
+│  └──────────┬───────────┘              │                         │               │
+│             │                          │                         │               │
+│  ┌──────────┴──────────────────────────┴─────────────────────────┴──────────┐    │
+│  │  Reformat clinical data: SampleID, Age, Stage, Subtype, OS_time/status  │    │
+│  │  TCGA via TCGAbiolinks  ·  yyfbatch: rename AJCC_Stage → Stage          │    │
+│  └─────────────────────────────────┬───────────────────────────────────────-┘    │
+└────────────────────────────────────┼────────────────────────────────────────────-┘
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│              STEP 1: DIAGNOSTIC MODEL  (piRNA_multicohort_pipeline.R)            │
+│                                                                                 │
+│  7 datasets ──► Common piRNAs ──► log2 ──► ComBat ──► Z-score                  │
+│                                                                                 │
+│  ┌─────────────────────────────┐    ┌──────────────────────────────────────┐     │
+│  │ TRAINING (5 public)         │    │ VALIDATION (independent)             │     │
+│  │                             │    │                                      │     │
+│  │ 8 Feature Selection Methods │    │  yyfbatch1: Dx validation            │     │
+│  │ → Consensus (≤10 piRNAs)    │    │  yyfbatch2: Dx validation            │     │
+│  │ → Forward/Backward/Swap     │    │                                      │     │
+│  │ → Random Forest (10×5 CV)   │    │  ROC, PRC, Confusion Matrices       │     │
+│  └──────────────┬──────────────┘    └──────────────────┬───────────────────┘     │
+│                 │                                      │                         │
+│                 └──────────┬───────────────────────────-┘                         │
+│                            ▼                                                     │
+│              final_model.rds + final_features.rds                               │
+│              combat_df_all (in memory for downstream)                            │
+└────────────────────────────┼────────────────────────────────────────────────────-┘
+                             │
+              ┌──────────────┼──────────────┐
+              ▼              ▼              ▼
+┌─────────────────┐ ┌───────────────┐ ┌────────────────┐
+│ STEP 2          │ │ STEP 3        │ │ STEP 4         │
+│ Downstream      │ │ Meta-Analysis │ │ Network        │
+│ Analysis        │ │ & Functional  │ │ Analysis       │
+│                 │ │               │ │                │
+│ Cox regression  │ │ SMD forest    │ │ 8 network      │
+│  (TCGA only)    │ │ Expression    │ │ visualizations │
+│ KM curves       │ │   heatmap     │ │ (radial,       │
+│  (TCGA only)    │ │ piRNA-mRNA    │ │  bipartite,    │
+│ Subgroup ROC    │ │   correlation │ │  chord, etc.)  │
+│ T-Score boxplot │ │ KEGG/GO/      │ │                │
+│                 │ │  Reactome     │ │                │
+│                 │ │ (needs mRNA)  │ │                │
+└────────┬────────┘ └───────┬───────┘ └───────┬────────┘
+         │                  │                 │
+         └──────────────────┼─────────────────┘
+                            ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│              STEP 5: ADVANCED ANALYSIS  (piRNA_advanced_analysis.R)              │
+│                                                                                 │
+│  ┌─────────────────┐ ┌──────────────┐ ┌──────────┐ ┌──────────┐ ┌───────────┐  │
+│  │ LASSO-Cox       │ │ Nomogram +   │ │ SHAP     │ │ Immune   │ │ Drug      │  │
+│  │ (TCGA only)     │ │ Calibration  │ │ (XGBoost)│ │ ssGSEA   │ │ Sensitiv. │  │
+│  │ Coef path plot  │ │ + tdROC      │ │          │ │ (needs   │ │ (needs    │  │
+│  │                 │ │ (TCGA only)  │ │          │ │  mRNA)   │ │  mRNA +   │  │
+│  │                 │ │              │ │          │ │          │ │ oncoPredict│  │
+│  └─────────────────┘ └──────────────┘ └──────────┘ └──────────┘ └───────────┘  │
+│                                                                                 │
+│  ┌────────────────────────────────┐                                              │
+│  │ TMB Analysis (optional)       │                                              │
+│  │ Needs: clinical_data/tmb.csv  │                                              │
+│  └────────────────────────────────┘                                              │
+└────────────────────────────────────────┬────────────────────────────────────────-┘
+                                         ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│         STEP 6: PROGNOSTIC MODEL FIGURE  (pipeline/12_prognostic_model_figure.R) │
+│                                                                                 │
+│  6-panel composite (TCGA survival data only):                                   │
+│  ┌───────┐ ┌───────────────┐ ┌───────────┐ ┌───────────┐ ┌──────┐ ┌──────┐     │
+│  │ A:    │ │ B: ML Pipeline│ │ C: KM     │ │ D: KM     │ │ E:   │ │ F:   │     │
+│  │ Uni-  │ │ Heatmap       │ │ (train)   │ │ (valid)   │ │ tdROC│ │ tdROC│     │
+│  │ variate│ │ 7 FS × 7 ML  │ │           │ │           │ │ train│ │ valid│     │
+│  │ Cox   │ │ C-index       │ │           │ │           │ │      │ │      │     │
+│  └───────┘ └───────────────┘ └───────────┘ └───────────┘ └──────┘ └──────┘     │
+│                                                                                 │
+│  Output: Figure_prognostic_model.{png,pdf}                                      │
+└─────────────────────────────────────────────────────────────────────────────────┘
+
+  ╔═══════════════════════════════════════════════════════════════════╗
+  ║  SURVIVAL DATA SCOPE:                                           ║
+  ║  All survival analyses (Cox, KM, Nomogram, LASSO-Cox, tdROC,    ║
+  ║  prognostic figure) use TCGA-BRCA data ONLY.                    ║
+  ║  yyfbatch1: 69% missing  ·  yyfbatch2: 100% missing            ║
+  ║                                                                 ║
+  ║  DIAGNOSTIC MODEL: Uses Group labels only (all 7 cohorts).      ║
+  ╚═══════════════════════════════════════════════════════════════════╝
+```
+
+---
+
 ## Data Readiness Checklist
 
 ### Status of All Required Input Files
