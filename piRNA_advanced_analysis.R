@@ -208,36 +208,19 @@ if (!all(c("OS_time", "OS_status") %in% colnames(merged_df)) ||
   }
 }
 
-# Simulate survival if still missing
+# Check survival data availability
 if (!all(c("OS_time", "OS_status") %in% colnames(merged_df)) ||
     all(is.na(merged_df$OS_time))) {
-  cat("WARNING: No survival data found. Simulating for demonstration.\n")
-  cat("         Run 'Rscript scripts/download_tcga_brca_clinical.R' to get real data.\n")
-  set.seed(42)
-  n <- nrow(merged_df)
-  is_tumor <- merged_df$Group == "Tumor"
-  merged_df$OS_time <- pmin(round(ifelse(is_tumor,
-    rexp(n, rate = 1/48), rexp(n, rate = 1/120)) *
-    ifelse(merged_df$T_Score > 0.5 & is_tumor, 0.7, 1.0), 1), 72)
-  merged_df$OS_status <- ifelse(merged_df$OS_time >= 72, 0, 1)
-  merged_df$OS_time[merged_df$OS_time >= 72] <- 72
-  censor_idx <- sample(which(merged_df$OS_status == 1),
-                       round(0.2 * sum(merged_df$OS_status == 1)))
-  merged_df$OS_status[censor_idx] <- 0
+  cat("WARNING: No survival data found.\n")
+  cat("  Place clinical CSV files in clinical_data/ with OS_time and OS_status columns.\n")
+  cat("  Survival analyses (LASSO Cox, Nomogram, KM) will be limited.\n")
 }
 
-# Simulate clinical variables if still missing
+# Check clinical covariates availability
 if (!"Age" %in% colnames(merged_df) || all(is.na(merged_df$Age))) {
-  cat("WARNING: No clinical covariates found. Simulating Age/Stage/Subtype.\n")
-  set.seed(42); n <- nrow(merged_df)
-  is_tumor <- merged_df$Group == "Tumor"
-  merged_df$Age <- sample(30:80, n, replace = TRUE)
-  merged_df$Stage <- NA
-  merged_df$Stage[is_tumor] <- sample(c("Stage I", "Stage II", "Stage III", "Stage IV"),
-    sum(is_tumor), replace = TRUE, prob = c(0.35, 0.30, 0.20, 0.15))
-  merged_df$Subtype <- NA
-  merged_df$Subtype[is_tumor] <- sample(c("Luminal A", "Luminal B", "HER2+", "Triple-negative"),
-    sum(is_tumor), replace = TRUE, prob = c(0.40, 0.20, 0.15, 0.25))
+  cat("WARNING: No clinical covariates (Age/Stage/Subtype) found.\n")
+  cat("  Place clinical CSV files in clinical_data/ with Age, Stage, Subtype columns.\n")
+  cat("  Subgroup analyses will be limited.\n")
 }
 
 merged_df$Age_binary <- factor(ifelse(merged_df$Age >= 60, ">=60", "<60"),
@@ -956,8 +939,8 @@ if (!is.null(tmb_file)) {
     tmb_col <- "TMB"
     tmb_is_real <- TRUE
   } else {
-    cat("  WARNING: Too few TMB matches. Check barcode format.\n")
-    cat("  Falling back to simulated TMB for demonstration.\n")
+    cat("  WARNING: Too few TMB matches. Check barcode format in tmb_data.csv.\n")
+    cat("  Skipping TMB analysis.\n")
     has_tmb <- FALSE
     tmb_is_real <- FALSE
   }
@@ -976,14 +959,10 @@ if (!has_tmb) {
     tmb_is_real <- TRUE
   } else {
     cat("  No TMB data found.\n")
-    cat("  Run 'Rscript scripts/download_tcga_brca_tmb.R' to download TCGA-BRCA TMB data.\n")
-    cat("  Simulating TMB for demonstration purposes.\n")
-    set.seed(42)
-    tumor_df$TMB <- rlnorm(nrow(tumor_df), meanlog = 2, sdlog = 1)
-    tumor_df$TMB <- tumor_df$TMB * (1 + 0.3 * scale(tumor_df$T_Score)[, 1])
-    tmb_col <- "TMB"
-    tumor_df_tmb <- tumor_df
-    has_tmb <- TRUE
+    cat("  Run 'Rscript scripts/download_tcga_brca_tmb.R' to download TCGA-BRCA TMB data,\n")
+    cat("  then place tmb_data.csv in clinical_data/.\n")
+    cat("  Skipping TMB analysis.\n")
+    has_tmb <- FALSE
     tmb_is_real <- FALSE
   }
 }
@@ -1216,99 +1195,124 @@ if (has_tmb) {
 # ══════════════════════════════════════════════════════════════════════════════
 cat("\n========== PHASE 6: DRUG SENSITIVITY ==========\n")
 
-# Drug sensitivity prediction typically uses pRRophetic or oncoPredict
-# which require gene expression data (not piRNA).
-# Here we provide the framework using correlation-based approach:
-# correlate T-Score with known drug targets or IC50 predictions.
+# Drug sensitivity prediction requires real IC50 data from pRRophetic/oncoPredict.
+# Load drug sensitivity data if available, otherwise skip.
 
-# >>> EDIT: Load drug sensitivity data if available <<<
-# ic50_data <- read.csv("drug_ic50_predictions.csv", row.names = 1)
-
-# For demonstration: create common breast cancer drug response proxies
-cat("  Setting up drug sensitivity framework...\n")
-cat("  NOTE: For accurate drug sensitivity, use pRRophetic/oncoPredict\n")
-cat("  with matched gene expression data.\n\n")
-
-# Common breast cancer drugs to analyze
-bc_drugs <- c("Tamoxifen", "Paclitaxel", "Doxorubicin", "Cisplatin",
-              "Trastuzumab", "Lapatinib", "Palbociclib", "Olaparib")
-
-# Simulate drug IC50 (correlated with expression patterns)
-set.seed(SEED)
-drug_ic50 <- data.frame(row.names = rownames(tumor_df))
-for (drug in bc_drugs) {
-  # Simulate IC50 as a function of expression + noise
-  base_ic50 <- rnorm(nrow(tumor_df), mean = 5, sd = 2)
-  # Add correlation with T-score (some drugs more effective in high-risk)
-  t_effect <- scale(tumor_df$T_Score)[, 1] * runif(1, -1.5, 1.5)
-  drug_ic50[[drug]] <- base_ic50 + t_effect
+ic50_path <- NULL
+ic50_search <- c("clinical_data/drug_ic50_predictions.csv",
+                 "data/drug_ic50_predictions.csv",
+                 "drug_ic50_predictions.csv")
+for (fp in ic50_search) {
+  if (file.exists(fp)) { ic50_path <- fp; break }
 }
 
-# --- 6.1 Drug Sensitivity Boxplots: High vs Low Risk ---
-drug_long <- drug_ic50
-drug_long$RiskGroup <- tumor_df$RiskGroup
-drug_long$Sample <- rownames(drug_long)
+if (!is.null(ic50_path)) {
+  cat(sprintf("  Loading drug sensitivity data from: %s\n", ic50_path))
+  drug_ic50 <- read.csv(ic50_path, row.names = 1, check.names = FALSE)
 
-drug_melt <- reshape2::melt(drug_long, id.vars = c("Sample", "RiskGroup"),
-                            variable.name = "Drug", value.name = "IC50")
-
-p_drug_box <- ggplot(drug_melt, aes(x = Drug, y = IC50, fill = RiskGroup)) +
-  stat_boxplot(geom = "errorbar", width = 0.2, position = position_dodge(0.75)) +
-  geom_boxplot(width = 0.6, outlier.shape = NA, alpha = 0.8,
-               position = position_dodge(0.75)) +
-  stat_compare_means(aes(group = RiskGroup), method = "wilcox.test",
-                     label = "p.signif", label.y = max(drug_melt$IC50) * 1.05,
-                     size = 3.5) +
-  scale_fill_manual(values = c("Low Risk" = "#4393C3", "High Risk" = "#D6604D"),
-                    name = "Risk Group") +
-  labs(title = "Estimated Drug Sensitivity: High vs Low Risk",
-       subtitle = "Lower IC50 = higher drug sensitivity",
-       x = "", y = "Estimated IC50") +
-  pub_theme +
-  theme(axis.text.x = element_text(angle = 30, hjust = 1, size = 10),
-        legend.position = "top")
-
-ggsave("results/drug_sensitivity/drug_sensitivity_boxplots.png",
-       p_drug_box, width = 12, height = 7, dpi = 300)
-
-# --- 6.2 Drug-piRNA Correlation Heatmap ---
-drug_pirna_cor <- matrix(NA, nrow = length(bc_drugs), ncol = length(top_feats),
-                         dimnames = list(bc_drugs, top_feats))
-drug_pirna_pval <- drug_pirna_cor
-
-for (drug in bc_drugs) {
-  for (feat in top_feats) {
-    if (!feat %in% colnames(tumor_df)) next
-    ct <- cor.test(drug_ic50[[drug]], tumor_df[[feat]], method = "spearman")
-    drug_pirna_cor[drug, feat] <- ct$estimate
-    drug_pirna_pval[drug, feat] <- ct$p.value
+  # Match samples to tumor_df
+  common_samp <- intersect(rownames(drug_ic50), rownames(tumor_df))
+  if (length(common_samp) < 10) {
+    # Try 15-char barcode matching
+    drug_short <- substr(rownames(drug_ic50), 1, 15)
+    tumor_short <- substr(rownames(tumor_df), 1, 15)
+    common_short <- intersect(drug_short, tumor_short)
+    if (length(common_short) >= 10) {
+      drug_idx <- match(common_short, drug_short)
+      tumor_idx <- match(common_short, tumor_short)
+      drug_ic50_matched <- drug_ic50[drug_idx, , drop = FALSE]
+      tumor_df_drug <- tumor_df[tumor_idx, ]
+    } else {
+      cat("  WARNING: Too few matching samples for drug sensitivity.\n")
+      drug_ic50_matched <- NULL
+    }
+  } else {
+    drug_ic50_matched <- drug_ic50[common_samp, , drop = FALSE]
+    tumor_df_drug <- tumor_df[common_samp, ]
   }
+
+  if (!is.null(drug_ic50_matched) && nrow(drug_ic50_matched) >= 10) {
+    bc_drugs <- colnames(drug_ic50_matched)
+    cat(sprintf("  Drugs: %d, Samples: %d\n", length(bc_drugs), nrow(drug_ic50_matched)))
+
+    # --- 6.1 Drug Sensitivity Boxplots: High vs Low Risk ---
+    tumor_df_drug$RiskGroup <- factor(
+      ifelse(tumor_df_drug$T_Score >= median(tumor_df_drug$T_Score), "High Risk", "Low Risk"),
+      levels = c("Low Risk", "High Risk")
+    )
+
+    drug_long <- drug_ic50_matched
+    drug_long$RiskGroup <- tumor_df_drug$RiskGroup
+    drug_long$Sample <- rownames(drug_long)
+
+    drug_melt <- reshape2::melt(drug_long, id.vars = c("Sample", "RiskGroup"),
+                                variable.name = "Drug", value.name = "IC50")
+
+    p_drug_box <- ggplot(drug_melt, aes(x = Drug, y = IC50, fill = RiskGroup)) +
+      stat_boxplot(geom = "errorbar", width = 0.2, position = position_dodge(0.75)) +
+      geom_boxplot(width = 0.6, outlier.shape = NA, alpha = 0.8,
+                   position = position_dodge(0.75)) +
+      stat_compare_means(aes(group = RiskGroup), method = "wilcox.test",
+                         label = "p.signif", label.y = max(drug_melt$IC50) * 1.05,
+                         size = 3.5) +
+      scale_fill_manual(values = c("Low Risk" = "#4393C3", "High Risk" = "#D6604D"),
+                        name = "Risk Group") +
+      labs(title = "Drug Sensitivity: High vs Low Risk (Real IC50 Data)",
+           subtitle = "Lower IC50 = higher drug sensitivity",
+           x = "", y = "IC50 (estimated)") +
+      pub_theme +
+      theme(axis.text.x = element_text(angle = 30, hjust = 1, size = 10),
+            legend.position = "top")
+
+    ggsave("results/drug_sensitivity/drug_sensitivity_boxplots.png",
+           p_drug_box, width = 12, height = 7, dpi = 300)
+
+    # --- 6.2 Drug-piRNA Correlation Heatmap ---
+    drug_pirna_cor <- matrix(NA, nrow = length(bc_drugs), ncol = length(top_feats),
+                             dimnames = list(bc_drugs, top_feats))
+    drug_pirna_pval <- drug_pirna_cor
+
+    for (drug in bc_drugs) {
+      for (feat in top_feats) {
+        if (!feat %in% colnames(tumor_df_drug)) next
+        ct <- cor.test(drug_ic50_matched[[drug]], tumor_df_drug[[feat]], method = "spearman")
+        drug_pirna_cor[drug, feat] <- ct$estimate
+        drug_pirna_pval[drug, feat] <- ct$p.value
+      }
+    }
+
+    sig_mat_drug <- ifelse(drug_pirna_pval < 0.001, "***",
+                    ifelse(drug_pirna_pval < 0.01, "**",
+                    ifelse(drug_pirna_pval < 0.05, "*", "")))
+
+    png("results/drug_sensitivity/drug_pirna_correlation.png",
+        width = max(8, length(top_feats) * 1 + 3),
+        height = max(6, length(bc_drugs) * 0.6 + 2),
+        units = "in", res = 300)
+    pheatmap(
+      drug_pirna_cor,
+      color = colorRampPalette(c("#2166AC", "#F7F7F7", "#B2182B"))(100),
+      breaks = seq(-1, 1, length.out = 101),
+      display_numbers = sig_mat_drug,
+      number_color = "black",
+      fontsize_number = 10,
+      cluster_rows = TRUE, cluster_cols = TRUE,
+      main = "Spearman Correlation: Drug Sensitivity vs Signature piRNAs",
+      fontsize = 10, border_color = "grey85",
+      cellwidth = 45, cellheight = 30
+    )
+    dev.off()
+
+    write.csv(drug_pirna_cor, "results/drug_sensitivity/drug_pirna_correlation.csv")
+    cat("  Drug sensitivity analysis complete.\n")
+  }
+} else {
+  cat("  No drug sensitivity data found.\n")
+  cat("  To enable: place IC50 predictions at clinical_data/drug_ic50_predictions.csv\n")
+  cat("  (rows = TCGA sample barcodes, columns = drug names, values = IC50)\n")
+  cat("  Use pRRophetic or oncoPredict with matched gene expression data to generate.\n")
+  cat("  Skipping drug sensitivity analysis.\n")
 }
-
-sig_mat_drug <- ifelse(drug_pirna_pval < 0.001, "***",
-                ifelse(drug_pirna_pval < 0.01, "**",
-                ifelse(drug_pirna_pval < 0.05, "*", "")))
-
-png("results/drug_sensitivity/drug_pirna_correlation.png",
-    width = max(8, length(top_feats) * 1 + 3),
-    height = max(6, length(bc_drugs) * 0.6 + 2),
-    units = "in", res = 300)
-pheatmap(
-  drug_pirna_cor,
-  color = colorRampPalette(c("#2166AC", "#F7F7F7", "#B2182B"))(100),
-  breaks = seq(-1, 1, length.out = 101),
-  display_numbers = sig_mat_drug,
-  number_color = "black",
-  fontsize_number = 10,
-  cluster_rows = TRUE, cluster_cols = TRUE,
-  main = "Spearman Correlation: Drug Sensitivity vs Signature piRNAs",
-  fontsize = 10, border_color = "grey85",
-  cellwidth = 45, cellheight = 30
-)
-dev.off()
-
-write.csv(drug_pirna_cor, "results/drug_sensitivity/drug_pirna_correlation.csv")
-cat("  Drug sensitivity analysis complete.\n")
 
 
 # ==============================================================================
@@ -1383,8 +1387,12 @@ cat("   Violin plots (risk, stage), scatter vs T-score, distribution,\n")
 cat("   per-piRNA TMB correlation, KM (TMB-High vs Low), Cox regression\n\n")
 
 cat("6. Drug Sensitivity:\n")
-cat("   Drugs:", paste(bc_drugs, collapse = ", "), "\n")
-cat("   Boxplots, drug-piRNA correlation heatmap\n\n")
+if (exists("bc_drugs") && !is.null(ic50_path)) {
+  cat("   Drugs:", paste(bc_drugs, collapse = ", "), "\n")
+  cat("   Boxplots, drug-piRNA correlation heatmap\n\n")
+} else {
+  cat("   Skipped (no IC50 data available)\n\n")
+}
 
 cat("Output directories:\n")
 cat("  results/lasso_cox/       - LASSO Cox coefficient path + CV\n")
