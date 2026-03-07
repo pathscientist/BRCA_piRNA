@@ -110,7 +110,7 @@ net_theme <- theme_void() +
     plot.subtitle = element_text(size = 10, hjust = 0.5, color = "grey40"),
     legend.text   = element_text(size = 9),
     legend.title  = element_text(size = 10, face = "bold"),
-    plot.margin   = margin(10, 10, 10, 10)
+    plot.margin   = ggplot2::margin(10, 10, 10, 10)
   )
 
 dir.create("results/network", recursive = TRUE, showWarnings = FALSE)
@@ -411,7 +411,7 @@ p_bip <- ggraph(g_bip, layout = "manual", x = layout_bip$x, y = layout_bip$y) +
     subtitle = paste0(length(top_feats), " signature piRNAs and their top correlated genes")
   ) +
   net_theme +
-  theme(plot.margin = margin(10, 60, 10, 60)) +
+  theme(plot.margin = ggplot2::margin(10, 60, 10, 60)) +
   guides(fill = guide_legend(override.aes = list(shape = 21, size = 4)))
 
 ggsave("results/network/N2_bipartite_network.png",
