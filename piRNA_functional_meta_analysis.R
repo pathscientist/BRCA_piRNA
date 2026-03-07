@@ -35,7 +35,7 @@ start_time_fm <- Sys.time()
 cran_pkgs <- c(
   "ggplot2", "dplyr", "tidyr", "pheatmap", "RColorBrewer",
   "meta", "igraph", "ggraph", "ggrepel", "scales",
-  "gridExtra", "cowplot", "reshape2", "corrplot"
+  "gridExtra", "cowplot", "reshape2", "corrplot", "ggExtra"
 )
 
 # Bioconductor packages
@@ -74,6 +74,7 @@ suppressPackageStartupMessages({
   library(cowplot)
   library(reshape2)
   library(corrplot)
+  library(ggExtra)
   library(clusterProfiler)
   library(org.Hs.eg.db)
   library(DOSE)
@@ -905,27 +906,17 @@ if (run_enrichment) {
 
 
   # ============================================================================
-  # B4. FUNCTIONAL NETWORK: piRNA → Correlated Genes → Reactome Pathways
-  #     (Figure B style: piRNAs as yellow hubs, genes as small nodes,
-  #      pathways as labeled nodes around periphery)
+  # B4. FUNCTIONAL NETWORK: piRNA → Correlated Genes
+  #     Circular layout: piRNAs as large colored hubs in center,
+  #     correlated genes on outer ring, edges colored by direction
   # ============================================================================
   cat("\n========== B4: Functional Interaction Network ==========\n")
 
   dir.create("results/network", showWarnings = FALSE, recursive = TRUE)
 
-  # Use Reactome if available, otherwise KEGG
-  pathway_sig <- reactome_sig
-  pathway_source <- "Reactome"
-  if (is.null(pathway_sig)) {
-    if (exists("kegg_sig") && !is.null(kegg_sig) && nrow(kegg_sig) > 0) {
-      pathway_sig <- kegg_sig
-      pathway_source <- "KEGG"
-    }
-  }
-
-  if (!is.null(pathway_sig) && nrow(sig_cors) > 0) {
-    # Top correlated genes per piRNA (for the network)
-    top_genes_net <- 15
+  if (nrow(sig_cors) > 0) {
+    # Select top correlated genes per piRNA for the network
+    top_genes_net <- 20
     net_cors <- sig_cors %>%
       group_by(piRNA) %>%
       arrange(desc(abs(Pearson_r))) %>%
@@ -934,131 +925,268 @@ if (run_enrichment) {
 
     gene_symbols_in_net <- unique(net_cors$Gene)
 
-    # Map from gene symbols in enrichment geneID column
-    # geneID field uses "/" separated gene symbols (Reactome with readable=TRUE)
-    top_pathways <- head(pathway_sig, 15)
-
-    # Build edges: piRNA → gene, gene → pathway
-    edges_pirna_gene <- net_cors %>%
+    # Build edges: piRNA → gene
+    edges_df <- net_cors %>%
       transmute(from = piRNA, to = Gene,
-                weight = abs(Pearson_r), edge_type = "correlation")
+                weight = abs(Pearson_r),
+                direction = ifelse(Pearson_r > 0, "positive", "negative"))
 
-    edges_gene_pathway <- data.frame(
-      from = character(), to = character(),
-      weight = numeric(), edge_type = character(),
+    # Build node metadata
+    all_node_names <- unique(c(edges_df$from, edges_df$to))
+    node_df <- data.frame(
+      name = all_node_names,
+      type = ifelse(all_node_names %in% top_feats, "piRNA", "gene"),
       stringsAsFactors = FALSE
     )
 
-    for (i in seq_len(nrow(top_pathways))) {
-      pw_genes <- unlist(strsplit(top_pathways$geneID[i], "/"))
-      matched <- intersect(pw_genes, gene_symbols_in_net)
-      if (length(matched) > 0) {
-        edges_gene_pathway <- rbind(edges_gene_pathway, data.frame(
-          from = matched, to = top_pathways$Description[i],
-          weight = 0.5, edge_type = "pathway",
-          stringsAsFactors = FALSE
-        ))
-      }
-    }
+    # Assign piRNA-specific colors
+    pirna_palette <- c("#E41A1C", "#377EB8", "#4DAF4A", "#FF7F00", "#984EA3")
+    pirna_names <- top_feats[top_feats %in% unique(edges_df$from)]
+    pirna_color_map <- setNames(pirna_palette[seq_along(pirna_names)], pirna_names)
 
-    all_edges <- rbind(edges_pirna_gene, edges_gene_pathway)
+    # For each gene, find the piRNA with strongest |r| for grouping
+    gene_primary <- edges_df %>%
+      group_by(to) %>%
+      slice_max(weight, n = 1, with_ties = FALSE) %>%
+      ungroup() %>%
+      transmute(name = to, primary_pirna = from)
 
-    # Only keep genes that connect to at least one pathway
-    genes_with_pathway <- unique(edges_gene_pathway$from)
-    if (length(genes_with_pathway) > 0) {
-      # Keep piRNA→gene edges only for genes that link to pathways
-      edges_pirna_gene_filt <- edges_pirna_gene[edges_pirna_gene$to %in%
-                                                  genes_with_pathway, ]
-      all_edges_filt <- rbind(edges_pirna_gene_filt, edges_gene_pathway)
+    node_df <- node_df %>%
+      left_join(gene_primary, by = "name") %>%
+      mutate(node_size = ifelse(type == "piRNA", 14, 5))
+
+    # Build igraph
+    g <- graph_from_data_frame(edges_df, directed = FALSE, vertices = node_df)
+
+    # Custom circular layout: piRNAs in center, genes on outer ring
+    layout_mat <- matrix(0, nrow = nrow(node_df), ncol = 2)
+    rownames(layout_mat) <- node_df$name
+
+    # Place piRNAs in center
+    pirna_nodes <- node_df$name[node_df$type == "piRNA"]
+    if (length(pirna_nodes) == 1) {
+      layout_mat[pirna_nodes, ] <- c(0, 0)
     } else {
-      all_edges_filt <- all_edges
-      genes_with_pathway <- gene_symbols_in_net
+      pirna_angles <- seq(0, 2 * pi, length.out = length(pirna_nodes) + 1)
+      pirna_angles <- pirna_angles[-(length(pirna_nodes) + 1)]
+      pirna_r <- 0.3
+      layout_mat[pirna_nodes, 1] <- cos(pirna_angles) * pirna_r
+      layout_mat[pirna_nodes, 2] <- sin(pirna_angles) * pirna_r
     }
 
-    if (nrow(all_edges_filt) > 0) {
-      # Build node data
-      all_node_names <- unique(c(all_edges_filt$from, all_edges_filt$to))
-      node_df <- data.frame(
-        name = all_node_names,
-        type = ifelse(all_node_names %in% top_feats, "piRNA",
-               ifelse(all_node_names %in% top_pathways$Description, "pathway",
-                      "gene")),
-        stringsAsFactors = FALSE
+    # Place genes on outer ring, grouped by primary piRNA
+    gene_order_df <- node_df %>%
+      filter(type == "gene") %>%
+      mutate(pirna_rank = match(primary_pirna, pirna_names)) %>%
+      arrange(pirna_rank, name)
+    gene_nodes_ordered <- gene_order_df$name
+    gene_angles <- seq(0, 2 * pi, length.out = length(gene_nodes_ordered) + 1)
+    gene_angles <- gene_angles[-(length(gene_nodes_ordered) + 1)]
+    gene_r <- 1.0
+    layout_mat[gene_nodes_ordered, 1] <- cos(gene_angles) * gene_r
+    layout_mat[gene_nodes_ordered, 2] <- sin(gene_angles) * gene_r
+
+    # Reorder layout to match igraph vertex order
+    layout_mat <- layout_mat[V(g)$name, ]
+
+    set.seed(SEED)
+
+    # Edge colors: blue for positive, red for negative correlation
+    edge_colors <- ifelse(E(g)$direction == "positive", "#4A90D9", "#D94A4A")
+
+    # Compute gene label angles for radial orientation
+    gene_mask <- V(g)$type == "gene"
+    gene_x <- layout_mat[gene_mask, 1]
+    gene_y <- layout_mat[gene_mask, 2]
+    label_angles <- atan2(gene_y, gene_x) * 180 / pi
+    # Flip labels on left half so text reads correctly
+    label_angles <- ifelse(abs(label_angles) > 90,
+                           label_angles + 180, label_angles)
+
+    p_net <- ggraph(g, layout = "manual",
+                    x = layout_mat[, 1], y = layout_mat[, 2]) +
+      # Edges: colored by correlation direction, alpha by strength
+      geom_edge_link(
+        aes(edge_alpha = weight, edge_width = weight),
+        edge_colour = edge_colors,
+        show.legend = FALSE
+      ) +
+      scale_edge_alpha_continuous(range = c(0.12, 0.5)) +
+      scale_edge_width_continuous(range = c(0.2, 1.3)) +
+      # Gene nodes: pink circles on outer ring
+      geom_node_point(
+        data = . %>% filter(type == "gene"),
+        color = "grey50", fill = "#FFB6C1", shape = 21,
+        size = 5, stroke = 0.4, alpha = 0.9
+      ) +
+      # Gene labels: radially oriented around the circle
+      geom_node_text(
+        data = . %>% filter(type == "gene"),
+        aes(label = name, angle = label_angles),
+        size = 2.8, color = "grey20",
+        hjust = ifelse(gene_x >= 0, 0, 1),
+        nudge_x = ifelse(gene_x >= 0, 0.06, -0.06),
+        nudge_y = 0
+      ) +
+      # piRNA nodes: large colored circles in center
+      geom_node_point(
+        data = . %>% filter(type == "piRNA"),
+        aes(fill = name), shape = 21, size = 12,
+        color = "grey30", stroke = 1.2
+      ) +
+      scale_fill_manual(values = pirna_color_map, name = "piRNA") +
+      # piRNA labels
+      geom_node_text(
+        data = . %>% filter(type == "piRNA"),
+        aes(label = name), size = 3, fontface = "bold",
+        color = "white"
+      ) +
+      coord_fixed() +
+      labs(
+        title = "Significant Correlations Between Signature piRNAs and Target Genes",
+        subtitle = "Blue edges = positive correlation, Red edges = negative correlation (|r| > 0.3, FDR < 0.05)"
+      ) +
+      theme_void() +
+      theme(
+        plot.title    = element_text(size = 14, face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(size = 10, hjust = 0.5, color = "grey40"),
+        plot.margin   = ggplot2::margin(10, 40, 10, 40),
+        legend.position = "bottom",
+        legend.title  = element_text(face = "bold"),
+        legend.text   = element_text(size = 9)
+      ) +
+      guides(fill = guide_legend(override.aes = list(size = 5)))
+
+    ggsave("results/network/functional_network.png",
+           p_net, width = 14, height = 14, dpi = 300)
+    cat("  Functional network saved: results/network/functional_network.png\n")
+
+    write.csv(as.data.frame(edges_df),
+              "results/network/network_edges.csv", row.names = FALSE)
+    write.csv(node_df, "results/network/network_nodes.csv", row.names = FALSE)
+  } else {
+    cat("  No significant correlations for network construction.\n")
+  }
+
+
+  # ============================================================================
+  # B4b. SCATTER PLOTS WITH MARGINAL HISTOGRAMS
+  #      For each piRNA, show top 3 correlated genes as scatter + marginal hist
+  #      Style inspired by: correlation panels with R, p annotation
+  # ============================================================================
+  cat("\n========== B4b: piRNA-mRNA Correlation Scatter Plots ==========\n")
+
+  dir.create("results/functional/scatter_plots", showWarnings = FALSE, recursive = TRUE)
+
+  n_top_genes <- 3  # top genes per piRNA
+
+  for (feat in top_feats) {
+    feat_cors <- sig_cors[sig_cors$piRNA == feat, ]
+    if (nrow(feat_cors) == 0) {
+      cat(sprintf("  %s: No significant correlations, skipping scatter plots.\n", feat))
+      next
+    }
+
+    # Top N genes by |r|
+    feat_cors <- feat_cors %>% arrange(desc(abs(Pearson_r)))
+    top_gene_names <- head(feat_cors$Gene, n_top_genes)
+    top_gene_cors  <- head(feat_cors, n_top_genes)
+
+    scatter_list <- list()
+
+    for (j in seq_along(top_gene_names)) {
+      gene_name <- top_gene_names[j]
+      r_val  <- top_gene_cors$Pearson_r[j]
+      p_val  <- top_gene_cors$P_value[j]
+
+      pirna_vec <- expr_pirna[, feat]
+      mrna_vec  <- expr_mrna[, gene_name]
+      complete  <- complete.cases(pirna_vec, mrna_vec)
+
+      scat_df <- data.frame(
+        piRNA_expr = pirna_vec[complete],
+        mRNA_expr  = mrna_vec[complete]
       )
 
-      # Build igraph
-      g <- graph_from_data_frame(all_edges_filt, directed = FALSE,
-                                  vertices = node_df)
+      # Format annotation
+      p_label <- if (p_val < 2.2e-16) {
+        sprintf("italic(R) == %.2f ~~ italic(p) < 2.2e-16", r_val)
+      } else {
+        sprintf("italic(R) == %.2f ~~ italic(p) == %.2e", r_val, p_val)
+      }
 
-      # Node sizing: piRNAs large, pathways medium, genes small
-      V(g)$size <- ifelse(V(g)$type == "piRNA", 12,
-                   ifelse(V(g)$type == "pathway", 6, 3))
-
-      # Plot with ggraph
-      set.seed(SEED)
-
-      # Node colors
-      node_colors <- c("piRNA" = "#FFD700", "gene" = "#87CEEB", "pathway" = "#FFFFFF")
-      node_shapes <- c("piRNA" = 16, "gene" = 16, "pathway" = 15)
-
-      p_net <- ggraph(g, layout = "fr") +
-        # Edges
-        geom_edge_link(
-          edge_colour = "grey70", edge_width = 0.3, edge_alpha = 0.6,
-          show.legend = FALSE
-        ) +
-        # Gene nodes (small, blue)
-        geom_node_point(
-          data = . %>% filter(type == "gene"),
-          aes(size = size), color = "#87CEEB", alpha = 0.8
-        ) +
-        # Pathway nodes (white squares with border)
-        geom_node_point(
-          data = . %>% filter(type == "pathway"),
-          aes(size = size), shape = 22, fill = "white",
-          color = "grey40", stroke = 0.8
-        ) +
-        # piRNA nodes (large yellow)
-        geom_node_point(
-          data = . %>% filter(type == "piRNA"),
-          aes(size = size), color = "#FFD700", alpha = 1
-        ) +
-        # piRNA labels (bold)
-        geom_node_text(
-          data = . %>% filter(type == "piRNA"),
-          aes(label = name), size = 3.5, fontface = "bold",
-          repel = TRUE, max.overlaps = 30
-        ) +
-        # Pathway labels
-        geom_node_text(
-          data = . %>% filter(type == "pathway"),
-          aes(label = name), size = 2.5, color = "grey30",
-          repel = TRUE, max.overlaps = 50
-        ) +
-        scale_size_identity() +
-        labs(
-          title = paste0("Function Prediction of Signature piRNAs"),
-          subtitle = paste0("Based on Pearson\u2019s correlation and ", pathway_source,
-                            " pathway enrichment")
-        ) +
-        theme_void() +
+      # Base scatter with colored points and regression line
+      p_base <- ggplot(scat_df, aes(x = piRNA_expr, y = mRNA_expr)) +
+        geom_point(aes(color = piRNA_expr), size = 1.8, alpha = 0.6,
+                   show.legend = FALSE) +
+        scale_color_gradient2(low = "#E41A1C", mid = "#8B7BB8", high = "#377EB8",
+                              midpoint = median(scat_df$piRNA_expr, na.rm = TRUE)) +
+        geom_smooth(method = "lm", color = "#2166AC", fill = "#92C5DE",
+                    linewidth = 1, alpha = 0.3, se = TRUE) +
+        annotate("text", x = -Inf, y = Inf, label = p_label, parse = TRUE,
+                 hjust = -0.05, vjust = 1.5, size = 3.8, fontface = "italic") +
+        labs(x = feat, y = gene_name) +
+        theme_bw() +
         theme(
-          plot.title    = element_text(size = 14, face = "bold", hjust = 0.5),
-          plot.subtitle = element_text(size = 10, hjust = 0.5, color = "grey40"),
-          legend.position = "none"
+          panel.grid.minor = element_blank(),
+          panel.grid.major = element_line(color = "grey92"),
+          axis.text  = element_text(size = 10, color = "black"),
+          axis.title = element_text(size = 12, face = "bold"),
+          plot.margin = ggplot2::margin(5, 5, 5, 5)
         )
 
-      ggsave("results/network/functional_network.png",
-             p_net, width = 16, height = 12, dpi = 300)
-      cat("  Functional network saved: results/network/functional_network.png\n")
+      # Add marginal histograms (top = piRNA, right = mRNA)
+      p_marginal <- ggExtra::ggMarginal(
+        p_base,
+        type = "histogram",
+        xFill = "#F4A460",   # sandy brown for piRNA (x-axis)
+        yFill = "#8FBC8F",   # dark sea green for mRNA (y-axis)
+        margins = "both",
+        size = 5
+      )
 
-      write.csv(all_edges_filt, "results/network/network_edges.csv", row.names = FALSE)
-      write.csv(node_df, "results/network/network_nodes.csv", row.names = FALSE)
-    } else {
-      cat("  Not enough connected nodes for network.\n")
+      scatter_list[[j]] <- p_marginal
+
+      # Save individual scatter plot
+      fname <- gsub("[^a-zA-Z0-9_.-]", "_", feat)
+      gname <- gsub("[^a-zA-Z0-9_.-]", "_", gene_name)
+      ggsave(
+        paste0("results/functional/scatter_plots/", fname, "_vs_", gname, ".png"),
+        p_marginal, width = 5.5, height = 5, dpi = 300
+      )
     }
-  } else {
-    cat("  No pathway enrichment results for network construction.\n")
+
+    # Combine top scatter plots into a panel for this piRNA
+    if (length(scatter_list) >= 2) {
+      fname <- gsub("[^a-zA-Z0-9_.-]", "_", feat)
+
+      combined <- cowplot::plot_grid(
+        plotlist = scatter_list,
+        ncol = min(3, length(scatter_list)),
+        labels = LETTERS[seq_along(scatter_list)],
+        label_size = 16, label_fontface = "bold"
+      )
+
+      title_grob <- cowplot::ggdraw() +
+        cowplot::draw_label(
+          paste0("Top Correlated Genes: ", feat),
+          fontface = "bold", size = 14, x = 0.5, hjust = 0.5
+        )
+
+      final_panel <- cowplot::plot_grid(
+        title_grob, combined,
+        ncol = 1, rel_heights = c(0.06, 1)
+      )
+
+      ggsave(
+        paste0("results/functional/scatter_plots/panel_", fname, ".png"),
+        final_panel,
+        width = min(16, 5.5 * length(scatter_list)),
+        height = 5.5, dpi = 300
+      )
+      cat(sprintf("  %s: %d scatter plots saved (panel + individual).\n",
+                  feat, length(scatter_list)))
+    }
   }
 
 } else {
@@ -1119,7 +1247,8 @@ if (run_partB) {
   if (exists("reactome_sig") && !is.null(reactome_sig)) {
     cat("  B3. Reactome pathways:", nrow(reactome_sig), "significant\n")
   }
-  cat("  B4. Functional network: piRNA \u2192 genes \u2192 pathways\n")
+  cat("  B4. Functional network: piRNA \u2192 target genes (circular layout)\n")
+  cat("  B4b. piRNA\u2013mRNA scatter plots with marginal histograms (top 3 genes/piRNA)\n")
   cat("  B5. Per-piRNA correlated mRNA gene tables\n")
 } else {
   cat("  (Skipped \u2014 mRNA expression data not available)\n")
@@ -1129,6 +1258,7 @@ cat("\nOutput directories:\n")
 cat("  results/meta_analysis/  \u2014 Heatmaps, SMD forest plots, correlation\n")
 cat("  results/functional/     \u2014 piRNA\u2013mRNA correlations, KEGG, GO, Reactome\n")
 cat("  results/network/        \u2014 Functional interaction network\n")
+cat("  results/functional/scatter_plots/ \u2014 piRNA\u2013mRNA scatter + marginal histograms\n")
 
 end_time_fm <- Sys.time()
 cat("\nRuntime:", round(difftime(end_time_fm, start_time_fm, units = "mins"), 1), "min\n")
