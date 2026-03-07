@@ -164,16 +164,37 @@ for (nm in names(ready_list)) {
 
 
 # ==============================================================================
-# 2. BRCA1: USE ALL SAMPLES (No Balancing)
+# 2. BRCA1 BALANCING (Matched Pairs + 40% Remaining Tumors)
 # ==============================================================================
-cat("\n========== PHASE 2: BRCA1 SAMPLE CHECK ==========\n")
+cat("\n========== PHASE 2: BRCA1 BALANCING ==========\n")
+
+balance_brca <- function(df, seed = 123) {
+  set.seed(seed)
+  idx_normal <- which(df$Group == "Normal")
+  idx_tumor  <- which(df$Group == "Tumor")
+
+  n_normal      <- length(idx_normal)
+  n_tumor_total <- length(idx_tumor)
+
+  n_matched <- min(n_normal, n_tumor_total)
+  n_remaining <- n_tumor_total - n_matched
+  n_extra     <- round(n_remaining * 0.40)
+  n_tumor_keep <- n_matched + n_extra
+  idx_tumor_keep <- sample(idx_tumor, n_tumor_keep)
+
+  df_balanced <- df[c(idx_normal, idx_tumor_keep), ]
+
+  cat(sprintf("  BRCA1 balanced: Normal=%d, Tumor=%d (matched %d + 40%% of %d remaining = %d)\n",
+              n_normal, n_tumor_keep, n_matched, n_remaining, n_extra))
+  cat(sprintf("  Ratio Normal:Tumor = 1:%.1f\n", n_tumor_keep / n_normal))
+
+  df_balanced
+}
 
 if ("BRCA1" %in% names(ready_list)) {
-  tb <- table(ready_list[["BRCA1"]]$Group)
-  cat(sprintf("  BRCA1: Normal=%d, Tumor=%d (all samples retained)\n",
-              tb["Normal"], tb["Tumor"]))
+  ready_list[["BRCA1"]] <- balance_brca(ready_list[["BRCA1"]], seed = SEED)
 } else {
-  cat("  No BRCA1 dataset found.\n")
+  cat("  No BRCA1 dataset found; skipping balancing.\n")
 }
 
 # ==============================================================================
