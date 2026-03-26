@@ -163,7 +163,8 @@ tmb_output <- mut_counts %>%
   select(SampleID, Tumor_Sample_Barcode, TMB, Total_Mutations,
          TMB_Category, TMB_Tertile)
 
-output_path <- "tmb_data.csv"
+output_path <- "clinical_data/tmb_data.csv"
+dir.create("clinical_data", showWarnings = FALSE, recursive = TRUE)
 write.csv(tmb_output, output_path, row.names = FALSE)
 cat(sprintf("\nTMB data saved to: %s\n", output_path))
 cat(sprintf("  Rows: %d, Columns: %d\n", nrow(tmb_output), ncol(tmb_output)))
@@ -174,8 +175,8 @@ tmb_simple <- tmb_output %>%
   mutate(PatientID = substr(SampleID, 1, 12)) %>%
   select(PatientID, SampleID, TMB, TMB_Category)
 
-write.csv(tmb_simple, "tmb_data_simple.csv", row.names = FALSE)
-cat("Simple version saved to: tmb_data_simple.csv\n")
+write.csv(tmb_simple, "clinical_data/tmb_data_simple.csv", row.names = FALSE)
+cat("Simple version saved to: clinical_data/tmb_data_simple.csv\n")
 
 # ==============================================================================
 # 6. OPTIONAL: READ MAF WITH maftools FOR ADDITIONAL SUMMARIES
