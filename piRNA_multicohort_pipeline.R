@@ -804,6 +804,12 @@ print(p_roc_combined)
 # --- 7.6 Confusion Matrices ---
 cat("\n--- 7.6 Confusion Matrices ---\n")
 
+# Determine optimal threshold from hold-out ROC using Youden's index
+# (maximizes sensitivity + specificity)
+optimal_coords <- coords(mt_ho$roc_obj, "best", best.method = "youden", ret = "threshold")
+optimal_thr <- as.numeric(optimal_coords[1])
+cat(sprintf("  Optimal threshold (Youden, hold-out): %.4f\n", optimal_thr))
+
 plot_confusion <- function(truth_factor, prob_tumor, title, thr = 0.5) {
   pred <- factor(ifelse(prob_tumor >= thr, "Tumor", "Normal"),
                  levels = c("Normal", "Tumor"))
@@ -818,14 +824,18 @@ plot_confusion <- function(truth_factor, prob_tumor, title, thr = 0.5) {
     geom_text(aes(label = paste0(N, "\n(", Pct, ")")), size = 5, fontface = "bold") +
     scale_fill_gradient(low = "white", high = "steelblue") +
     scale_y_discrete(limits = rev(c("Normal", "Tumor"))) +
-    labs(title = title, x = "Predicted", y = "Actual") +
+    labs(title = title,
+         subtitle = sprintf("Threshold = %.3f", thr),
+         x = "Predicted", y = "Actual") +
     my_theme + theme(legend.position = "none")
   list(cm = cm, plot = p)
 }
 
-cm_ho <- plot_confusion(data_holdout$Group, prob_ho, "CM - Hold-out")
-cm_v1 <- plot_confusion(data_indep1$Group, prob_v1, "CM - Independent (yyfbatch1)")
-cm_v2 <- plot_confusion(data_indep2$Group, prob_v2, "CM - Independent (yyfbatch2)")
+cm_ho <- plot_confusion(data_holdout$Group, prob_ho, "CM - Hold-out", thr = optimal_thr)
+cm_v1 <- plot_confusion(data_indep1$Group, prob_v1,
+                        "CM - Independent (yyfbatch1)", thr = optimal_thr)
+cm_v2 <- plot_confusion(data_indep2$Group, prob_v2,
+                        "CM - Independent (yyfbatch2)", thr = optimal_thr)
 
 ggsave("results/validation/CM_holdout.png", cm_ho$plot, width = 6, height = 5, dpi = 300)
 ggsave("results/validation/CM_independent_yyfbatch1.png", cm_v1$plot,
