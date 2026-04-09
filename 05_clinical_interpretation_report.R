@@ -3,7 +3,11 @@
 #   05 — Clinical Interpretation & Final Report (PHASE 4)                      #
 #                                                                              #
 #   Signature characterisation table (Table 1), summary heatmap across all    #
-#   7 cohorts, final text report, and session info.                           #
+#   cohorts, final text report, and session info.                             #
+#                                                                              #
+#   Training:   BRCA1 (tissue) + yyfbatch1 (plasma)                           #
+#   Validation: yyfbatch2 (plasma — independent)                              #
+#   Both yyfbatch1 and yyfbatch2 are plasma.                                   #
 #                                                                              #
 #   Requires: results from 01 + 02 + 03 + 04                                 #
 #   Produces: results/final_signature_table.csv                               #
@@ -57,10 +61,11 @@ model           <- readRDS("results/models/final_model.rds")
 optimal_thr     <- readRDS("results/models/optimal_threshold.rds")
 val_details     <- readRDS("results/validation/validation_details.rds")
 
-eval_v1    <- val_details$eval_v1
 eval_v2    <- val_details$eval_v2
 auc_cv     <- val_details$auc_cv
 auc_cv_ci  <- val_details$auc_cv_ci
+boot_ci    <- val_details$boot_ci
+perm_p     <- val_details$perm_p
 
 # Load feature selection summary if available
 fs_table_path <- "results/feature_selection/fs_summary_table.csv"
@@ -161,22 +166,20 @@ write.csv(sig_table, "results/final_signature_table.csv", row.names = FALSE)
 cat("\n  Saved: results/final_signature_table.csv\n")
 
 # ==============================================================================
-# 2. SUMMARY HEATMAP (all 7 cohorts)
+# 2. SUMMARY HEATMAP (all cohorts)
 # ==============================================================================
 cat("\n========== 2. Summary Heatmap ==========\n")
 
-# Expression matrix: rows = piRNAs, columns = samples
 heat_mat <- t(as.matrix(combat_df_all[, top_feats]))
 
-# Annotation columns
+# Annotation: both yyf batches are Plasma
 ann_col <- data.frame(
   Group    = combat_df_all$Group,
   Cohort   = combat_df_all$Batch,
-  Specimen = ifelse(combat_df_all$Batch == "yyfbatch2", "Plasma/Serum", "Tissue"),
+  Specimen = ifelse(combat_df_all$Batch == "BRCA1", "Tissue", "Plasma"),
   row.names = rownames(combat_df_all)
 )
 
-# Annotation colours
 ann_colors <- list(
   Group    = c("Normal" = "#4393C3", "Tumor" = "#D6604D"),
   Cohort   = setNames(
@@ -184,10 +187,9 @@ ann_colors <- list(
       seq_len(length(unique(combat_df_all$Batch)))],
     sort(unique(combat_df_all$Batch))
   ),
-  Specimen = c("Tissue" = "#FFD700", "Plasma/Serum" = "#20B2AA")
+  Specimen = c("Tissue" = "#FFD700", "Plasma" = "#20B2AA")
 )
 
-# Cap extreme values for cleaner heatmap
 heat_mat_capped <- heat_mat
 heat_mat_capped[heat_mat_capped > 3]  <- 3
 heat_mat_capped[heat_mat_capped < -3] <- -3
@@ -224,7 +226,6 @@ cv_cm <- confusionMatrix(cv_pred_class, pred_cv$obs, positive = "Tumor")
 cv_sens <- as.numeric(cv_cm$byClass["Sensitivity"])
 cv_spec <- as.numeric(cv_cm$byClass["Specificity"])
 
-# Best model name
 best_name <- model$method
 best_params <- paste(names(model$bestTune), "=", model$bestTune, collapse = ", ")
 
@@ -238,25 +239,24 @@ report_lines <- c(
   sprintf("  Model: %s with %s", best_name, best_params),
   sprintf("  Optimal threshold: %.4f (Youden's J)", optimal_thr),
   "",
+  "  Training: BRCA1 (tissue) + yyfbatch1 (plasma)",
+  "  Validation: yyfbatch2 (plasma, independent hold-out)",
+  "  NOTE: Both yyfbatch1 and yyfbatch2 are plasma specimens.",
+  "",
   "  -----------------------------------------------------------",
-  "  Discovery (5 public tissue cohorts, 10x5 CV):",
-  sprintf("    AUC = %.4f (95%% CI: %.4f–%.4f)", auc_cv, auc_cv_ci[1], auc_cv_ci[3]),
+  "  Discovery (BRCA1 + yyfbatch1, 10x5 CV):",
+  sprintf("    AUC = %.4f (95%% CI: %.4f-%.4f)", auc_cv, auc_cv_ci[1], auc_cv_ci[3]),
   sprintf("    Sensitivity = %.1f%%, Specificity = %.1f%%", cv_sens * 100, cv_spec * 100),
   "",
-  sprintf("  Tissue Validation (yyfbatch1, n=%d):", eval_v1$n),
-  sprintf("    AUC = %.4f (95%% CI: %.4f–%.4f)", eval_v1$auc, eval_v1$auc_lower, eval_v1$auc_upper),
-  sprintf("    Sensitivity = %.1f%%, Specificity = %.1f%%", eval_v1$sens * 100, eval_v1$spec * 100),
-  "",
   sprintf("  Plasma Validation (yyfbatch2, n=%d):", eval_v2$n),
-  sprintf("    AUC = %.4f (95%% CI: %.4f–%.4f)", eval_v2$auc, eval_v2$auc_lower, eval_v2$auc_upper),
+  sprintf("    AUC = %.4f (95%% CI: %.4f-%.4f)", eval_v2$auc, eval_v2$auc_lower, eval_v2$auc_upper),
   sprintf("    Sensitivity = %.1f%%, Specificity = %.1f%%", eval_v2$sens * 100, eval_v2$spec * 100),
+  sprintf("    Bootstrap 95%% CI: [%.4f, %.4f]", boot_ci[1], boot_ci[2]),
+  sprintf("    Permutation p = %.4f", perm_p),
   "",
   "  -----------------------------------------------------------",
-  sprintf("  Tissue vs Plasma AUC gap: %.4f", eval_v1$auc - eval_v2$auc),
-  sprintf("  Overfitting assessment:"),
-  sprintf("    Delta(train-tissue) = %.4f", auc_cv - eval_v1$auc),
-  sprintf("    Delta(train-plasma) = %.4f", auc_cv - eval_v2$auc),
-  "===================================================================",
+  sprintf("  Overfitting assessment: Delta(train-validation) = %.4f", auc_cv - eval_v2$auc),
+  "=================================================================",
   "",
   sprintf("  Report generated: %s", format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
 )
