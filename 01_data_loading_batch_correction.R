@@ -3,11 +3,18 @@
 #   01 — Data Loading & Batch Correction (PHASE 0)                            #
 #                                                                              #
 #   Load all cohort CSVs, harmonise labels, find shared piRNAs,               #
-#   log2(TPM+1), ComBat batch correction, Z-score normalisation.              #
-#   Output a single analysis-ready data frame.                                #
+#   log2(TPM+1), ComBat batch correction (ALL cohorts together),              #
+#   Z-score normalisation.                                                     #
 #                                                                              #
-#   Training:  BRCA1, PRJNA294226, PRJNA482141, PRJNA808405, PRJNA934049      #
-#   Validation (LOCKED): yyfbatch1 (tissue), yyfbatch2 (plasma/serum)         #
+#   Data reality:                                                              #
+#     BRCA1      — tissue  (TCGA, 187T : 7N — very few normals)               #
+#     yyfbatch1  — plasma  (in-house, 106T : 86N)                             #
+#     yyfbatch2  — plasma  (in-house, 119T : 93N)                             #
+#                                                                              #
+#   Strategy:                                                                  #
+#     Training:   BRCA1 + yyfbatch1  (tissue + plasma, combined)              #
+#     Validation: yyfbatch2          (independent plasma hold-out)             #
+#     ComBat corrects ALL 3 batches together before splitting.                #
 #                                                                              #
 #   Run FIRST — all subsequent scripts depend on outputs from this one.       #
 #                                                                              #
@@ -72,10 +79,9 @@ cat("========== STEP 1: Loading Cohort Files ==========\n")
 
 recode_group <- function(df, group_col = "Group") {
   g <- as.character(df[[group_col]])
-  g[g %in% c("Benign", "Cancer")] <- ifelse(
-    g[g %in% c("Benign", "Cancer")] == "Cancer", "Tumor", "Normal")
-  g[g %in% c("cancer", "tumor")] <- "Tumor"
-  g[g %in% c("normal", "benign", "control", "healthy", "Control", "Healthy")] <- "Normal"
+  g[g %in% c("Cancer", "cancer", "tumor")] <- "Tumor"
+  g[g %in% c("Benign", "benign", "normal", "control", "healthy",
+              "Control", "Healthy")] <- "Normal"
   df[[group_col]] <- factor(g, levels = c("Normal", "Tumor"))
   df[df[[group_col]] %in% c("Normal", "Tumor"), ]
 }
@@ -100,13 +106,21 @@ dataset_names <- c("BRCA1", "PRJNA294226", "PRJNA482141",
                     "PRJNA808405", "PRJNA934049",
                     "yyfbatch1", "yyfbatch2")
 
+# UPDATED: yyfbatch1 moves to training (plasma data needed to learn plasma patterns)
+# yyfbatch2 remains independent validation
 training_cohorts    <- c("BRCA1", "PRJNA294226", "PRJNA482141",
-                          "PRJNA808405", "PRJNA934049")
-validation_cohorts  <- c("yyfbatch1", "yyfbatch2")
+                          "PRJNA808405", "PRJNA934049", "yyfbatch1")
+validation_cohorts  <- c("yyfbatch2")
+
+# Specimen type: BOTH yyfbatch1 and yyfbatch2 are PLASMA
+specimen_type <- c(
+  BRCA1 = "Tissue", PRJNA294226 = "Tissue", PRJNA482141 = "Tissue",
+  PRJNA808405 = "Tissue", PRJNA934049 = "Tissue",
+  yyfbatch1 = "Plasma", yyfbatch2 = "Plasma"
+)
 
 ready_list <- list()
 for (nm in dataset_names) {
-  # Try multiple file name patterns
   candidates <- c(
     file.path("processed_results", paste0(nm, "_processed.csv")),
     file.path("processed_results", paste0(nm, "_processed_1.csv"))
@@ -126,32 +140,30 @@ for (nm in dataset_names) {
   tmp <- recode_group(tmp)
   ready_list[[nm]] <- tmp
   tb <- table(tmp$Group)
-  cat(sprintf("  Loaded %-15s: %d samples (Normal=%d, Tumor=%d)\n",
-              nm, nrow(tmp), tb["Normal"], tb["Tumor"]))
+  cat(sprintf("  Loaded %-15s: %3d samples (Normal=%3d, Tumor=%3d)  [%s]\n",
+              nm, nrow(tmp), tb["Normal"], tb["Tumor"], specimen_type[nm]))
 }
 
 if (length(ready_list) == 0) stop("No cohort files found! Check processed_results/ directory.")
 
 # ==============================================================================
-# 2. BRCA1 BALANCING (matched pairs + 40 % excess tumors)
+# 2. BRCA1 BALANCING — keep ALL samples (only 7 normals, can't afford to drop)
 # ==============================================================================
-cat("\n========== STEP 2: BRCA1 Class Balancing ==========\n")
+cat("\n========== STEP 2: BRCA1 Assessment ==========\n")
 
 if ("BRCA1" %in% names(ready_list)) {
-  set.seed(SEED)
   brca <- ready_list[["BRCA1"]]
-  idx_normal <- which(brca$Group == "Normal")
-  idx_tumor  <- which(brca$Group == "Tumor")
-  n_matched  <- min(length(idx_normal), length(idx_tumor))
-  n_remaining <- length(idx_tumor) - n_matched
-  n_extra     <- round(n_remaining * 0.40)
-  idx_tumor_keep <- sample(idx_tumor, n_matched + n_extra)
-  brca_balanced <- brca[c(idx_normal, idx_tumor_keep), ]
-  ready_list[["BRCA1"]] <- brca_balanced
-  cat(sprintf("  BRCA1 balanced: Normal=%d, Tumor=%d (matched %d + 40%% of %d excess = %d)\n",
-              length(idx_normal), n_matched + n_extra, n_matched, n_remaining, n_extra))
+  n_normal <- sum(brca$Group == "Normal")
+  n_tumor  <- sum(brca$Group == "Tumor")
+  cat(sprintf("  BRCA1: %d Tumor, %d Normal\n", n_tumor, n_normal))
+  if (n_normal < 20) {
+    cat("  WARNING: BRCA1 has very few Normal samples (", n_normal, ").\n")
+    cat("  Keeping ALL samples (no downsampling — too few normals to spare).\n")
+    cat("  yyfbatch1 (plasma, 86 Normal + 106 Tumor) is included in training to\n")
+    cat("  compensate and ensure the model learns Normal vs Tumor in plasma.\n")
+  }
 } else {
-  cat("  BRCA1 not found — skipping balancing.\n")
+  cat("  BRCA1 not found — skipping.\n")
 }
 
 # ==============================================================================
@@ -167,17 +179,18 @@ cat("Common piRNAs across all", length(ready_list), "cohorts:", length(common_pi
 if (length(common_pirnas) < 10)
   stop("Too few common piRNAs (", length(common_pirnas), "). Check input data.")
 
-# 3b. Subset to common piRNAs and log2(TPM+1)
+# 3b. Subset to common piRNAs and log2(TPM+1) transform
 clean_list <- lapply(ready_list, function(df) {
   df_sub <- df[, c("Group", common_pirnas)]
   mat <- as.matrix(df_sub[, -1])
   mat[mat < 0] <- 0
+  # Apply log2(TPM+1) if values are on TPM scale (max > 50)
   if (max(mat, na.rm = TRUE) > 50) mat <- log2(mat + 1)
   df_sub[, -1] <- as.data.frame(mat)
   df_sub
 })
 
-# 3c. Combine expression matrices
+# 3c. Combine expression matrices for ComBat
 expr_matrices <- lapply(clean_list, function(df) t(as.matrix(df[, -1])))
 combined_expr <- do.call(cbind, expr_matrices)
 
@@ -203,7 +216,7 @@ p_before <- ggplot(pca_df_before, aes(PC1, PC2, color = Cohort, shape = Group)) 
        y = sprintf("PC2 (%.1f%%)", var_before[2])) +
   my_theme
 
-# 3e. ComBat batch correction
+# 3e. ComBat batch correction — ALL cohorts together
 cat("Running ComBat on", ncol(combined_expr), "samples across",
     length(unique(batch_vec)), "batches...\n")
 mod <- model.matrix(~ as.factor(group_vec))
@@ -228,7 +241,7 @@ rownames(combat_df_all) <- colnames(combat_expr)
 
 gene_cols <- setdiff(colnames(combat_df_all), c("Group", "Batch"))
 
-# Save pre-Z-score parameters for validation preprocessing
+# Save pre-Z-score parameters for later use
 z_means <- colMeans(combat_df_all[, gene_cols])
 z_sds   <- apply(combat_df_all[, gene_cols], 2, sd)
 z_sds[z_sds == 0] <- 1
@@ -269,21 +282,25 @@ cat("  Saved: results/qc/pca_combat.png\n")
 # 4. DATA SPLITTING
 # ==============================================================================
 cat("\n========== STEP 4: Data Splitting ==========\n")
+cat("  Training:   BRCA1 (tissue) + yyfbatch1 (plasma)\n")
+cat("  Validation: yyfbatch2 (independent plasma hold-out)\n\n")
 
-cat("\nPost-ComBat class distribution by batch:\n")
+cat("Post-ComBat class distribution by batch:\n")
 print(table(combat_df_all$Batch, combat_df_all$Group))
 
 available_training   <- intersect(training_cohorts, unique(combat_df_all$Batch))
 available_validation <- intersect(validation_cohorts, unique(combat_df_all$Batch))
 
 train_df         <- combat_df_all[combat_df_all$Batch %in% available_training, ]
-valid_yyfbatch1  <- combat_df_all[combat_df_all$Batch == "yyfbatch1", ]
 valid_yyfbatch2  <- combat_df_all[combat_df_all$Batch == "yyfbatch2", ]
 
 cat("\n  Training cohorts:", paste(available_training, collapse = ", "), "\n")
-cat("  Training samples:", nrow(train_df), "\n")
-cat("  yyfbatch1 (tissue validation):", nrow(valid_yyfbatch1), "samples\n")
-cat("  yyfbatch2 (plasma/serum validation):", nrow(valid_yyfbatch2), "samples\n")
+cat("  Training samples:", nrow(train_df),
+    "(Normal=", sum(train_df$Group == "Normal"),
+    ", Tumor=", sum(train_df$Group == "Tumor"), ")\n")
+cat("  Validation (yyfbatch2, plasma):", nrow(valid_yyfbatch2),
+    "(Normal=", sum(valid_yyfbatch2$Group == "Normal"),
+    ", Tumor=", sum(valid_yyfbatch2$Group == "Tumor"), ")\n")
 
 # ==============================================================================
 # 5. SAVE OUTPUTS
@@ -292,13 +309,12 @@ cat("\n========== STEP 5: Saving Outputs ==========\n")
 
 saveRDS(combat_df_all,    "results/models/combat_df_all.rds")
 saveRDS(train_df,         "results/models/train_df.rds")
-saveRDS(valid_yyfbatch1,  "results/models/valid_yyfbatch1.rds")
 saveRDS(valid_yyfbatch2,  "results/models/valid_yyfbatch2.rds")
 saveRDS(gene_cols,        "results/models/common_pirnas.rds")
+saveRDS(specimen_type,    "results/models/specimen_type.rds")
 
 cat("  Saved: results/models/combat_df_all.rds\n")
 cat("  Saved: results/models/train_df.rds\n")
-cat("  Saved: results/models/valid_yyfbatch1.rds\n")
 cat("  Saved: results/models/valid_yyfbatch2.rds\n")
 cat("  Saved: results/models/common_pirnas.rds\n")
 cat("  Saved: results/models/preprocessing_params.rds\n")
