@@ -29,7 +29,7 @@ ggplot2 figures (theme_minimal, 300 DPI, 8×6 PNG).
 
 Goal: Build a piRNA-based diagnostic classifier for breast cancer, trained on
 5 public tissue cohorts, independently validated on 2 in-house cohorts
-(yyfbatch1 = tissue, yyfbatch2 = plasma/serum), and examined separately by
+(yyfbatch1 = plasam, yyfbatch2 = plasma), and examined separately by
 specimen type (tissue vs liquid biopsy) to demonstrate cross-platform
 clinical utility.
 
@@ -44,8 +44,8 @@ Cohort roles (LOCKED — do not reassign):
     PRJNA482141      (tissue)
     PRJNA808405      (tissue)
     PRJNA934049      (tissue)
+    yyfbatch1        (plasma)
   INDEPENDENT VALIDATION (never touched until final evaluation):
-    yyfbatch1        (in-house tissue validation)
     yyfbatch2        (in-house plasma/serum validation)
 
 Files are in processed_results/*.csv
