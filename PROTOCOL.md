@@ -207,6 +207,34 @@ results/session_info.txt
 
 ---
 
+### Script 06 — Function Prediction Figure (Pearson + Reactome)
+
+```bash
+Rscript 06_function_prediction_figure.R
+```
+
+**What it does:**
+- Focuses on three piRNAs: `piR-hsa-41032`, `piR-hsa-1348371`, `piR-hsa-128633`
+- Matches the TCGA piRNA cohort (`BRCA1_processed_1.csv`) to TCGA mRNA expression (`mRNA_expression/TCGA_BRCA_mRNA.csv`) by sample barcode
+- Computes Pearson correlation between each piRNA and all genes; keeps top correlated genes (|r| > 0.3, FDR < 0.05)
+- Runs Reactome pathway enrichment (`ReactomePA`) on the correlated genes
+- Builds the two-panel figure:
+  - **Panel A** — dot-heatmap of genes correlated with the piRNAs (color = Pearson r, size = −log10 p)
+  - **Panel B** — piRNA → gene → Reactome pathway functional network
+- Falls back to a curated gene set for any piRNA that is ~0 in the matched samples (e.g. low-abundance `piR-hsa-128633`); such rows are flagged `source = curated`
+
+**Requirements:** `mRNA_expression/TCGA_BRCA_mRNA.csv` must be present. Standalone — does not depend on scripts 01–05.
+
+**Key outputs:**
+```
+results/functional/Figure_function_prediction.png / .pdf
+results/functional/piRNA_gene_correlations.csv
+results/functional/piRNA_gene_pathway_edges.csv
+results/functional/reactome_enrichment.csv
+```
+
+---
+
 ## Run All at Once
 
 To run the entire pipeline in one go:

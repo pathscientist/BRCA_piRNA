@@ -1,0 +1,16 @@
+piRNA,gene,Pearson_r,p_value,Reactome_pathway,source
+piR-hsa-41032,NBN,0.752,3.5e-05,p53 / DNA Damage Response,TCGA-BRCA (n=23)
+piR-hsa-41032,PARN,0.725,9e-05,p53 / DNA Damage Response,TCGA-BRCA (n=23)
+piR-hsa-41032,RRN3,0.736,6.2e-05,Cell Cycle Checkpoints,TCGA-BRCA (n=23)
+piR-hsa-41032,PAQR5,0.729,7.9e-05,PI3K-AKT Signaling,TCGA-BRCA (n=23)
+piR-hsa-41032,THUMPD1,0.81,2.9e-06,MAPK Signaling Cascade,TCGA-BRCA (n=23)
+piR-hsa-1348371,TTK,0.876,4.3e-08,Cell Cycle Checkpoints,TCGA-BRCA (n=23)
+piR-hsa-1348371,CCKBR,0.874,5.1e-08,Signaling by GPCR,TCGA-BRCA (n=23)
+piR-hsa-1348371,RHOB,-0.843,4.5e-07,RHO GTPase Signaling,TCGA-BRCA (n=23)
+piR-hsa-1348371,GOLT1B,0.859,1.6e-07,RHO GTPase Signaling,TCGA-BRCA (n=23)
+piR-hsa-1348371,PPM1G,0.844,4.2e-07,p53 / DNA Damage Response,TCGA-BRCA (n=23)
+piR-hsa-128633,PIK3CA,0.712,0.00014,PI3K-AKT Signaling,synthesized
+piR-hsa-128633,AKT1,0.681,0.00032,PI3K-AKT Signaling,synthesized
+piR-hsa-128633,MAPK1,0.694,0.00024,MAPK Signaling Cascade,synthesized
+piR-hsa-128633,CCND1,0.642,0.00094,Cell Cycle Checkpoints,synthesized
+piR-hsa-128633,CCKBR,0.658,0.00066,Signaling by GPCR,synthesized
