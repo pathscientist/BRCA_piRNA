@@ -240,8 +240,8 @@ nodes$pathway <- gene_pathway$pathway[match(nodes$name, gene_pathway$gene)]
 nodes$pathway[nodes$ntype == "pathway"] <- nodes$name[nodes$ntype == "pathway"]
 
 g <- graph_from_data_frame(edges_all, vertices = nodes, directed = FALSE)
-pal <- setNames(brewer.pal(max(3, length(pathways)), "Set2")[seq_along(pathways)],
-                pathways)
+# Set2 has only 8 colours; interpolate when Reactome returns more pathways
+pal <- setNames(colorRampPalette(brewer.pal(8, "Set2"))(length(pathways)), pathways)
 
 set.seed(SEED)
 panelB <- ggraph(g, layout = "fr") +
