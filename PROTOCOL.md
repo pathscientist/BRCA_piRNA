@@ -235,6 +235,26 @@ results/functional/reactome_enrichment.csv
 
 ---
 
+### Script 07 — Additional Function Plots & Real ROC
+
+```bash
+Rscript 07_function_plots_and_roc.R
+```
+
+**What it does** (real data only, nothing simulated):
+- Genome-wide Pearson correlation of each piRNA with TCGA-BRCA mRNA (genes expressed in ≥70% of matched samples, to avoid outlier-driven correlations)
+- Scatter plots of top correlated genes (Pearson r + Spearman ρ), correlation volcano
+- GO BP/CC/MF, KEGG and Reactome over-representation (positive vs negative correlated genes), Reactome gene-concept networks
+- GSEA (Reactome) on genes ranked by correlation, with running-score plots
+- Tumor vs Normal expression box plots in all three cohorts
+- ROC of a 3-piRNA logistic model, 5-fold CV, DeLong 95% CI
+
+**Notes:** `piR-hsa-128633` has zero variance in the 23 matched TCGA samples, so it is skipped for correlation/enrichment. `piR-hsa-41032` has only 1 gene at FDR < 0.05, so it gets GSEA but no over-representation plots. Enrichment needs internet access for KEGG/Reactome.
+
+**Key outputs:** `results/functional/Fig_*.png/.pdf`, `GO_*.csv`, `KEGG.csv`, `Reactome.csv`, `GSEA_Reactome_*.csv`, `ROC_3piRNA_real.csv`
+
+---
+
 ## Run All at Once
 
 To run the entire pipeline in one go:
