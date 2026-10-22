@@ -275,6 +275,23 @@ The locked model and threshold are then applied to the held-out cohort (AUC with
 
 ---
 
+### Workflow Figure (study overview)
+
+```bash
+python3 scripts/make_workflow_figure.py
+```
+
+**What it does:** draws the study workflow: 7 cohorts → preprocessing → leave-one-cohort-out validation (Step 1 feature screening, Step 2 model building & verification) → summary across folds → functional prediction. Sample sizes are read from `processed_results/` and `mRNA_expression/`. A cohort whose file is missing is drawn with a dashed border and "file pending", so re-run the script after adding the PRJNA files. It needs Python 3 with `matplotlib` and `pandas`.
+
+**Key outputs:**
+```
+results/workflow/Fig_workflow.png   # 300 dpi
+results/workflow/Fig_workflow.pdf   # vector, fonts embedded
+results/workflow/Fig_workflow.svg   # editable text (PowerPoint: Insert → Pictures, then Convert to Shape)
+```
+
+---
+
 ## Run All at Once
 
 To run the entire pipeline in one go:
