@@ -255,6 +255,26 @@ Rscript 07_function_plots_and_roc.R
 
 ---
 
+### Script 08 — Leave-One-Cohort-Out Validation
+
+```bash
+Rscript 08_leave_one_cohort_out.R
+```
+
+**What it does:** each cohort in turn is held out as the independent validation set, and the remaining cohorts are the discovery set. With all 7 cohorts present this gives 7 folds of 6 discovery → 1 validation. Missing cohort files are skipped, so the current data (BRCA1, yyfbatch1, yyfbatch2) gives 3 folds.
+
+Per fold, using discovery cohorts only:
+- per-cohort z-score (label-free)
+- keep piRNAs expressed in ≥50% of every discovery cohort, with the same Tumor/Normal direction in all of them; rank by Stouffer combined z and keep the top 10
+- class-balanced L2 logistic regression; threshold by Youden's J
+- discovery estimate by 5-fold CV with screening redone inside each fold
+
+The locked model and threshold are then applied to the held-out cohort (AUC with DeLong 95% CI, sensitivity, specificity).
+
+**Key outputs:** `results/loco/loco_results.csv`, `results/loco/Fig_LOCO_validation.png / .pdf`
+
+---
+
 ## Run All at Once
 
 To run the entire pipeline in one go:
